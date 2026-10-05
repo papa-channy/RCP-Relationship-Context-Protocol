@@ -1,11 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rcp.example/spec/schemas/identity-claim.schema.json",
+  "$id": "urn:rcp:schema:identity-claim:0.1",
   "title": "RCP IdentityClaim",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "type",
+    "rcp_version",
     "claim_id",
     "provider",
     "identity_type",
@@ -15,6 +16,7 @@
   ],
   "properties": {
     "type": {"const": "rcp.identity_claim"},
+    "rcp_version": {"const": "0.1"},
     "claim_id": {"type": "string", "minLength": 1},
     "provider": {"type": "string", "minLength": 1},
     "identity_type": {"type": "string", "minLength": 1},
