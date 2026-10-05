@@ -41,3 +41,7 @@ jobs:
       - name: Run source revocation and brief recomputation integration test
         working-directory: reference-ecosystem
         run: npm run test:revocation
+
+      - name: Run enterprise policy drift and stale-decision integration test
+        working-directory: reference-ecosystem
+        run: npm run test:policy
