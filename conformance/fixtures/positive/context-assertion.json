@@ -1,0 +1,18 @@
+{
+  "type": "rcp.context_assertion",
+  "assertion_id": "assertion:commitment:b:001",
+  "assertion_type": "commitment",
+  "epistemic_class": "extracted_fact",
+  "statement": "A and B agreed to revisit Project X in November.",
+  "subjects": ["user:a", "person:b"],
+  "relationship": "relationship:a:b",
+  "confidence": 0.97,
+  "provenance": {
+    "origin_type": "external_provider",
+    "source_refs": ["demo:mail:message:123"],
+    "visibility": "redacted"
+  },
+  "policy_refs": ["demo:mail:policy:relationship-memory-v1"],
+  "status": "active",
+  "created_at": "2026-10-05T10:06:00Z"
+}
