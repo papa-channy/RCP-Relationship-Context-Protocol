@@ -1,12 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rcp.example/spec/schemas/permission-decision.schema.json",
+  "$id": "urn:rcp:schema:permission-decision:0.1",
   "title": "RCP PermissionDecision",
   "type": "object",
   "additionalProperties": false,
-  "required": ["type", "decision_id", "request_id", "decision", "evaluated_at"],
+  "required": ["type", "rcp_version", "decision_id", "request_id", "decision", "evaluated_at"],
   "properties": {
     "type": {"const": "rcp.permission_decision"},
+    "rcp_version": {"const": "0.1"},
     "decision_id": {"type": "string", "minLength": 1},
     "request_id": {"type": "string", "minLength": 1},
     "decision": {"enum": ["allow", "deny", "conditional", "unknown"]},
