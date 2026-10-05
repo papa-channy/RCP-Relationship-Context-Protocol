@@ -25,6 +25,8 @@ ProcessingPlan
  ↓
 provider-issued PermissionDecision
  ↓
+execution-time capability revalidation
+ ↓
 provider validates fresh issued allow
  ↓
 protected state lazy-read
@@ -53,6 +55,12 @@ Protected state is not read at provider startup or during planning/evaluation.
 - `POST /rcp/retrieve`
 - `POST /rcp/revocations/provider`
 
+The enterprise demo provider additionally exposes:
+
+- `POST /rcp/demo/policy-profile`
+
+The policy-profile endpoint is a **reference-scenario control**, not a proposed RCP Core endpoint. It lets the test harness move the enterprise provider from capability/policy version 1 to a stricter version 2 while the process is running.
+
 `POST /rcp/retrieve` returns an RCP `SecureEnvelope`, never plaintext provider data. Direct `/state` access remains unavailable.
 
 When a provider-level source revocation is issued, that provider also fails closed for existing decision reuse and future permission evaluation.
@@ -76,7 +84,7 @@ For meeting preparation the planner prefers:
 2. `interaction_metadata`
 3. `content`
 
-An unconditional `allow` is preferred over a higher-fidelity `limited` representation. Current canonical selections are:
+An unconditional `allow` is preferred over a higher-fidelity `limited` representation. Under the initial provider profiles the canonical selections are:
 
 - mail → `provider_context`
 - messenger → `provider_context`
@@ -87,6 +95,13 @@ An unconditional `allow` is preferred over a higher-fidelity `limited` represent
 ## Permission and envelope invariants
 
 Protected retrieval fails closed unless the decision was actually issued by that provider, remains `allow` and unexpired, the request and representation match the evaluated snapshot, and the capability version remains unchanged.
+
+The control plane performs its own execution-time capability revalidation before calling `/rcp/retrieve`. A decision is treated as stale when:
+
+- the provider's current `capability_version` differs from the version captured by the plan, or
+- the `PermissionDecision` does not contain the expected `capability:<version>` policy binding.
+
+A stale step is skipped before protected retrieval. Provider-side checks independently reject stale decision replay as a second fail-closed boundary.
 
 The provider encrypts selected results using:
 
@@ -125,6 +140,40 @@ current brief
 
 Replaying the same revocation is idempotent at the consumer materialized-state layer: an already revoked assertion is not revoked a second time or assigned a new lifecycle transition.
 
+## Enterprise policy drift and staleness
+
+The D3 scenario starts with the enterprise provider under `managed-context-v1` / capability version `1`. In that state, `interaction_metadata` is allowed and a meeting-preparation request can receive an `allow` decision.
+
+The test then switches the running provider to `lockdown-v2` / capability version `2`:
+
+```text
+managed-context-v1
+  capability version = 1
+  interaction_metadata = allow
+  provider_context     = limited
+  external_processing  = limited
+
+          ↓ policy change
+
+lockdown-v2
+  capability version = 2
+  interaction_metadata = deny
+  provider_context     = deny
+  content              = deny
+  external_processing  = deny
+```
+
+After the change:
+
+1. direct replay of the old version-1 decision is rejected by the enterprise provider;
+2. execution of the already-evaluated plan marks the enterprise step `stale` before retrieval;
+3. the enterprise provider's protected-read counter remains unchanged;
+4. the other still-valid providers continue executing;
+5. a new plan discovers capability version 2 and marks enterprise `unavailable` with `no_usable_representation`;
+6. a new direct permission request for the old representation is denied under version 2.
+
+This D3 slice intentionally does **not** retroactively delete or reclassify previously persisted enterprise assertions. Policy-change effects on already-retained context require an explicit lifecycle state such as `restricted`, which should be specified separately rather than overloading `revoked` or `invalidated`.
+
 ## ContextAssertion normalization
 
 - provider-generated context → `system_interpretation`, provenance `provider_generated`, visibility `redacted`;
@@ -140,6 +189,7 @@ npm install
 npm run smoke
 npm run test:permission
 npm run test:revocation
+npm run test:policy
 ```
 
 The test suite verifies:
@@ -154,8 +204,11 @@ The test suite verifies:
 - provider source revocation;
 - historical assertion retention with `revoked` status;
 - deterministic brief recomputation from unaffected sources;
-- rejection of old decisions and new permission requests after provider revocation.
+- rejection of old decisions and new permission requests after provider revocation;
+- runtime enterprise policy/capability drift;
+- control-plane and provider-side stale-decision enforcement;
+- replanning under the new policy without reusing old authorization.
 
 ## Next M2 slice
 
-Next, implement enterprise policy drift/staleness (D3): change organization/provider policy after an `allow`, mark the cached decision stale, and demonstrate planner downgrade or exclusion instead of reusing the old authorization.
+D1, D2, and D3 are now represented by executable reference scenarios, while D4 raw-content boundaries are already exercised by the permission tests. The next major slice is D5: introduce an explicit operator-blind relay between provider and consumer so the reference ecosystem proves that an intermediary can route RCP `SecureEnvelope` objects while observing only policy-visible metadata and ciphertext, never decrypted relationship payloads.
