@@ -12,5 +12,9 @@
     "start:control": "node services/control-plane/server.mjs",
     "smoke": "node tests/topology-smoke.mjs",
     "test:permission": "node tests/permission-before-retrieval.mjs"
+  },
+  "dependencies": {
+    "canonicalize": "5.1.0",
+    "jose": "6.2.12"
   }
 }
