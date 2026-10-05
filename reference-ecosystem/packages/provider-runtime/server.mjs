@@ -123,10 +123,27 @@ function evaluateRequest({ capability, request, representation, satisfiedLimitat
   }
 }
 
-export function createProviderServer({ capabilityPath, statePath, port }) {
-  const capability = loadJson(capabilityPath)
+function applyCapabilityProfile(baseCapability, profile) {
+  return {
+    ...baseCapability,
+    ...profile,
+    type: baseCapability.type,
+    rcp_version: baseCapability.rcp_version,
+    provider: baseCapability.provider,
+    capabilities: { ...profile.capabilities },
+    processing_locations: [...profile.processing_locations],
+    ...(profile.limitation_refs ? { limitation_refs: structuredClone(profile.limitation_refs) } : { limitation_refs: {} }),
+    issued_at: new Date().toISOString(),
+  }
+}
+
+export function createProviderServer({ capabilityPath, statePath, policyProfilesPath = null, port }) {
+  const baseCapability = loadJson(capabilityPath)
+  let capability = structuredClone(baseCapability)
+  const policyProfiles = policyProfilesPath ? loadJson(policyProfilesPath) : null
+  let activePolicyProfile = policyProfiles?.default_profile ?? 'default'
   const issuedDecisions = new Map()
-  const signingKid = `${capability.provider}:sign:1`
+  const signingKid = `${baseCapability.provider}:sign:1`
   const signingMaterialPromise = createSigningKeyMaterial(signingKid)
   let protectedReads = 0
   let providerRevoked = false
@@ -144,6 +161,8 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
           provider: capability.provider,
           protected_reads: protectedReads,
           revoked: providerRevoked,
+          capability_version: capability.capability_version,
+          active_policy_profile: activePolicyProfile,
         })
         return
       }
@@ -158,6 +177,36 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
         json(res, 200, {
           provider: capability.provider,
           signing_keys: [signingMaterial.publicJwk],
+        })
+        return
+      }
+
+      if (req.method === 'POST' && req.url === '/rcp/demo/policy-profile') {
+        if (!policyProfiles) {
+          json(res, 404, { error: 'policy_profiles_not_configured' })
+          return
+        }
+        const body = await readJsonBody(req)
+        const nextProfile = policyProfiles.profiles?.[body.profile]
+        if (!nextProfile) {
+          json(res, 400, { error: 'unknown_policy_profile' })
+          return
+        }
+
+        const previousVersion = capability.capability_version
+        capability = applyCapabilityProfile(baseCapability, nextProfile)
+        activePolicyProfile = body.profile
+        const now = new Date().toISOString()
+        json(res, 200, {
+          type: 'rcp.provider_policy_event',
+          rcp_version: '0.1',
+          event_id: `policy-event:${randomUUID()}`,
+          provider: capability.provider,
+          profile: activePolicyProfile,
+          previous_capability_version: previousVersion,
+          capability_version: capability.capability_version,
+          issued_at: now,
+          effective_at: now,
         })
         return
       }
