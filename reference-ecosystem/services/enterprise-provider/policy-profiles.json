@@ -1,0 +1,37 @@
+{
+  "default_profile": "managed-context-v1",
+  "profiles": {
+    "managed-context-v1": {
+      "capability_version": "1",
+      "capabilities": {
+        "identity": "allow",
+        "interaction_metadata": "allow",
+        "content": "deny",
+        "provider_context": "limited",
+        "external_processing": "limited",
+        "secure_envelope": "allow",
+        "revocation_events": "allow",
+        "policy_events": "allow"
+      },
+      "limitation_refs": {
+        "provider_context": ["demo:enterprise:policy:managed-context-v1"],
+        "external_processing": ["demo:enterprise:policy:external-processing-v1"]
+      },
+      "processing_locations": ["provider"]
+    },
+    "lockdown-v2": {
+      "capability_version": "2",
+      "capabilities": {
+        "identity": "allow",
+        "interaction_metadata": "deny",
+        "content": "deny",
+        "provider_context": "deny",
+        "external_processing": "deny",
+        "secure_envelope": "allow",
+        "revocation_events": "allow",
+        "policy_events": "allow"
+      },
+      "processing_locations": ["provider"]
+    }
+  }
+}
