@@ -7,12 +7,18 @@ on:
       - "spec/**"
       - "conformance/**"
       - "implementations/**"
+      - "docs/IMPLEMENTER_GUIDE.md"
+      - "docs/INDEPENDENT_IMPLEMENTATION_REPORT_TEMPLATE.md"
+      - "docs/SECURITY_PRIVACY_REVIEW_CHECKLIST.md"
       - ".github/workflows/conformance.yml"
   pull_request:
     paths:
       - "spec/**"
       - "conformance/**"
       - "implementations/**"
+      - "docs/IMPLEMENTER_GUIDE.md"
+      - "docs/INDEPENDENT_IMPLEMENTATION_REPORT_TEMPLATE.md"
+      - "docs/SECURITY_PRIVACY_REVIEW_CHECKLIST.md"
       - ".github/workflows/conformance.yml"
 
 permissions:
@@ -63,3 +69,19 @@ jobs:
         run: |
           PYTHONPATH=implementations/python-probe python implementations/python-probe/produce_vector.py /tmp/rcp-interop/python-vector.json
           node conformance/crypto/interop-node-consumer.mjs /tmp/rcp-interop/python-vector.json
+
+      - name: Install external black-box harness dependencies
+        run: npm install --prefix conformance/external
+
+      - name: Install reference Provider dependencies for harness self-test only
+        run: npm install --prefix reference-ecosystem
+
+      - name: Assert external Provider harness has no reference implementation import
+        run: |
+          if grep -n "reference-ecosystem" conformance/external/provider-harness.mjs; then
+            echo "provider-harness.mjs must remain independent of the reference implementation" >&2
+            exit 1
+          fi
+
+      - name: Run external Provider harness black-box self-test
+        run: npm run self-test --prefix conformance/external
