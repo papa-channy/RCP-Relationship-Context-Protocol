@@ -1,5 +1,6 @@
 {
   "type": "rcp.revocation_event",
+  "rcp_version": "0.1",
   "event_id": "revocation:invalid:empty-scope",
   "revocation_type": "user_grant",
   "scope": {},
