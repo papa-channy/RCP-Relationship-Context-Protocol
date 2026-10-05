@@ -4,6 +4,7 @@ import {
   createRecipientKeyMaterial,
   verifyAndDecryptSecureEnvelope,
 } from '../../packages/secure-envelope/index.mjs'
+import { RelationshipContextStore } from '../../packages/context-store/index.mjs'
 
 const port = Number(process.env.PORT ?? 4190)
 const providers = [
@@ -14,31 +15,15 @@ const providers = [
   ['demo:meeting', process.env.MEETING_URL ?? 'http://127.0.0.1:4105'],
 ]
 
-const REPRESENTATION_PREFERENCE = [
-  'provider_context',
-  'interaction_metadata',
-  'content',
-]
+const REPRESENTATION_PREFERENCE = ['provider_context', 'interaction_metadata', 'content']
 const ASSERTION_TYPES = new Set([
-  'fact',
-  'source_statement',
-  'commitment',
-  'decision',
-  'preference',
-  'interest',
-  'goal',
-  'status',
-  'event',
-  'open_loop',
-  'followup',
-  'constraint',
-  'risk',
-  'organization_context',
-  'relationship_context',
-  'strategy',
+  'fact', 'source_statement', 'commitment', 'decision', 'preference', 'interest',
+  'goal', 'status', 'event', 'open_loop', 'followup', 'constraint', 'risk',
+  'organization_context', 'relationship_context', 'strategy',
 ])
 const consumerId = 'consumer:relationship-agent'
 const recipientMaterialPromise = createRecipientKeyMaterial(`${consumerId}:enc:1`)
+const contextStore = new RelationshipContextStore()
 
 function json(res, statusCode, payload) {
   res.statusCode = statusCode
@@ -67,9 +52,7 @@ async function postJson(url, payload) {
     body: JSON.stringify(payload),
   })
   const body = await response.json()
-  if (!response.ok) {
-    throw new Error(`${url} failed with ${response.status}: ${JSON.stringify(body)}`)
-  }
+  if (!response.ok) throw new Error(`${url} failed with ${response.status}: ${JSON.stringify(body)}`)
   return body
 }
 
@@ -94,10 +77,7 @@ function selectRepresentation(capability) {
 function selectProcessingLocation(capability, requestedLocation) {
   const supported = capability.processing_locations ?? []
   const externalState = capability.capabilities?.external_processing ?? 'deny'
-
-  if (requestedLocation && supported.includes(requestedLocation) && externalState === 'allow') {
-    return requestedLocation
-  }
+  if (requestedLocation && supported.includes(requestedLocation) && externalState === 'allow') return requestedLocation
   if (supported.includes('provider')) return 'provider'
   if (requestedLocation && supported.includes(requestedLocation)) return requestedLocation
   return supported[0] ?? null
@@ -113,7 +93,6 @@ function makePlan(discovered, input) {
   const steps = discovered.map(({ id, base_url: baseUrl, capability }) => {
     const representation = selectRepresentation(capability)
     const processingLocation = selectProcessingLocation(capability, requestedLocation)
-
     if (!representation || !processingLocation) {
       return {
         provider: id,
@@ -123,27 +102,25 @@ function makePlan(discovered, input) {
       }
     }
 
-    const request = {
-      type: 'rcp.permission_request',
-      rcp_version: '0.1',
-      request_id: `request:${randomUUID()}`,
-      requester: 'user:a',
-      executor: id,
-      action: 'access',
-      resource: `${id}:${representation}:${subject}`,
-      subject,
-      purpose,
-      destination,
-      processing_location: processingLocation,
-      requested_at: requestedAt,
-    }
-
     return {
       provider: id,
       base_url: baseUrl,
       status: 'planned',
       representation,
-      request,
+      request: {
+        type: 'rcp.permission_request',
+        rcp_version: '0.1',
+        request_id: `request:${randomUUID()}`,
+        requester: 'user:a',
+        executor: id,
+        action: 'access',
+        resource: `${id}:${representation}:${subject}`,
+        subject,
+        purpose,
+        destination,
+        processing_location: processingLocation,
+        requested_at: requestedAt,
+      },
       capability_version: capability.capability_version,
       selected_from: {
         representation_state: capability.capabilities[representation],
@@ -168,13 +145,11 @@ async function evaluatePlan(plan) {
   const evaluatedAt = new Date().toISOString()
   const steps = await Promise.all(plan.steps.map(async (step) => {
     if (step.status !== 'planned') return step
-
     const decision = await postJson(`${step.base_url}/rcp/permissions/evaluate`, {
       request: step.request,
       representation: step.representation,
       satisfied_limitations: [],
     })
-
     return {
       ...step,
       status: decision.decision === 'allow' ? 'executable' : 'blocked',
@@ -205,9 +180,7 @@ function assertEnvelopeBinding(envelope, step) {
     recipient: consumerId,
   }
   for (const [field, value] of Object.entries(expected)) {
-    if (envelope[field] !== value) {
-      throw new Error(`secure envelope binding mismatch for ${field}`)
-    }
+    if (envelope[field] !== value) throw new Error(`secure envelope binding mismatch for ${field}`)
   }
   if (Date.parse(envelope.expires_at) > Date.parse(step.decision.expires_at)) {
     throw new Error('secure envelope outlives permission decision')
@@ -225,36 +198,28 @@ function assertionTypeFor(item, representation) {
 }
 
 function statementFor(item, representation, provider) {
-  if (representation === 'provider_context') {
-    return item.statement ?? `Provider-generated relationship context from ${provider}.`
-  }
+  if (representation === 'provider_context') return item.statement ?? `Provider-generated relationship context from ${provider}.`
   if (representation === 'interaction_metadata') {
     const id = item.id ?? 'unknown-interaction'
     const occurred = item.occurred_at ? ` at ${item.occurred_at}` : ''
     const duration = item.duration_seconds ? ` lasting ${item.duration_seconds} seconds` : ''
     return `Interaction ${id} occurred${occurred}${duration}.`
   }
-  if (representation === 'content') {
-    return item.text ?? `Source content from ${provider}.`
-  }
+  if (representation === 'content') return item.text ?? `Source content from ${provider}.`
   return `Relationship data from ${provider}.`
 }
 
-function normalizeProviderResult(providerResult, step, envelope, subject) {
+function normalizeProviderResult(providerResult, step, subject) {
   return providerResult.items.map((item, index) => {
     const representation = providerResult.representation
     const providerContext = representation === 'provider_context'
     const metadata = representation === 'interaction_metadata'
-    return {
+    const assertion = {
       type: 'rcp.context_assertion',
       rcp_version: '0.1',
       assertion_id: `assertion:${randomUUID()}`,
       assertion_type: assertionTypeFor(item, representation),
-      epistemic_class: providerContext
-        ? 'system_interpretation'
-        : metadata
-          ? 'extracted_fact'
-          : 'source_statement',
+      epistemic_class: providerContext ? 'system_interpretation' : metadata ? 'extracted_fact' : 'source_statement',
       statement: statementFor(item, representation, providerResult.provider),
       subjects: [step.request.requester, subject],
       provenance: {
@@ -265,13 +230,8 @@ function normalizeProviderResult(providerResult, step, envelope, subject) {
       policy_refs: step.decision.policy_versions ?? [],
       status: 'active',
       created_at: new Date().toISOString(),
-      valid_from: item.occurred_at,
     }
-  }).map((assertion) => {
-    if (assertion.valid_from === undefined) {
-      const { valid_from, ...withoutUndefined } = assertion
-      return withoutUndefined
-    }
+    if (item.occurred_at) assertion.valid_from = item.occurred_at
     return assertion
   })
 }
@@ -318,15 +278,20 @@ async function executePlan(plan) {
     }
 
     envelopes.push(envelope)
-    assertions.push(...normalizeProviderResult(providerResult, step, envelope, plan.subject))
+    assertions.push(...normalizeProviderResult(providerResult, step, plan.subject))
     steps.push({ ...step, execution_status: 'retrieved_and_verified' })
   }
+
+  const persistence = contextStore.upsertAssertions(plan.subject, assertions)
+  const brief = contextStore.brief(plan.subject)
 
   return {
     ...plan,
     steps,
     envelopes,
     assertions,
+    context_revision: persistence.revision,
+    brief,
     executed_at: executedAt,
     trace: [
       ...(plan.trace ?? []),
@@ -336,33 +301,73 @@ async function executePlan(plan) {
         protected_data_retrieved: envelopes.length > 0,
         retrieved_provider_count: envelopes.length,
         activated_assertion_count: assertions.length,
+        context_revision: persistence.revision,
       },
     ],
   }
 }
 
+async function revokeProvider(providerId) {
+  const entry = providers.find(([id]) => id === providerId)
+  if (!entry) throw new Error(`unknown provider: ${providerId}`)
+  const [, baseUrl] = entry
+  const event = await postJson(`${baseUrl}/rcp/revocations/provider`, {})
+  const impact = contextStore.applyRevocation(event)
+  return {
+    event,
+    impact,
+    contexts: impact.changed_subjects.map((subject) => contextStore.snapshot(subject)),
+  }
+}
+
 const server = http.createServer(async (req, res) => {
   try {
-    if (req.method === 'GET' && req.url === '/health') {
+    const requestUrl = new URL(req.url, 'http://127.0.0.1')
+
+    if (req.method === 'GET' && requestUrl.pathname === '/health') {
       json(res, 200, { status: 'ok', role: 'rcp-control-plane' })
       return
     }
-    if (req.method === 'GET' && req.url === '/rcp/providers') {
+    if (req.method === 'GET' && requestUrl.pathname === '/rcp/providers') {
       json(res, 200, { providers: await discover() })
       return
     }
-    if (req.method === 'POST' && req.url === '/rcp/plan') {
+    if (req.method === 'GET' && requestUrl.pathname === '/rcp/context') {
+      const subject = requestUrl.searchParams.get('subject')
+      if (!subject) {
+        json(res, 400, { error: 'subject_required' })
+        return
+      }
+      json(res, 200, contextStore.snapshot(subject))
+      return
+    }
+    if (req.method === 'GET' && requestUrl.pathname === '/rcp/brief') {
+      const subject = requestUrl.searchParams.get('subject')
+      if (!subject) {
+        json(res, 400, { error: 'subject_required' })
+        return
+      }
+      json(res, 200, contextStore.brief(subject))
+      return
+    }
+    if (req.method === 'POST' && requestUrl.pathname === '/rcp/plan') {
       json(res, 200, makePlan(await discover(), await readJsonBody(req)))
       return
     }
-    if (req.method === 'POST' && req.url === '/rcp/evaluate') {
+    if (req.method === 'POST' && requestUrl.pathname === '/rcp/evaluate') {
       json(res, 200, await evaluatePlan(await readJsonBody(req)))
       return
     }
-    if (req.method === 'POST' && req.url === '/rcp/execute') {
+    if (req.method === 'POST' && requestUrl.pathname === '/rcp/execute') {
       json(res, 200, await executePlan(await readJsonBody(req)))
       return
     }
+    if (req.method === 'POST' && requestUrl.pathname === '/rcp/revoke-provider') {
+      const body = await readJsonBody(req)
+      json(res, 200, await revokeProvider(body.provider))
+      return
+    }
+
     json(res, 404, { error: 'not_found' })
   } catch (error) {
     json(res, 502, { error: 'control_plane_failed', message: error.message })
