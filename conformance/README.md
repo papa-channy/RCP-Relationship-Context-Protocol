@@ -11,6 +11,12 @@ python -m pip install -r conformance/requirements.txt
 python conformance/run.py
 ```
 
+Content/group privacy-boundary suite:
+
+```bash
+python conformance/boundary_checks.py
+```
+
 Experimental JOSE crypto-profile suite:
 
 ```bash
@@ -18,7 +24,7 @@ npm install --prefix conformance/crypto
 npm test --prefix conformance/crypto
 ```
 
-Both suites are configured to run in GitHub Actions when `spec/**` or `conformance/**` changes.
+All suites are configured to run in GitHub Actions when `spec/**` or `conformance/**` changes.
 
 ## Current M1 coverage
 
@@ -61,6 +67,26 @@ A readable derived object does not grant source access. The suite verifies that:
 - a revoked source remains inaccessible even if the derived child remains readable;
 - source access is possible only when the source has its own valid `allow` decision and active state.
 
+### Provider representation boundaries
+
+`conformance/boundary_checks.py` verifies that provider capabilities are representation-specific:
+
+- `content = deny` blocks raw-content export even when `provider_context` or external processing is available;
+- provider-generated context can remain usable while raw content stays unavailable;
+- capability support never substitutes for a valid `allow` decision;
+- `limited` capabilities fail closed until their limitations are resolved;
+- `external_processing = deny` blocks operations that require processing outside the provider boundary even when content is otherwise readable.
+
+### Group interaction scope
+
+The boundary suite also verifies that multi-party interactions do not silently become bilateral relationship memory:
+
+- a two-party interaction can remain scoped to those two participants;
+- a group interaction `{A,B,C}` cannot become persistent `{A,B}` context merely because A and B were both present;
+- narrowing a group interaction to a bilateral relationship requires an explicit narrower evidence basis;
+- the target relationship participants must be a subset of the source interaction participants;
+- context may remain scoped to the full group without bilateral projection.
+
 ### Derived-policy inheritance
 
 The conformance oracle verifies monotonic restriction rules:
@@ -102,10 +128,9 @@ Passing this suite means the experimental profile is executable with the tested 
 
 M1 and later conformance work still need to cover:
 
-- restricted raw content is not exported,
 - explicit stale-decision signaling and refresh behavior,
-- group interactions are not silently collapsed into binary context,
 - key-discovery and key-revocation interoperability,
+- a complete interaction/provenance wire model for richer group-role semantics,
 - independent implementation against the specification without relying on the reference conformance code,
 - independent security review of the cryptographic profile.
 
