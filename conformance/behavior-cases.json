@@ -1,0 +1,61 @@
+{
+  "cases": [
+    {
+      "id": "capability-allow-is-not-permission",
+      "required_capability_state": "allow",
+      "permission_decision": null,
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": false
+    },
+    {
+      "id": "permission-unknown-fails-closed",
+      "required_capability_state": "allow",
+      "permission_decision": {
+        "decision": "unknown",
+        "expires_at": "2026-10-05T13:00:00Z"
+      },
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": false
+    },
+    {
+      "id": "permission-conditional-fails-until-reevaluated",
+      "required_capability_state": "allow",
+      "permission_decision": {
+        "decision": "conditional",
+        "expires_at": "2026-10-05T13:00:00Z"
+      },
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": false
+    },
+    {
+      "id": "expired-allow-fails-closed",
+      "required_capability_state": "allow",
+      "permission_decision": {
+        "decision": "allow",
+        "expires_at": "2026-10-05T11:59:59Z"
+      },
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": false
+    },
+    {
+      "id": "limited-capability-needs-resolution",
+      "required_capability_state": "limited",
+      "permission_decision": {
+        "decision": "allow",
+        "expires_at": "2026-10-05T13:00:00Z"
+      },
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": false
+    },
+    {
+      "id": "fresh-allow-with-supported-capability-executes",
+      "required_capability_state": "allow",
+      "permission_decision": {
+        "decision": "allow",
+        "expires_at": "2026-10-05T13:00:00Z"
+      },
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": true
+    }
+  ]
+}
