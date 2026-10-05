@@ -42,6 +42,7 @@ The useful question is not “should everyone adopt RCP?” yet. The useful ques
 ## Outreach workflow
 
 - [`OUTREACH_SEQUENCE.md`](./OUTREACH_SEQUENCE.md) defines the recommended order: implementers → security/privacy reviewers → standards/interoperability community → platform teams.
+- [`TARGET_MAP.md`](./TARGET_MAP.md) maps current public communities/projects that are relevant to each validation wave.
 - [`OUTREACH_TEMPLATES.md`](./OUTREACH_TEMPLATES.md) contains short first-contact templates for each audience.
 
 The project should advance its claims only as external evidence advances. Platform adoption outreach is intentionally later than clean-room interoperability and independent review.
