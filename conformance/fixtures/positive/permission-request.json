@@ -1,0 +1,13 @@
+{
+  "type": "rcp.permission_request",
+  "request_id": "req:meeting-prep:b:001",
+  "requester": "user:a",
+  "executor": "consumer:relationship-agent",
+  "action": "process",
+  "resource": "demo:messenger:context:b",
+  "subject": "person:b",
+  "purpose": "meeting_preparation",
+  "destination": "user:a:private-memory",
+  "processing_location": "device",
+  "requested_at": "2026-10-05T10:05:00Z"
+}
