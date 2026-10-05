@@ -17,7 +17,31 @@
   "properties": {
     "type": {"const": "rcp.context_assertion"},
     "assertion_id": {"type": "string", "minLength": 1},
-    "assertion_type": {"type": "string", "minLength": 1},
+    "assertion_type": {
+      "anyOf": [
+        {
+          "enum": [
+            "fact",
+            "source_statement",
+            "commitment",
+            "decision",
+            "preference",
+            "interest",
+            "goal",
+            "status",
+            "event",
+            "open_loop",
+            "followup",
+            "constraint",
+            "risk",
+            "organization_context",
+            "relationship_context",
+            "strategy"
+          ]
+        },
+        {"pattern": "^x-[A-Za-z0-9.-]+:[A-Za-z0-9_.-]+$"}
+      ]
+    },
     "epistemic_class": {
       "enum": [
         "source_statement",
