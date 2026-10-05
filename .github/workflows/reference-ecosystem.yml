@@ -49,3 +49,19 @@ jobs:
       - name: Run operator-blind relay integration test
         working-directory: reference-ecosystem
         run: npm run test:relay
+
+      - name: Run tenant-scoped identity resolution tests
+        working-directory: reference-ecosystem
+        run: npm run test:identity
+
+      - name: Run canonical identity-resolved reference demo
+        working-directory: reference-ecosystem
+        run: npm run demo
+
+      - name: Upload canonical demo artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rcp-canonical-demo
+          path: |
+            reference-ecosystem/out/canonical-trace.json
+            reference-ecosystem/out/canonical-brief.txt
