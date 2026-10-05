@@ -1,0 +1,13 @@
+{
+  "type": "rcp.provider_capability",
+  "provider": "demo:mail",
+  "capability_version": "0.1",
+  "capabilities": {
+    "identity": "allow",
+    "interaction_metadata": "allow",
+    "content": "allow",
+    "provider_context": "allow",
+    "external_processing": "allow"
+  },
+  "processing_locations": ["provider", "consumer", "device"]
+}
