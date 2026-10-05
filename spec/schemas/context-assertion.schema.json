@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rcp.example/spec/schemas/context-assertion.schema.json",
+  "title": "RCP ContextAssertion",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "assertion_id", "assertion_type", "epistemic_class", "statement", "provenance"],
+  "properties": {
+    "type": {"const": "rcp.context_assertion"},
+    "assertion_id": {"type": "string", "minLength": 1},
+    "assertion_type": {"type": "string", "minLength": 1},
+    "epistemic_class": {
+      "enum": ["source_statement", "verified_fact", "extracted_fact", "user_observation", "system_interpretation", "system_inference", "strategy", "unknown"]
+    },
+    "statement": {"type": "string", "minLength": 1},
+    "subjects": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "relationship": {"type": "string"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "provenance": {
+      "type": "object",
+      "required": ["origin_type"],
+      "properties": {
+        "origin_type": {"enum": ["external_provider", "user_authored", "provider_generated", "system_generated", "imported", "derived", "unknown"]},
+        "source_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "visibility": {"enum": ["full", "redacted", "type_only", "internal_only", "hidden"]}
+      }
+    },
+    "policy_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "valid_from": {"type": "string", "format": "date-time"},
+    "valid_until": {"type": "string", "format": "date-time"}
+  }
+}
