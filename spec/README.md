@@ -14,6 +14,7 @@ The JSON Schemas under [`schemas/`](./schemas/) define machine-readable structur
 
 - [`profiles/secure-envelope-binding-v0.1.md`](./profiles/secure-envelope-binding-v0.1.md) — binds an encrypted envelope to the exact action, resource, purpose, destination, processing location, decision, and authorization lifetime that produced it.
 - [`profiles/crypto-jose-v0.1.md`](./profiles/crypto-jose-v0.1.md) — defines the first concrete `SecureEnvelope` cryptographic representation using JWE (`ECDH-ES` with X25519 + `A256GCM`), detached JWS (`Ed25519`), and RFC 8785 JSON canonicalization.
+- [`profiles/context-selection-boundaries-v0.1.md`](./profiles/context-selection-boundaries-v0.1.md) — prevents capability substitution (for example raw content export when only provider context is allowed) and prevents group interactions from silently collapsing into bilateral relationship context.
 
 Profiles refine Core behavior for a specific interoperability surface. A profile does not override a stricter Core requirement.
 
@@ -41,7 +42,7 @@ The current `SecureEnvelope` schema is bound to the experimental JOSE profile id
 
 ## Status warning
 
-Core v0.1 remains incomplete. It does not yet define a transport binding, global identity system, legal/jurisdiction profile, complete policy expression language, or production key-discovery/attestation model.
+Core v0.1 remains incomplete. It does not yet define a transport binding, global identity system, legal/jurisdiction profile, complete policy expression language, complete interaction wire model, or production key-discovery/attestation model.
 
 The JOSE profile is experimental and MUST receive independent security/interoperability review before RCP can make a production-grade cryptographic interoperability claim.
 
