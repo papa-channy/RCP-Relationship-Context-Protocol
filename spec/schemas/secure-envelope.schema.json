@@ -1,11 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rcp.example/spec/schemas/secure-envelope.schema.json",
+  "$id": "urn:rcp:schema:secure-envelope:0.1",
   "title": "RCP SecureEnvelope",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "type",
+    "rcp_version",
     "envelope_id",
     "sender",
     "recipient",
@@ -19,11 +20,34 @@
   ],
   "properties": {
     "type": {"const": "rcp.secure_envelope"},
+    "rcp_version": {"const": "0.1"},
     "envelope_id": {"type": "string", "minLength": 1},
     "sender": {"type": "string", "minLength": 1},
     "recipient": {"type": "string", "minLength": 1},
     "resource_class": {"type": "string", "minLength": 1},
-    "purpose": {"type": "string", "minLength": 1},
+    "purpose": {
+      "anyOf": [
+        {
+          "enum": [
+            "relationship_memory",
+            "meeting_preparation",
+            "followup_assistance",
+            "personal_search",
+            "identity_resolution",
+            "service_security",
+            "service_operations",
+            "evaluation",
+            "model_training",
+            "advertising",
+            "employee_monitoring",
+            "credit_scoring",
+            "data_brokerage",
+            "surveillance"
+          ]
+        },
+        {"pattern": "^x-[A-Za-z0-9.-]+:[A-Za-z0-9_.-]+$"}
+      ]
+    },
     "permission_decision_ref": {"type": "string", "minLength": 1},
     "policy_refs": {
       "type": "array",
