@@ -6,11 +6,13 @@ on:
     paths:
       - "spec/**"
       - "conformance/**"
+      - "implementations/**"
       - ".github/workflows/conformance.yml"
   pull_request:
     paths:
       - "spec/**"
       - "conformance/**"
+      - "implementations/**"
       - ".github/workflows/conformance.yml"
 
 permissions:
@@ -37,6 +39,9 @@ jobs:
       - name: Run RCP content and group boundary conformance
         run: python conformance/boundary_checks.py
 
+      - name: Install independent Python probe dependencies
+        run: python -m pip install -r implementations/python-probe/requirements.txt
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -47,3 +52,14 @@ jobs:
 
       - name: Run RCP JOSE crypto profile tests
         run: npm test --prefix conformance/crypto
+
+      - name: Produce Node vector and consume it with Python probe
+        run: |
+          mkdir -p /tmp/rcp-interop
+          node conformance/crypto/interop-node-producer.mjs /tmp/rcp-interop/node-vector.json
+          PYTHONPATH=implementations/python-probe python implementations/python-probe/consume_vector.py /tmp/rcp-interop/node-vector.json
+
+      - name: Produce Python vector and consume it with Node
+        run: |
+          PYTHONPATH=implementations/python-probe python implementations/python-probe/produce_vector.py /tmp/rcp-interop/python-vector.json
+          node conformance/crypto/interop-node-consumer.mjs /tmp/rcp-interop/python-vector.json
