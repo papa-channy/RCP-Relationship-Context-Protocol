@@ -9,8 +9,11 @@
     {"id": "revocation-event-positive", "schema": "revocation-event.schema.json", "fixture": "positive/revocation-event.json", "valid": true},
 
     {"id": "identity-claim-missing-issued-at", "schema": "identity-claim.schema.json", "fixture": "negative/identity-claim-missing-issued-at.json", "valid": false},
+    {"id": "identity-claim-wrong-version", "schema": "identity-claim.schema.json", "fixture": "negative/identity-claim-wrong-version.json", "valid": false},
     {"id": "provider-capability-missing-issued-at", "schema": "provider-capability.schema.json", "fixture": "negative/provider-capability-missing-issued-at.json", "valid": false},
     {"id": "permission-request-missing-resource", "schema": "permission-request.schema.json", "fixture": "negative/permission-request-missing-resource.json", "valid": false},
+    {"id": "permission-request-unregistered-purpose", "schema": "permission-request.schema.json", "fixture": "negative/permission-request-unregistered-purpose.json", "valid": false},
+    {"id": "permission-request-unregistered-processing-location", "schema": "permission-request.schema.json", "fixture": "negative/permission-request-unregistered-processing-location.json", "valid": false},
     {"id": "permission-decision-conditional-without-conditions", "schema": "permission-decision.schema.json", "fixture": "negative/permission-decision-conditional-without-conditions.json", "valid": false},
     {"id": "context-assertion-without-scope", "schema": "context-assertion.schema.json", "fixture": "negative/context-assertion-without-scope.json", "valid": false},
     {"id": "secure-envelope-without-decision-ref", "schema": "secure-envelope.schema.json", "fixture": "negative/secure-envelope-without-decision-ref.json", "valid": false},
