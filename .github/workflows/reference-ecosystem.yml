@@ -45,3 +45,7 @@ jobs:
       - name: Run enterprise policy drift and stale-decision integration test
         working-directory: reference-ecosystem
         run: npm run test:policy
+
+      - name: Run operator-blind relay integration test
+        working-directory: reference-ecosystem
+        run: npm run test:relay
