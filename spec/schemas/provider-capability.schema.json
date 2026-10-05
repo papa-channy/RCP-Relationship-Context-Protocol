@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rcp.example/spec/schemas/provider-capability.schema.json",
+  "title": "RCP ProviderCapability",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "provider", "capability_version", "capabilities"],
+  "properties": {
+    "type": {"const": "rcp.provider_capability"},
+    "provider": {"type": "string", "minLength": 1},
+    "capability_version": {"type": "string", "minLength": 1},
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": {"enum": ["allow", "deny", "limited"]}
+    },
+    "processing_locations": {
+      "type": "array",
+      "items": {"enum": ["provider", "device", "consumer", "relay", "third_party"]},
+      "uniqueItems": true
+    },
+    "issued_at": {"type": "string", "format": "date-time"}
+  }
+}
