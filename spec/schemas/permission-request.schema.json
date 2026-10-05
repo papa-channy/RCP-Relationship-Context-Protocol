@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rcp.example/spec/schemas/permission-request.schema.json",
+  "title": "RCP PermissionRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "request_id", "requester", "executor", "action", "purpose"],
+  "properties": {
+    "type": {"const": "rcp.permission_request"},
+    "request_id": {"type": "string", "minLength": 1},
+    "requester": {"type": "string", "minLength": 1},
+    "executor": {"type": "string", "minLength": 1},
+    "action": {
+      "enum": ["discover", "access", "delegate", "transfer", "process", "derive", "store", "disclose", "act", "train"]
+    },
+    "resource": {"type": "string"},
+    "subject": {"type": "string"},
+    "purpose": {"type": "string", "minLength": 1},
+    "destination": {"type": "string"},
+    "processing_location": {"type": "string"},
+    "requested_at": {"type": "string", "format": "date-time"}
+  }
+}
