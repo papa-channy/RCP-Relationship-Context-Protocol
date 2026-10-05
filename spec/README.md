@@ -15,6 +15,8 @@ The JSON Schemas under [`schemas/`](./schemas/) define machine-readable structur
 - [`registries/capabilities.md`](./registries/capabilities.md)
 - [`registries/reason-codes.md`](./registries/reason-codes.md)
 - [`registries/assertion-types.md`](./registries/assertion-types.md)
+- [`registries/purposes.md`](./registries/purposes.md)
+- [`registries/processing-locations.md`](./registries/processing-locations.md)
 
 ## Initial schema surface
 
@@ -25,6 +27,8 @@ The JSON Schemas under [`schemas/`](./schemas/) define machine-readable structur
 - `context-assertion.schema.json`
 - `secure-envelope.schema.json`
 - `revocation-event.schema.json`
+
+All Core v0.1 wire objects carry `rcp_version: "0.1"`. A version mismatch MUST be treated as unsupported rather than silently coerced.
 
 ## Status warning
 
