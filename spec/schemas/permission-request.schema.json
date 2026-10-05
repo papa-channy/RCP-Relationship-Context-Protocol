@@ -1,12 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rcp.example/spec/schemas/permission-request.schema.json",
+  "$id": "urn:rcp:schema:permission-request:0.1",
   "title": "RCP PermissionRequest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["type", "request_id", "requester", "executor", "action", "purpose", "requested_at"],
+  "required": ["type", "rcp_version", "request_id", "requester", "executor", "action", "purpose", "requested_at"],
   "properties": {
     "type": {"const": "rcp.permission_request"},
+    "rcp_version": {"const": "0.1"},
     "request_id": {"type": "string", "minLength": 1},
     "requester": {"type": "string", "minLength": 1},
     "executor": {"type": "string", "minLength": 1},
@@ -15,9 +16,36 @@
     },
     "resource": {"type": "string", "minLength": 1},
     "subject": {"type": "string", "minLength": 1},
-    "purpose": {"type": "string", "minLength": 1},
+    "purpose": {
+      "anyOf": [
+        {
+          "enum": [
+            "relationship_memory",
+            "meeting_preparation",
+            "followup_assistance",
+            "personal_search",
+            "identity_resolution",
+            "service_security",
+            "service_operations",
+            "evaluation",
+            "model_training",
+            "advertising",
+            "employee_monitoring",
+            "credit_scoring",
+            "data_brokerage",
+            "surveillance"
+          ]
+        },
+        {"pattern": "^x-[A-Za-z0-9.-]+:[A-Za-z0-9_.-]+$"}
+      ]
+    },
     "destination": {"type": "string", "minLength": 1},
-    "processing_location": {"type": "string", "minLength": 1},
+    "processing_location": {
+      "anyOf": [
+        {"enum": ["provider", "device", "consumer", "relay", "confidential_compute", "third_party"]},
+        {"pattern": "^x-[A-Za-z0-9.-]+:[A-Za-z0-9_.-]+$"}
+      ]
+    },
     "requested_at": {"type": "string", "format": "date-time"}
   },
   "allOf": [
