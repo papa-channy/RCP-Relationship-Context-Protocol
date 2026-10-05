@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rcp.example/spec/schemas/secure-envelope.schema.json",
+  "title": "RCP SecureEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "envelope_id", "sender", "recipient", "resource_class", "purpose", "payload", "signature"],
+  "properties": {
+    "type": {"const": "rcp.secure_envelope"},
+    "envelope_id": {"type": "string", "minLength": 1},
+    "sender": {"type": "string", "minLength": 1},
+    "recipient": {"type": "string", "minLength": 1},
+    "resource_class": {"type": "string", "minLength": 1},
+    "purpose": {"type": "string", "minLength": 1},
+    "policy_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["alg", "ciphertext"],
+      "properties": {
+        "alg": {"type": "string", "minLength": 1},
+        "kid": {"type": "string"},
+        "ciphertext": {"type": "string", "minLength": 1},
+        "payload_hash": {"type": "string"}
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["alg", "value"],
+      "properties": {
+        "alg": {"type": "string", "minLength": 1},
+        "kid": {"type": "string"},
+        "value": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
