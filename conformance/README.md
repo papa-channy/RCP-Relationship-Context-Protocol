@@ -25,84 +25,52 @@ Positive fixtures cover every current Core v0.1 object:
 - `SecureEnvelope`
 - `RevocationEvent`
 
-Negative fixtures verify that implementations reject, among other cases:
-
-- unsupported `rcp_version` values,
-- identity claims without an issuance time,
-- capability manifests without an issuance time,
-- protected non-discovery permission requests without a resource,
-- unregistered or malformed purposes,
-- unregistered or malformed processing locations,
-- conditional decisions without required conditions,
-- persistent context assertions with neither subjects nor relationship scope,
-- secure envelopes that are not bound to a permission decision,
-- revocation events with an empty scope.
+Negative fixtures verify unsupported versions, malformed/missing authorization dimensions, unscoped context, unbound envelopes, and empty revocation scopes.
 
 ### Fail-closed permission behavior
 
-The bootstrap behavior suite verifies that:
-
-- provider capability `allow` is not itself permission,
-- `unknown` permission does not execute,
-- `conditional` permission does not execute before reevaluation,
-- expired `allow` decisions do not execute,
-- unresolved `limited` capability does not execute,
-- a fresh `allow` decision paired with a usable capability may execute.
+The suite verifies that capability support alone is not permission, and that `unknown`, unresolved `conditional`, expired `allow`, and unresolved `limited` capability states do not execute.
 
 ### Request → decision → envelope binding
 
-The cross-object suite verifies the experimental Secure Envelope Authorization Binding Profile:
+The cross-object suite verifies the experimental Secure Envelope Authorization Binding Profile. Action, resource, purpose, destination, processing location, request/decision references, and authorization lifetime must all remain bound to the evaluated request.
 
-- a decision must reference the exact request it evaluated,
-- an envelope must reference the exact decision it relies on,
-- the decision must be `allow`,
-- action must match the authorized request,
-- resource scope must match,
-- purpose must match,
-- destination must match,
-- processing location must match,
-- the envelope cannot predate the decision,
-- the envelope cannot outlive the decision,
-- both envelope and decision must still be unexpired at activation time.
+### Identity isolation
 
-The suite contains explicit negative cases for purpose, resource, destination, processing-location, action, decision-reference, and request-reference mismatches.
+The privacy-boundary oracle fixes only the minimum safe interoperability guarantees, not a universal identity-resolution algorithm:
+
+- identities from different tenant/user scopes MUST NOT be automatically promoted into a global cross-user identity link;
+- `probable` or `possible` identity evidence MUST NOT independently authorize automatic sensitive-context merging;
+- `conflicted` and `rejected` identity evidence cannot authorize linking;
+- explicit same-tenant user confirmation is a valid positive test case for a local link.
+
+### Provenance ancestor access
+
+A readable derived object does not grant source access. The suite verifies that:
+
+- access to a child context does not override an ancestor `deny` or `unknown` decision;
+- a revoked source remains inaccessible even if the derived child remains readable;
+- source access is possible only when the source has its own valid `allow` decision and active state.
 
 ### Derived-policy inheritance
 
-The conformance oracle verifies the Core v0.1 monotonic restriction rules for essential source policies:
+The conformance oracle verifies monotonic restriction rules:
 
-- allowed purposes are intersected,
-- allowed destinations are intersected,
-- allowed processing locations are intersected,
-- retention cannot exceed the shortest applicable parent maximum,
-- confidentiality and sensitivity resolve to the most restrictive input,
-- training remains denied if any essential source denies training,
+- allowed purposes, destinations, and processing locations are intersected;
+- retention cannot exceed the shortest applicable parent maximum;
+- confidentiality and sensitivity resolve to the most restrictive input;
+- training remains denied if any essential source denies training;
 - an empty intersection stays empty rather than being broadened by a default.
 
-These fixtures are deliberately abstract policy objects. They test normative semantics without prematurely defining a complete RCP policy-expression language.
+These fixtures use abstract policy objects so M1 can test semantics without prematurely defining a complete policy-expression language.
 
 ### Decision staleness
 
-Staleness fixtures verify that a cached `allow` decision becomes non-executable when a recorded material dependency changes, including:
-
-- provider capability version,
-- organization policy version,
-- user grant version,
-- identity-resolution version.
-
-An unchanged dependency snapshot remains executable only while the `allow` decision is otherwise valid and unexpired.
+A cached `allow` becomes non-executable when a recorded material dependency changes, including provider capability, organization policy, user grant, or identity-resolution versions.
 
 ### Revocation propagation
 
-A small derivation-graph oracle verifies that:
-
-- a revoked sole essential source invalidates dependent context,
-- invalidation propagates to descendants,
-- independent surviving support requires a fresh recomputation rather than silent retention of old lineage,
-- descendants of recompute-required objects are themselves reevaluated,
-- unrelated graph branches remain unchanged.
-
-The oracle is intentionally small; implementations are free to use any graph/storage architecture that produces equivalent externally observable behavior.
+A small derivation-graph oracle verifies that revoked essential sources invalidate descendants, independently supported context requires recomputation with fresh lineage, and unrelated graph branches remain unchanged.
 
 ## Required future cases
 
@@ -110,10 +78,8 @@ M1 and later conformance work still need to cover:
 
 - restricted raw content is not exported,
 - explicit stale-decision signaling and refresh behavior,
-- cross-tenant identity aggregation is denied by default,
 - group interactions are not silently collapsed into binary context,
 - unsupported cryptographic profiles fail closed,
-- access to a derived object does not imply access to restricted ancestors,
 - independent implementation against the specification without relying on the reference code.
 
 ## Philosophy

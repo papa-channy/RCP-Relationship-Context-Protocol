@@ -1,0 +1,69 @@
+{
+  "identity_link_cases": [
+    {
+      "id": "explicit-user-confirmation-within-tenant-may-link",
+      "left": {"tenant": "tenant:a", "verification_state": "user_confirmed"},
+      "right": {"tenant": "tenant:a", "verification_state": "user_confirmed"},
+      "sensitive_context": true,
+      "expected_link_permitted": true
+    },
+    {
+      "id": "same-identifier-across-tenants-does-not-create-global-link",
+      "left": {"tenant": "tenant:a", "verification_state": "verified"},
+      "right": {"tenant": "tenant:d", "verification_state": "verified"},
+      "sensitive_context": false,
+      "expected_link_permitted": false
+    },
+    {
+      "id": "probable-identity-cannot-auto-link-sensitive-context",
+      "left": {"tenant": "tenant:a", "verification_state": "probable"},
+      "right": {"tenant": "tenant:a", "verification_state": "provider_confirmed"},
+      "sensitive_context": true,
+      "expected_link_permitted": false
+    },
+    {
+      "id": "conflicted-identity-cannot-link",
+      "left": {"tenant": "tenant:a", "verification_state": "conflicted"},
+      "right": {"tenant": "tenant:a", "verification_state": "verified"},
+      "sensitive_context": false,
+      "expected_link_permitted": false
+    },
+    {
+      "id": "rejected-identity-cannot-link",
+      "left": {"tenant": "tenant:a", "verification_state": "rejected"},
+      "right": {"tenant": "tenant:a", "verification_state": "user_confirmed"},
+      "sensitive_context": false,
+      "expected_link_permitted": false
+    }
+  ],
+  "provenance_access_cases": [
+    {
+      "id": "child-access-does-not-grant-source-access",
+      "child_decision": "allow",
+      "ancestor_decision": "deny",
+      "ancestor_state": "active",
+      "expected_ancestor_access": false
+    },
+    {
+      "id": "independent-source-allow-permits-source-access",
+      "child_decision": "allow",
+      "ancestor_decision": "allow",
+      "ancestor_state": "active",
+      "expected_ancestor_access": true
+    },
+    {
+      "id": "revoked-source-remains-inaccessible-even-if-child-is-readable",
+      "child_decision": "allow",
+      "ancestor_decision": "allow",
+      "ancestor_state": "revoked",
+      "expected_ancestor_access": false
+    },
+    {
+      "id": "unknown-source-permission-fails-closed",
+      "child_decision": "allow",
+      "ancestor_decision": "unknown",
+      "ancestor_state": "active",
+      "expected_ancestor_access": false
+    }
+  ]
+}
