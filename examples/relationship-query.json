@@ -1,0 +1,17 @@
+{
+  "requester": "human:a",
+  "consumer": "consumer:personal-ai",
+  "relationship_subject": "human:b",
+  "purpose": "meeting_preparation",
+  "requested_context": [
+    "recent_interactions",
+    "open_commitments",
+    "recent_context",
+    "followups"
+  ],
+  "preferences": {
+    "minimum_data": true,
+    "prefer_on_device": true,
+    "raw_retention": "none"
+  }
+}
