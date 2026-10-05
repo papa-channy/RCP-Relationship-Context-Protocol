@@ -99,6 +99,7 @@ function makePlan(discovered, input) {
         base_url: baseUrl,
         status: 'unavailable',
         reason: !representation ? 'no_usable_representation' : 'no_processing_location',
+        capability_version: capability.capability_version,
       }
     }
 
@@ -242,10 +243,32 @@ async function executePlan(plan) {
   const envelopes = []
   const assertions = []
   const steps = []
+  let staleProviderCount = 0
 
   for (const step of plan.steps) {
     if (step.status !== 'executable' || step.decision?.decision !== 'allow') {
       steps.push({ ...step, execution_status: 'skipped' })
+      continue
+    }
+
+    const currentCapability = await getJson(`${step.base_url}/rcp/capabilities`)
+    const decisionBoundToPlannedCapability = step.decision.policy_versions?.includes(
+      `capability:${step.capability_version}`,
+    )
+    if (
+      currentCapability.capability_version !== step.capability_version ||
+      !decisionBoundToPlannedCapability
+    ) {
+      staleProviderCount += 1
+      steps.push({
+        ...step,
+        status: 'stale',
+        execution_status: 'stale',
+        stale_reason: currentCapability.capability_version !== step.capability_version
+          ? 'capability_version_changed'
+          : 'decision_missing_capability_binding',
+        current_capability_version: currentCapability.capability_version,
+      })
       continue
     }
 
@@ -301,6 +324,7 @@ async function executePlan(plan) {
         protected_data_retrieved: envelopes.length > 0,
         retrieved_provider_count: envelopes.length,
         activated_assertion_count: assertions.length,
+        stale_provider_count: staleProviderCount,
         context_revision: persistence.revision,
       },
     ],
