@@ -4,12 +4,21 @@ The conformance suite tests protocol-visible behavior rather than one implementa
 
 ## Run locally
 
+Schema and semantic suite:
+
 ```bash
 python -m pip install -r conformance/requirements.txt
 python conformance/run.py
 ```
 
-The same bootstrap suite is configured to run in GitHub Actions when `spec/**` or `conformance/**` changes.
+Experimental JOSE crypto-profile suite:
+
+```bash
+npm install --prefix conformance/crypto
+npm test --prefix conformance/crypto
+```
+
+Both suites are configured to run in GitHub Actions when `spec/**` or `conformance/**` changes.
 
 ## Current M1 coverage
 
@@ -72,6 +81,23 @@ A cached `allow` becomes non-executable when a recorded material dependency chan
 
 A small derivation-graph oracle verifies that revoked essential sources invalidate descendants, independently supported context requires recomputation with fresh lineage, and unrelated graph branches remain unchanged.
 
+### Experimental JOSE cryptographic profile
+
+The Node-based profile suite exercises the candidate `rcp-jose-x25519-a256gcm-ed25519-v0.1` representation with independent JOSE/JCS libraries rather than custom cryptographic primitives.
+
+It currently tests:
+
+- X25519 `ECDH-ES` + `A256GCM` JWE encrypt/decrypt round trip,
+- Ed25519 detached JWS over RFC 8785-canonicalized unsigned envelope metadata plus ciphertext representation,
+- metadata tampering rejection,
+- ciphertext tampering rejection,
+- wrong signing-key rejection,
+- wrong recipient-key rejection,
+- content-encryption algorithm substitution rejection,
+- unsupported RCP crypto-profile rejection.
+
+Passing this suite means the experimental profile is executable with the tested libraries. It does **not** constitute an independent cryptographic security review or a production-readiness claim.
+
 ## Required future cases
 
 M1 and later conformance work still need to cover:
@@ -79,8 +105,9 @@ M1 and later conformance work still need to cover:
 - restricted raw content is not exported,
 - explicit stale-decision signaling and refresh behavior,
 - group interactions are not silently collapsed into binary context,
-- unsupported cryptographic profiles fail closed,
-- independent implementation against the specification without relying on the reference code.
+- key-discovery and key-revocation interoperability,
+- independent implementation against the specification without relying on the reference conformance code,
+- independent security review of the cryptographic profile.
 
 ## Philosophy
 
