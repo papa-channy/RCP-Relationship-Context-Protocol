@@ -1,0 +1,9 @@
+{
+  "type": "rcp.permission_request",
+  "request_id": "req:invalid:no-resource",
+  "requester": "user:a",
+  "executor": "consumer:relationship-agent",
+  "action": "process",
+  "purpose": "meeting_preparation",
+  "requested_at": "2026-10-05T10:05:00Z"
+}
