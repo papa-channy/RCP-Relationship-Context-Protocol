@@ -1,0 +1,14 @@
+{
+  "type": "rcp.revocation_event",
+  "event_id": "revocation:001",
+  "revocation_type": "user_grant",
+  "scope": {
+    "scope_type": "grant",
+    "scope_id": "grant:demo-messenger:a:001"
+  },
+  "reason_code": "user_grant_revoked",
+  "reason": "User disconnected the provider from relationship memory.",
+  "issuer": "user:a",
+  "issued_at": "2026-10-05T11:00:00Z",
+  "effective_at": "2026-10-05T11:00:00Z"
+}
