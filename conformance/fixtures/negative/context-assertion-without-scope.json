@@ -1,5 +1,6 @@
 {
   "type": "rcp.context_assertion",
+  "rcp_version": "0.1",
   "assertion_id": "assertion:invalid:unscoped",
   "assertion_type": "preference",
   "epistemic_class": "system_interpretation",
