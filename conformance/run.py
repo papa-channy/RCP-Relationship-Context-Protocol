@@ -110,6 +110,68 @@ def behavior_checks() -> list[str]:
     return failures
 
 
+def envelope_is_activatable(case: dict) -> bool:
+    """Check the Core binding from request -> decision -> secure envelope."""
+
+    request = case["request"]
+    decision = case["decision"]
+    envelope = case["envelope"]
+    as_of = parse_time(case["as_of"])
+
+    if decision.get("request_id") != request.get("request_id"):
+        return False
+    if envelope.get("permission_decision_ref") != decision.get("decision_id"):
+        return False
+    if decision.get("decision") != "allow":
+        return False
+
+    decision_expiry = decision.get("expires_at")
+    envelope_expiry = envelope.get("expires_at")
+    evaluated_at = decision.get("evaluated_at")
+    issued_at = envelope.get("issued_at")
+    if not all([decision_expiry, envelope_expiry, evaluated_at, issued_at]):
+        return False
+
+    decision_expiry_dt = parse_time(decision_expiry)
+    envelope_expiry_dt = parse_time(envelope_expiry)
+    evaluated_at_dt = parse_time(evaluated_at)
+    issued_at_dt = parse_time(issued_at)
+
+    if decision_expiry_dt <= as_of or envelope_expiry_dt <= as_of:
+        return False
+    if issued_at_dt < evaluated_at_dt:
+        return False
+    if envelope_expiry_dt > decision_expiry_dt:
+        return False
+
+    bindings = {
+        "action": "action",
+        "resource": "resource_ref",
+        "purpose": "purpose",
+        "destination": "destination",
+        "processing_location": "processing_location",
+    }
+    for request_field, envelope_field in bindings.items():
+        if request.get(request_field) != envelope.get(envelope_field):
+            return False
+
+    return True
+
+
+def cross_object_checks() -> list[str]:
+    failures: list[str] = []
+    payload = load_json(CONF / "cross-object-cases.json")
+
+    for case in payload["cases"]:
+        actual = envelope_is_activatable(case)
+        if actual != case["expected_activatable"]:
+            failures.append(
+                f"cross-object:{case['id']}: expected activatable={case['expected_activatable']}, got {actual}"
+            )
+
+    return failures
+
+
 def intersect_values(parents: list[dict], key: str) -> list[str]:
     values = [set(parent[key]) for parent in parents]
     if not values:
@@ -193,19 +255,7 @@ def staleness_checks() -> list[str]:
 
 
 def propagate_revocation(case: dict) -> dict[str, str]:
-    """Apply the minimal Core v0.1 descendant impact semantics.
-
-    - the revoked source becomes `revoked`;
-    - a child losing an essential usable parent becomes invalidated unless the
-      fixture declares that child recomputable, in which case it requires
-      recomputation;
-    - a child losing one supporting parent but retaining another usable
-      supporting parent requires recomputation when recomputable, otherwise it
-      is invalidated because the conformance oracle cannot assert its basis;
-    - descendants of an invalidated/recompute-required node are themselves
-      reevaluated;
-    - unrelated branches remain unchanged.
-    """
+    """Apply the minimal Core v0.1 descendant impact semantics."""
 
     states = {node_id: node["state"] for node_id, node in case["nodes"].items()}
     children: dict[str, list[dict]] = defaultdict(list)
@@ -287,6 +337,7 @@ def main() -> int:
     failures = (
         schema_checks()
         + behavior_checks()
+        + cross_object_checks()
         + policy_inheritance_checks()
         + staleness_checks()
         + revocation_checks()
