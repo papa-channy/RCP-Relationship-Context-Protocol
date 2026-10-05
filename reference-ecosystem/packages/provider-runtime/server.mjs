@@ -30,6 +30,17 @@ async function readJsonBody(req) {
   return JSON.parse(Buffer.concat(chunks).toString('utf8'))
 }
 
+async function postJson(url, payload) {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  const body = await response.json()
+  if (!response.ok) throw new Error(`${url} failed with ${response.status}: ${JSON.stringify(body)}`)
+  return body
+}
+
 function expiresIn(minutes) {
   return new Date(Date.now() + minutes * 60_000).toISOString()
 }
@@ -145,6 +156,7 @@ export function createProviderServer({ capabilityPath, statePath, policyProfiles
   const issuedDecisions = new Map()
   const signingKid = `${baseCapability.provider}:sign:1`
   const signingMaterialPromise = createSigningKeyMaterial(signingKid)
+  const relayUrl = process.env.RCP_RELAY_URL ?? null
   let protectedReads = 0
   let providerRevoked = false
 
@@ -163,6 +175,7 @@ export function createProviderServer({ capabilityPath, statePath, policyProfiles
           revoked: providerRevoked,
           capability_version: capability.capability_version,
           active_policy_profile: activePolicyProfile,
+          relay_enabled: Boolean(relayUrl),
         })
         return
       }
@@ -333,6 +346,12 @@ export function createProviderServer({ capabilityPath, statePath, policyProfiles
             expires_at: record.decision.expires_at,
           },
         })
+
+        if (relayUrl) {
+          const receipt = await postJson(`${relayUrl}/rcp/envelopes`, envelope)
+          json(res, 202, receipt)
+          return
+        }
 
         json(res, 200, envelope)
         return
