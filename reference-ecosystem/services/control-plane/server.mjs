@@ -5,6 +5,7 @@ import {
   verifyAndDecryptSecureEnvelope,
 } from '../../packages/secure-envelope/index.mjs'
 import { RelationshipContextStore } from '../../packages/context-store/index.mjs'
+import { IdentityResolutionStore } from '../../packages/identity-resolution/index.mjs'
 
 const port = Number(process.env.PORT ?? 4190)
 const relayUrl = process.env.RCP_RELAY_URL ?? null
@@ -25,6 +26,7 @@ const ASSERTION_TYPES = new Set([
 const consumerId = 'consumer:relationship-agent'
 const recipientMaterialPromise = createRecipientKeyMaterial(`${consumerId}:enc:1`)
 const contextStore = new RelationshipContextStore()
+const identityStore = new IdentityResolutionStore()
 
 function json(res, statusCode, payload) {
   res.statusCode = statusCode
@@ -65,6 +67,16 @@ async function discover() {
   }))
 }
 
+async function resolveIdentity(input) {
+  const discovered = await discover()
+  return identityStore.resolve({
+    tenant: input.tenant ?? 'user:a',
+    person_id: input.person_id,
+    seeds: input.seeds,
+    provider_capabilities: discovered.map(({ capability }) => capability),
+  })
+}
+
 function selectRepresentation(capability) {
   for (const representation of REPRESENTATION_PREFERENCE) {
     if (capability.capabilities?.[representation] === 'allow') return representation
@@ -84,14 +96,46 @@ function selectProcessingLocation(capability, requestedLocation) {
   return supported[0] ?? null
 }
 
+function resolvePlanSubject(input) {
+  const tenant = input.tenant ?? 'user:a'
+  if (!input.identity_resolution_id) {
+    return {
+      tenant,
+      subject: input.subject ?? 'person:b',
+      resolution: null,
+    }
+  }
+
+  const resolution = identityStore.get(input.identity_resolution_id, tenant)
+  if (!resolution) throw new Error('identity_resolution_not_found_or_wrong_tenant')
+  if (resolution.status !== 'resolved') throw new Error('identity_resolution_requires_confirmation')
+
+  return {
+    tenant,
+    subject: resolution.person_id,
+    resolution,
+  }
+}
+
 function makePlan(discovered, input) {
-  const subject = input.subject ?? 'person:b'
+  const { tenant, subject, resolution } = resolvePlanSubject(input)
   const purpose = input.purpose ?? 'meeting_preparation'
   const destination = input.destination ?? 'user:a:private-memory'
   const requestedLocation = input.processing_location ?? 'device'
   const requestedAt = new Date().toISOString()
 
   const steps = discovered.map(({ id, base_url: baseUrl, capability }) => {
+    const binding = resolution?.bindings?.[id] ?? null
+    if (resolution && !binding) {
+      return {
+        provider: id,
+        base_url: baseUrl,
+        status: 'unavailable',
+        reason: 'identity_binding_missing',
+        capability_version: capability.capability_version,
+      }
+    }
+
     const representation = selectRepresentation(capability)
     const processingLocation = selectProcessingLocation(capability, requestedLocation)
     if (!representation || !processingLocation) {
@@ -104,19 +148,21 @@ function makePlan(discovered, input) {
       }
     }
 
-    return {
+    const providerSubject = binding?.provider_subject ?? subject
+    const step = {
       provider: id,
       base_url: baseUrl,
       status: 'planned',
       representation,
+      provider_subject: providerSubject,
       request: {
         type: 'rcp.permission_request',
         rcp_version: '0.1',
         request_id: `request:${randomUUID()}`,
-        requester: 'user:a',
+        requester: tenant,
         executor: id,
         action: 'access',
-        resource: `${id}:${representation}:${subject}`,
+        resource: `${id}:${representation}:${providerSubject}`,
         subject,
         purpose,
         destination,
@@ -129,18 +175,31 @@ function makePlan(discovered, input) {
         external_processing_state: capability.capabilities.external_processing,
       },
     }
+    if (binding) {
+      step.identity_claim_ref = binding.claim_id
+      step.identity_verification_state = binding.verification_state
+    }
+    return step
   })
 
-  return {
+  const plan = {
     type: 'rcp.processing_plan',
     rcp_version: '0.1',
     plan_id: `plan:${randomUUID()}`,
     goal: 'prepare_next_interaction',
+    tenant,
     subject,
     created_at: requestedAt,
     steps,
-    trace: [{ event: 'plan.created', at: requestedAt, protected_data_retrieved: false }],
+    trace: [{
+      event: 'plan.created',
+      at: requestedAt,
+      protected_data_retrieved: false,
+      identity_resolution_applied: Boolean(resolution),
+    }],
   }
+  if (resolution) plan.identity_resolution_id = resolution.resolution_id
+  return plan
 }
 
 async function evaluatePlan(plan) {
@@ -375,6 +434,17 @@ const server = http.createServer(async (req, res) => {
       json(res, 200, { providers: await discover() })
       return
     }
+    if (req.method === 'GET' && requestUrl.pathname.startsWith('/rcp/identity/resolutions/')) {
+      const resolutionId = decodeURIComponent(requestUrl.pathname.slice('/rcp/identity/resolutions/'.length))
+      const tenant = requestUrl.searchParams.get('tenant') ?? 'user:a'
+      const resolution = identityStore.get(resolutionId, tenant)
+      if (!resolution) {
+        json(res, 404, { error: 'identity_resolution_not_found' })
+        return
+      }
+      json(res, 200, resolution)
+      return
+    }
     if (req.method === 'GET' && requestUrl.pathname === '/rcp/context') {
       const subject = requestUrl.searchParams.get('subject')
       if (!subject) {
@@ -391,6 +461,10 @@ const server = http.createServer(async (req, res) => {
         return
       }
       json(res, 200, contextStore.brief(subject))
+      return
+    }
+    if (req.method === 'POST' && requestUrl.pathname === '/rcp/identity/resolve') {
+      json(res, 200, await resolveIdentity(await readJsonBody(req)))
       return
     }
     if (req.method === 'POST' && requestUrl.pathname === '/rcp/plan') {
