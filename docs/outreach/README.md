@@ -39,6 +39,13 @@ Read:
 
 The useful question is not “should everyone adopt RCP?” yet. The useful question is whether the protocol surface defines a coherent interoperability problem that existing identity, authorization, portability, and secure-envelope standards do not already solve on their own.
 
+## Outreach workflow
+
+- [`OUTREACH_SEQUENCE.md`](./OUTREACH_SEQUENCE.md) defines the recommended order: implementers → security/privacy reviewers → standards/interoperability community → platform teams.
+- [`OUTREACH_TEMPLATES.md`](./OUTREACH_TEMPLATES.md) contains short first-contact templates for each audience.
+
+The project should advance its claims only as external evidence advances. Platform adoption outreach is intentionally later than clean-room interoperability and independent review.
+
 ## Current evidence
 
 The repository currently includes:
