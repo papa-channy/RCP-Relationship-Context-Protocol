@@ -1,0 +1,8 @@
+{
+  "revision": "meeting-state-1",
+  "subject": "provider-local:b-meeting",
+  "identities": [{"type":"meeting_account","value":"b-meeting-7"}],
+  "interactions": [{"id":"video-73","occurred_at":"2026-09-28T02:00:00Z"}],
+  "raw_content": [{"id":"transcript-73","consent_required":true,"text":"Transcript content retained inside provider boundary."}],
+  "provider_context": [{"type":"event","statement":"Project X was discussed in a video meeting."}]
+}

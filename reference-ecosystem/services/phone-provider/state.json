@@ -1,0 +1,7 @@
+{
+  "revision": "phone-state-1",
+  "subject": "provider-local:b-phone",
+  "identities": [{"type":"phone","value":"+82-10-0000-0000"}],
+  "interactions": [{"id":"call-20261002","occurred_at":"2026-10-02T05:00:00Z","duration_seconds":1080}],
+  "raw_content": []
+}

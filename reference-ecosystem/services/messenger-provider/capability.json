@@ -1,0 +1,19 @@
+{
+  "type": "rcp.provider_capability",
+  "rcp_version": "0.1",
+  "provider": "demo:messenger",
+  "capability_version": "1",
+  "capabilities": {
+    "identity": "allow",
+    "interaction_metadata": "allow",
+    "content": "deny",
+    "provider_context": "allow",
+    "external_processing": "limited",
+    "secure_envelope": "allow",
+    "revocation_events": "allow",
+    "policy_events": "allow"
+  },
+  "limitation_refs": {"external_processing":["demo:messenger:policy:context-only-v1"]},
+  "processing_locations": ["provider", "device"],
+  "issued_at": "2026-10-05T00:00:00Z"
+}

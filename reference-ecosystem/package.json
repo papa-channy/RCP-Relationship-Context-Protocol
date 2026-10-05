@@ -1,0 +1,15 @@
+{
+  "name": "rcp-reference-ecosystem",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "start:mail": "node services/mail-provider/server.mjs",
+    "start:messenger": "node services/messenger-provider/server.mjs",
+    "start:enterprise": "node services/enterprise-provider/server.mjs",
+    "start:phone": "node services/phone-provider/server.mjs",
+    "start:meeting": "node services/meeting-provider/server.mjs",
+    "start:control": "node services/control-plane/server.mjs",
+    "smoke": "node tests/topology-smoke.mjs"
+  }
+}

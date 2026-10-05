@@ -1,0 +1,18 @@
+{
+  "type": "rcp.provider_capability",
+  "rcp_version": "0.1",
+  "provider": "demo:mail",
+  "capability_version": "1",
+  "capabilities": {
+    "identity": "allow",
+    "interaction_metadata": "allow",
+    "content": "allow",
+    "provider_context": "allow",
+    "external_processing": "allow",
+    "secure_envelope": "allow",
+    "revocation_events": "allow",
+    "policy_events": "allow"
+  },
+  "processing_locations": ["provider", "consumer", "device"],
+  "issued_at": "2026-10-05T00:00:00Z"
+}
