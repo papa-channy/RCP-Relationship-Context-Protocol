@@ -4,7 +4,19 @@
   "title": "RCP SecureEnvelope",
   "type": "object",
   "additionalProperties": false,
-  "required": ["type", "envelope_id", "sender", "recipient", "resource_class", "purpose", "payload", "signature"],
+  "required": [
+    "type",
+    "envelope_id",
+    "sender",
+    "recipient",
+    "resource_class",
+    "purpose",
+    "permission_decision_ref",
+    "issued_at",
+    "expires_at",
+    "payload",
+    "signature"
+  ],
   "properties": {
     "type": {"const": "rcp.secure_envelope"},
     "envelope_id": {"type": "string", "minLength": 1},
@@ -12,26 +24,34 @@
     "recipient": {"type": "string", "minLength": 1},
     "resource_class": {"type": "string", "minLength": 1},
     "purpose": {"type": "string", "minLength": 1},
-    "policy_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "permission_decision_ref": {"type": "string", "minLength": 1},
+    "policy_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "issued_at": {"type": "string", "format": "date-time"},
     "expires_at": {"type": "string", "format": "date-time"},
     "payload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["alg", "ciphertext"],
+      "required": ["profile", "alg", "kid", "ciphertext", "payload_hash"],
       "properties": {
+        "profile": {"type": "string", "minLength": 1},
         "alg": {"type": "string", "minLength": 1},
-        "kid": {"type": "string"},
+        "kid": {"type": "string", "minLength": 1},
         "ciphertext": {"type": "string", "minLength": 1},
-        "payload_hash": {"type": "string"}
+        "payload_hash": {"type": "string", "minLength": 1}
       }
     },
     "signature": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["alg", "value"],
+      "required": ["profile", "alg", "kid", "value"],
       "properties": {
+        "profile": {"type": "string", "minLength": 1},
         "alg": {"type": "string", "minLength": 1},
-        "kid": {"type": "string"},
+        "kid": {"type": "string", "minLength": 1},
         "value": {"type": "string", "minLength": 1}
       }
     }
