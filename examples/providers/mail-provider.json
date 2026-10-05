@@ -9,5 +9,6 @@
     "provider_context": "allow",
     "external_processing": "allow"
   },
-  "processing_locations": ["provider", "consumer", "device"]
+  "processing_locations": ["provider", "consumer", "device"],
+  "issued_at": "2026-10-05T00:00:00Z"
 }
