@@ -21,8 +21,15 @@ async function main() {
   const output = process.argv[2]
   if (!output) throw new Error('usage: node interop-node-producer.mjs <output.json>')
 
-  const recipient = await generateKeyPair('ECDH-ES', { crv: 'X25519' })
-  const signer = await generateKeyPair('Ed25519')
+  // These keys are exportable only because this CI vector intentionally hands
+  // the recipient private key to another language implementation for dynamic
+  // interoperability testing. The RCP profile does not require production
+  // private keys to be exportable.
+  const recipient = await generateKeyPair('ECDH-ES', {
+    crv: 'X25519',
+    extractable: true,
+  })
+  const signer = await generateKeyPair('Ed25519', { extractable: true })
 
   const recipientPrivateJwk = {
     ...(await exportJWK(recipient.privateKey)),
