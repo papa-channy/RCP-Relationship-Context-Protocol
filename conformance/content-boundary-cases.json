@@ -1,0 +1,77 @@
+{
+  "cases": [
+    {
+      "id": "content-deny-blocks-raw-export",
+      "capabilities": {
+        "content": "deny",
+        "provider_context": "allow",
+        "external_processing": "allow"
+      },
+      "requested_representation": "raw_content",
+      "permission_decision": "allow",
+      "limitations_resolved": true,
+      "expected_transferable": false
+    },
+    {
+      "id": "provider-context-remains-usable-when-content-denied",
+      "capabilities": {
+        "content": "deny",
+        "provider_context": "allow",
+        "external_processing": "limited"
+      },
+      "requested_representation": "provider_context",
+      "permission_decision": "allow",
+      "limitations_resolved": true,
+      "expected_transferable": true
+    },
+    {
+      "id": "capability-allow-does-not-replace-permission",
+      "capabilities": {
+        "content": "allow",
+        "provider_context": "allow",
+        "external_processing": "allow"
+      },
+      "requested_representation": "raw_content",
+      "permission_decision": "unknown",
+      "limitations_resolved": true,
+      "expected_transferable": false
+    },
+    {
+      "id": "limited-content-fails-until-limitations-resolved",
+      "capabilities": {
+        "content": "limited",
+        "provider_context": "allow",
+        "external_processing": "allow"
+      },
+      "requested_representation": "raw_content",
+      "permission_decision": "allow",
+      "limitations_resolved": false,
+      "expected_transferable": false
+    },
+    {
+      "id": "limited-content-can-proceed-after-limitations-resolved",
+      "capabilities": {
+        "content": "limited",
+        "provider_context": "allow",
+        "external_processing": "allow"
+      },
+      "requested_representation": "raw_content",
+      "permission_decision": "allow",
+      "limitations_resolved": true,
+      "expected_transferable": true
+    },
+    {
+      "id": "external-processing-deny-blocks-external-transfer-even-if-content-readable",
+      "capabilities": {
+        "content": "allow",
+        "provider_context": "allow",
+        "external_processing": "deny"
+      },
+      "requested_representation": "raw_content",
+      "permission_decision": "allow",
+      "limitations_resolved": true,
+      "requires_external_processing": true,
+      "expected_transferable": false
+    }
+  ]
+}

@@ -34,6 +34,9 @@ jobs:
       - name: Run RCP schema and semantic conformance
         run: python conformance/run.py
 
+      - name: Run RCP content and group boundary conformance
+        run: python conformance/boundary_checks.py
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
