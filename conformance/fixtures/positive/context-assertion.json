@@ -1,5 +1,6 @@
 {
   "type": "rcp.context_assertion",
+  "rcp_version": "0.1",
   "assertion_id": "assertion:commitment:b:001",
   "assertion_type": "commitment",
   "epistemic_class": "extracted_fact",
