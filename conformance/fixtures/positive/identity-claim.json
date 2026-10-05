@@ -1,5 +1,6 @@
 {
   "type": "rcp.identity_claim",
+  "rcp_version": "0.1",
   "claim_id": "claim:demo-mail:b-email",
   "provider": "demo:mail",
   "identity_type": "email",
