@@ -1,0 +1,41 @@
+{
+  "tenant": "user:a",
+  "person_id": "person:b",
+  "seeds": [
+    {
+      "provider": "demo:mail",
+      "provider_subject": "provider-local:b-mail",
+      "identity_type": "email",
+      "identifier": "b@example.test",
+      "verification_state": "user_confirmed"
+    },
+    {
+      "provider": "demo:messenger",
+      "provider_subject": "provider-local:b-messenger",
+      "identity_type": "messenger_id",
+      "identifier": "user_59127",
+      "verification_state": "user_confirmed"
+    },
+    {
+      "provider": "demo:enterprise",
+      "provider_subject": "provider-local:b-enterprise",
+      "identity_type": "work_email",
+      "identifier": "b@company.example",
+      "verification_state": "user_confirmed"
+    },
+    {
+      "provider": "demo:phone",
+      "provider_subject": "provider-local:b-phone",
+      "identity_type": "phone",
+      "identifier": "+82-10-0000-0000",
+      "verification_state": "user_confirmed"
+    },
+    {
+      "provider": "demo:meeting",
+      "provider_subject": "provider-local:b-meeting",
+      "identity_type": "meeting_account",
+      "identifier": "b-meeting-7",
+      "verification_state": "user_confirmed"
+    }
+  ]
+}
