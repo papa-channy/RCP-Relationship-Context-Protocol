@@ -1,0 +1,13 @@
+{
+  "type": "rcp.provider_capability",
+  "provider": "demo:meeting",
+  "capability_version": "0.1",
+  "capabilities": {
+    "identity": "allow",
+    "interaction_metadata": "allow",
+    "content": "limited",
+    "provider_context": "allow",
+    "external_processing": "limited"
+  },
+  "processing_locations": ["provider", "device"]
+}
