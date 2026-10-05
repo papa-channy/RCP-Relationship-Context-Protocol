@@ -10,6 +10,7 @@
     "start:phone": "node services/phone-provider/server.mjs",
     "start:meeting": "node services/meeting-provider/server.mjs",
     "start:control": "node services/control-plane/server.mjs",
-    "smoke": "node tests/topology-smoke.mjs"
+    "smoke": "node tests/topology-smoke.mjs",
+    "test:permission": "node tests/permission-before-retrieval.mjs"
   }
 }
