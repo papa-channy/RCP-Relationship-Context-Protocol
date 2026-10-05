@@ -1,0 +1,8 @@
+{
+  "type": "rcp.permission_decision",
+  "decision_id": "decision:invalid:conditional",
+  "request_id": "req:meeting-prep:b:001",
+  "decision": "conditional",
+  "evaluated_at": "2026-10-05T10:05:01Z",
+  "expires_at": "2026-10-05T10:10:01Z"
+}
