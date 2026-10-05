@@ -1,0 +1,12 @@
+{
+  "type": "rcp.permission_request",
+  "rcp_version": "0.1",
+  "request_id": "req:invalid:purpose",
+  "requester": "user:a",
+  "executor": "consumer:relationship-agent",
+  "action": "process",
+  "resource": "demo:mail:context:b",
+  "purpose": "meeting prep",
+  "processing_location": "device",
+  "requested_at": "2026-10-05T10:05:00Z"
+}
