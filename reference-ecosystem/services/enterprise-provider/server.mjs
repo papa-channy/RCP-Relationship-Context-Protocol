@@ -3,6 +3,7 @@ import { createProviderServer } from '../../packages/provider-runtime/server.mjs
 const provider = createProviderServer({
   capabilityPath: new URL('./capability.json', import.meta.url),
   statePath: new URL('./state.json', import.meta.url),
+  policyProfilesPath: new URL('./policy-profiles.json', import.meta.url),
   port: Number(process.env.PORT ?? 4103),
 })
 
