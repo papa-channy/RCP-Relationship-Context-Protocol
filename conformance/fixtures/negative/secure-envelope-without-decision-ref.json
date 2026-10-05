@@ -4,8 +4,12 @@
   "envelope_id": "envelope:invalid:no-decision",
   "sender": "provider:demo-mail",
   "recipient": "consumer:relationship-agent",
+  "action": "process",
+  "resource_ref": "demo:messenger:context:b",
   "resource_class": "relationship_context",
   "purpose": "meeting_preparation",
+  "destination": "user:a:private-memory",
+  "processing_location": "device",
   "issued_at": "2026-10-05T10:06:05Z",
   "expires_at": "2026-10-05T10:10:00Z",
   "payload": {

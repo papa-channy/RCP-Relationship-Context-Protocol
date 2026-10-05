@@ -10,8 +10,12 @@
     "envelope_id",
     "sender",
     "recipient",
+    "action",
+    "resource_ref",
     "resource_class",
     "purpose",
+    "destination",
+    "processing_location",
     "permission_decision_ref",
     "issued_at",
     "expires_at",
@@ -24,6 +28,10 @@
     "envelope_id": {"type": "string", "minLength": 1},
     "sender": {"type": "string", "minLength": 1},
     "recipient": {"type": "string", "minLength": 1},
+    "action": {
+      "enum": ["discover", "access", "delegate", "transfer", "process", "derive", "store", "disclose", "act", "train"]
+    },
+    "resource_ref": {"type": "string", "minLength": 1},
     "resource_class": {"type": "string", "minLength": 1},
     "purpose": {
       "anyOf": [
@@ -45,6 +53,13 @@
             "surveillance"
           ]
         },
+        {"pattern": "^x-[A-Za-z0-9.-]+:[A-Za-z0-9_.-]+$"}
+      ]
+    },
+    "destination": {"type": "string", "minLength": 1},
+    "processing_location": {
+      "anyOf": [
+        {"enum": ["provider", "device", "consumer", "relay", "confidential_compute", "third_party"]},
         {"pattern": "^x-[A-Za-z0-9.-]+:[A-Za-z0-9_.-]+$"}
       ]
     },

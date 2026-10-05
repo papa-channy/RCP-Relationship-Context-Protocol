@@ -49,6 +49,24 @@ The bootstrap behavior suite verifies that:
 - unresolved `limited` capability does not execute,
 - a fresh `allow` decision paired with a usable capability may execute.
 
+### Request → decision → envelope binding
+
+The cross-object suite verifies the experimental Secure Envelope Authorization Binding Profile:
+
+- a decision must reference the exact request it evaluated,
+- an envelope must reference the exact decision it relies on,
+- the decision must be `allow`,
+- action must match the authorized request,
+- resource scope must match,
+- purpose must match,
+- destination must match,
+- processing location must match,
+- the envelope cannot predate the decision,
+- the envelope cannot outlive the decision,
+- both envelope and decision must still be unexpired at activation time.
+
+The suite contains explicit negative cases for purpose, resource, destination, processing-location, action, decision-reference, and request-reference mismatches.
+
 ### Derived-policy inheritance
 
 The conformance oracle verifies the Core v0.1 monotonic restriction rules for essential source policies:
@@ -90,7 +108,6 @@ The oracle is intentionally small; implementations are free to use any graph/sto
 
 M1 and later conformance work still need to cover:
 
-- purpose/destination/processing-location mismatch across a `PermissionRequest`, `PermissionDecision`, and `SecureEnvelope`,
 - restricted raw content is not exported,
 - explicit stale-decision signaling and refresh behavior,
 - cross-tenant identity aggregation is denied by default,
