@@ -1,11 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rcp.example/spec/schemas/revocation-event.schema.json",
+  "$id": "urn:rcp:schema:revocation-event:0.1",
   "title": "RCP RevocationEvent",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "type",
+    "rcp_version",
     "event_id",
     "revocation_type",
     "scope",
@@ -15,6 +16,7 @@
   ],
   "properties": {
     "type": {"const": "rcp.revocation_event"},
+    "rcp_version": {"const": "0.1"},
     "event_id": {"type": "string", "minLength": 1},
     "revocation_type": {
       "enum": [
