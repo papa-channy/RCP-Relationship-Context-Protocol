@@ -1,0 +1,9 @@
+{
+  "type": "rcp.revocation_event",
+  "event_id": "revocation:invalid:empty-scope",
+  "revocation_type": "user_grant",
+  "scope": {},
+  "issuer": "user:a",
+  "issued_at": "2026-10-05T11:00:00Z",
+  "effective_at": "2026-10-05T11:00:00Z"
+}
