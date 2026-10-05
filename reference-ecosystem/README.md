@@ -9,27 +9,21 @@ This workspace demonstrates RCP as a multi-provider interoperability system with
 ```text
 mail-provider -----------┐
 messenger-provider ------┤
-enterprise-provider -----┼--> control-plane / consumer
+enterprise-provider -----┼--> control-plane / consumer --> relationship context store
 phone-provider ----------┤
 meeting-provider --------┘
 ```
 
 Each provider owns its own capability manifest, protected state file, permission-decision cache, policy state, and ephemeral signing key material. There is no shared provider database.
 
-## Current protected-data flow
+## Protected-data flow
 
 ```text
 Goal
  ↓
-POST /rcp/plan
- ↓
-ProcessingPlan + minimum representation selection
- ↓
-POST /rcp/evaluate
+ProcessingPlan
  ↓
 provider-issued PermissionDecision
- ↓
-POST /rcp/execute
  ↓
 provider validates fresh issued allow
  ↓
@@ -37,13 +31,15 @@ protected state lazy-read
  ↓
 provider_result encrypted as RCP SecureEnvelope
  ↓
-consumer discovers provider signing key
- ↓
 JWS verification + authorization-scope binding check
  ↓
 JWE decryption
  ↓
-ContextAssertion normalization + provenance activation
+ContextAssertion normalization
+ ↓
+persistent relationship context store
+ ↓
+materialized relationship brief
 ```
 
 Protected state is not read at provider startup or during planning/evaluation.
@@ -51,23 +47,26 @@ Protected state is not read at provider startup or during planning/evaluation.
 ## Provider endpoints
 
 - `GET /health`
-  - exposes only provider identity and a non-sensitive `protected_reads` test counter.
 - `GET /rcp/capabilities`
 - `GET /rcp/keys`
-  - exposes the provider's public signing JWK only.
 - `POST /rcp/permissions/evaluate`
 - `POST /rcp/retrieve`
-  - returns an RCP `SecureEnvelope`, never the plaintext provider result.
+- `POST /rcp/revocations/provider`
 
-Direct `/state` access remains unavailable.
+`POST /rcp/retrieve` returns an RCP `SecureEnvelope`, never plaintext provider data. Direct `/state` access remains unavailable.
+
+When a provider-level source revocation is issued, that provider also fails closed for existing decision reuse and future permission evaluation.
 
 ## Control-plane endpoints
 
 - `GET /health`
 - `GET /rcp/providers`
+- `GET /rcp/context?subject=...`
+- `GET /rcp/brief?subject=...`
 - `POST /rcp/plan`
 - `POST /rcp/evaluate`
 - `POST /rcp/execute`
+- `POST /rcp/revoke-provider`
 
 ## Representation selection
 
@@ -85,47 +84,54 @@ An unconditional `allow` is preferred over a higher-fidelity `limited` represent
 - phone → `interaction_metadata`
 - meeting → `provider_context`
 
-When external processing is not unconditionally allowed and provider-local processing exists, execution remains at the provider boundary.
+## Permission and envelope invariants
 
-## Provider-side authorization invariants
+Protected retrieval fails closed unless the decision was actually issued by that provider, remains `allow` and unexpired, the request and representation match the evaluated snapshot, and the capability version remains unchanged.
 
-Protected retrieval fails closed unless:
-
-- the decision ID was issued by that provider process;
-- the decision is `allow` and unexpired;
-- the capability version is unchanged;
-- the request exactly matches the evaluated snapshot;
-- the representation exactly matches the evaluated representation;
-- a recipient encryption public key is supplied.
-
-The protected state read occurs only after those checks.
-
-## SecureEnvelope activation invariants
-
-The provider encrypts the selected provider result using the experimental profile:
+The provider encrypts selected results using:
 
 `rcp-jose-x25519-a256gcm-ed25519-v0.1`
 
-The consumer activates decrypted context only after:
+The consumer activates content only after provider signing-key discovery, detached JWS verification, exact authorization-scope/lifetime binding, JWE decryption, and decrypted provider-result binding.
 
-1. provider signing-key discovery,
-2. detached JWS verification,
-3. exact match of sender/recipient/action/resource/purpose/destination/processing location/decision ID,
-4. authorization lifetime check,
-5. JWE decryption under the consumer recipient key,
-6. decrypted provider-result binding check.
+## Persistent context and recomputation
 
-Cryptographic authenticity does not replace authorization-scope validation.
+Activated assertions are stored by subject without discarding provenance. The materialized relationship brief contains only assertions whose current lifecycle status is `active`.
+
+A provider source revocation does **not** erase historical provenance. Matching assertions are transitioned to `revoked`, while unrelated assertions remain active. The relationship brief is then recomputed from the surviving active assertions.
+
+Current D2 example:
+
+```text
+before revocation
+  mail        active
+  messenger   active
+  enterprise  active
+  meeting     active
+  brief count = 4
+
+revoke demo:messenger
+
+historical store
+  mail        active
+  messenger   revoked
+  enterprise  active
+  meeting     active
+  total assertions = 4
+
+current brief
+  active assertions = 3
+```
+
+Replaying the same revocation is idempotent at the consumer materialized-state layer: an already revoked assertion is not revoked a second time or assigned a new lifecycle transition.
 
 ## ContextAssertion normalization
 
-Decrypted provider results are normalized by the consumer:
-
 - provider-generated context → `system_interpretation`, provenance `provider_generated`, visibility `redacted`;
 - interaction metadata → `extracted_fact`, assertion type `event`, visibility `type_only`;
-- raw content, if ever explicitly selected and allowed, remains a `source_statement` rather than being promoted to a verified fact.
+- raw content, if explicitly selected and allowed, remains a `source_statement`.
 
-Every activated assertion contains provider/resource source references and inherited permission-policy references.
+Every activated assertion retains provider/resource source references and inherited permission-policy references.
 
 ## Tests
 
@@ -133,19 +139,23 @@ Every activated assertion contains provider/resource source references and inher
 npm install
 npm run smoke
 npm run test:permission
+npm run test:revocation
 ```
 
-The integration test verifies:
+The test suite verifies:
 
-- zero protected reads before execution;
-- forged decision rejection;
-- request-mutation rejection;
-- unresolved conditional rejection;
-- only executable steps trigger state reads;
-- provider→consumer data travels as JOSE `SecureEnvelope` objects;
-- four canonical provider results activate as four provenance-carrying `ContextAssertion` objects;
-- raw mail/message/enterprise/transcript strings do not appear in clear execution output.
+- independent provider topology;
+- permission-before-retrieval;
+- forged/tampered/conditional decision rejection;
+- SecureEnvelope provider→consumer delivery;
+- ContextAssertion provenance activation;
+- absence of raw protected content from clear canonical output;
+- persistent context storage;
+- provider source revocation;
+- historical assertion retention with `revoked` status;
+- deterministic brief recomputation from unaffected sources;
+- rejection of old decisions and new permission requests after provider revocation.
 
 ## Next M2 slice
 
-Next, add persistent relationship-context aggregation and deterministic recomputation so source revocation can invalidate/rebuild the final relationship brief without losing provenance from unaffected providers.
+Next, implement enterprise policy drift/staleness (D3): change organization/provider policy after an `allow`, mark the cached decision stale, and demonstrate planner downgrade or exclusion instead of reusing the old authorization.

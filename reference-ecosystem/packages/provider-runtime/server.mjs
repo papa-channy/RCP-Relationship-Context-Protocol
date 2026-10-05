@@ -63,28 +63,16 @@ function evaluateRequest({ capability, request, representation, satisfiedLimitat
     typeof request?.resource !== 'string' ||
     !request.resource.startsWith(`${capability.provider}:${representation}:`)
   ) {
-    return {
-      ...base,
-      decision: 'deny',
-      reason_codes: ['x-demo:invalid-request-binding'],
-    }
+    return { ...base, decision: 'deny', reason_codes: ['x-demo:invalid-request-binding'] }
   }
 
   if (!Object.hasOwn(REPRESENTATION_FIELDS, representation)) {
-    return {
-      ...base,
-      decision: 'unknown',
-      reason_codes: ['x-demo:unknown-representation'],
-    }
+    return { ...base, decision: 'unknown', reason_codes: ['x-demo:unknown-representation'] }
   }
 
   const representationState = capability.capabilities?.[representation] ?? 'deny'
   if (representationState === 'deny') {
-    return {
-      ...base,
-      decision: 'deny',
-      reason_codes: ['x-demo:representation-denied'],
-    }
+    return { ...base, decision: 'deny', reason_codes: ['x-demo:representation-denied'] }
   }
 
   const representationLimits = limitationRefs(capability, representation)
@@ -102,25 +90,14 @@ function evaluateRequest({ capability, request, representation, satisfiedLimitat
   }
 
   const processingLocation = request.processing_location
-  if (
-    processingLocation &&
-    !capability.processing_locations.includes(processingLocation)
-  ) {
-    return {
-      ...base,
-      decision: 'deny',
-      reason_codes: ['x-demo:processing-location-denied'],
-    }
+  if (processingLocation && !capability.processing_locations.includes(processingLocation)) {
+    return { ...base, decision: 'deny', reason_codes: ['x-demo:processing-location-denied'] }
   }
 
   if (processingLocation && processingLocation !== 'provider') {
     const externalState = capability.capabilities?.external_processing ?? 'deny'
     if (externalState === 'deny') {
-      return {
-        ...base,
-        decision: 'deny',
-        reason_codes: ['x-demo:external-processing-denied'],
-      }
+      return { ...base, decision: 'deny', reason_codes: ['x-demo:external-processing-denied'] }
     }
 
     const externalLimits = limitationRefs(capability, 'external_processing')
@@ -152,6 +129,7 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
   const signingKid = `${capability.provider}:sign:1`
   const signingMaterialPromise = createSigningKeyMaterial(signingKid)
   let protectedReads = 0
+  let providerRevoked = false
 
   function readProtectedState() {
     protectedReads += 1
@@ -165,6 +143,7 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
           status: 'ok',
           provider: capability.provider,
           protected_reads: protectedReads,
+          revoked: providerRevoked,
         })
         return
       }
@@ -183,15 +162,41 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
         return
       }
 
+      if (req.method === 'POST' && req.url === '/rcp/revocations/provider') {
+        providerRevoked = true
+        const now = new Date().toISOString()
+        json(res, 200, {
+          type: 'rcp.revocation_event',
+          rcp_version: '0.1',
+          event_id: `revocation:${randomUUID()}`,
+          revocation_type: 'provider',
+          scope: {
+            scope_type: 'provider',
+            scope_id: capability.provider,
+          },
+          reason_code: 'x-demo:provider-source-revoked',
+          issuer: capability.provider,
+          issued_at: now,
+          effective_at: now,
+        })
+        return
+      }
+
       if (req.method === 'POST' && req.url === '/rcp/permissions/evaluate') {
         const body = await readJsonBody(req)
         const { request, representation, satisfied_limitations: satisfiedLimitations } = body
-        const decision = evaluateRequest({
-          capability,
-          request,
-          representation,
-          satisfiedLimitations,
-        })
+        const decision = providerRevoked
+          ? {
+              ...decisionBase(request),
+              decision: 'deny',
+              reason_codes: ['x-demo:provider-revoked'],
+            }
+          : evaluateRequest({
+              capability,
+              request,
+              representation,
+              satisfiedLimitations,
+            })
 
         issuedDecisions.set(decision.decision_id, {
           decision,
@@ -221,6 +226,7 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
         }
 
         if (
+          providerRevoked ||
           record.decision.decision !== 'allow' ||
           record.representation !== representation ||
           record.requestSnapshot !== JSON.stringify(request) ||
@@ -242,7 +248,6 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
           return
         }
 
-        // Protected state is read only after every authorization check above.
         const state = readProtectedState()
         const providerResult = {
           type: 'rcp.provider_result',
@@ -256,7 +261,6 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
         }
 
         const signingMaterial = await signingMaterialPromise
-        const issuedAt = new Date().toISOString()
         const envelope = await createSecureEnvelope({
           payload: providerResult,
           recipientPublicJwk,
@@ -276,7 +280,7 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
             processing_location: request.processing_location,
             permission_decision_ref: decisionId,
             policy_refs: record.decision.policy_versions ?? [],
-            issued_at: issuedAt,
+            issued_at: new Date().toISOString(),
             expires_at: record.decision.expires_at,
           },
         })

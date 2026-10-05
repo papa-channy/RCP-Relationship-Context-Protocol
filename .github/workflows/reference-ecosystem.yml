@@ -37,3 +37,7 @@ jobs:
       - name: Run permission-before-retrieval and SecureEnvelope integration test
         working-directory: reference-ecosystem
         run: npm run test:permission
+
+      - name: Run source revocation and brief recomputation integration test
+        working-directory: reference-ecosystem
+        run: npm run test:revocation
