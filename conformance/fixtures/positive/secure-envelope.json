@@ -1,0 +1,25 @@
+{
+  "type": "rcp.secure_envelope",
+  "envelope_id": "envelope:001",
+  "sender": "provider:demo-mail",
+  "recipient": "consumer:relationship-agent",
+  "resource_class": "relationship_context",
+  "purpose": "meeting_preparation",
+  "permission_decision_ref": "decision:meeting-prep:b:001",
+  "policy_refs": ["demo:mail:policy:relationship-memory-v1"],
+  "issued_at": "2026-10-05T10:06:05Z",
+  "expires_at": "2026-10-05T10:10:00Z",
+  "payload": {
+    "profile": "demo:rcp-envelope-profile-v0",
+    "alg": "demo-aead",
+    "kid": "demo:consumer:key:1",
+    "ciphertext": "BASE64URL_CIPHERTEXT_PLACEHOLDER",
+    "payload_hash": "sha256:placeholder"
+  },
+  "signature": {
+    "profile": "demo:rcp-signature-profile-v0",
+    "alg": "demo-signature",
+    "kid": "demo:mail:key:1",
+    "value": "BASE64URL_SIGNATURE_PLACEHOLDER"
+  }
+}
