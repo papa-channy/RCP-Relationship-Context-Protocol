@@ -1,5 +1,6 @@
 {
   "type": "rcp.permission_request",
+  "rcp_version": "0.1",
   "request_id": "req:invalid:no-resource",
   "requester": "user:a",
   "executor": "consumer:relationship-agent",
