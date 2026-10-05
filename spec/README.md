@@ -10,6 +10,12 @@ Current project status: **experimental draft, not a stable standard**.
 
 The JSON Schemas under [`schemas/`](./schemas/) define machine-readable structural constraints. If a schema is less strict than the normative prose, implementations still need to follow the prose. M1 aims to eliminate such gaps where practical.
 
+## Experimental normative profiles
+
+- [`profiles/secure-envelope-binding-v0.1.md`](./profiles/secure-envelope-binding-v0.1.md) — binds an encrypted envelope to the exact action, resource, purpose, destination, processing location, decision, and authorization lifetime that produced it.
+
+Profiles refine Core behavior for a specific interoperability surface. A profile does not override a stricter Core requirement.
+
 ## Registries
 
 - [`registries/capabilities.md`](./registries/capabilities.md)
@@ -36,4 +42,4 @@ Core v0.1 is intentionally incomplete. It does not yet define a stable cryptogra
 
 No implementation should claim production-grade RCP interoperability solely because it validates against the current schemas.
 
-Before RCP v0.1 can be called a stable protocol specification, the normative prose, schemas, registries, examples, and conformance tests must converge and receive independent implementation/security review.
+Before RCP v0.1 can be called a stable protocol specification, the normative prose, schemas, registries, examples, profiles, and conformance tests must converge and receive independent implementation/security review.
