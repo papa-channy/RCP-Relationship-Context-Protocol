@@ -72,28 +72,19 @@ def schema_checks() -> list[str]:
 
 
 def can_execute(case: dict) -> bool:
-    """Evaluate the executable-state invariants fixed by Core v0.1."""
-
     capability = case.get("required_capability_state")
     if capability in {"deny", "limited", "unknown"}:
         return False
 
     decision = case.get("permission_decision")
-    if not decision:
-        return False
-
-    if decision.get("decision") != "allow":
+    if not decision or decision.get("decision") != "allow":
         return False
 
     expires_at = decision.get("expires_at")
     if not expires_at:
         return False
 
-    as_of = parse_time(case["as_of"])
-    if parse_time(expires_at) <= as_of:
-        return False
-
-    return True
+    return parse_time(expires_at) > parse_time(case["as_of"])
 
 
 def behavior_checks() -> list[str]:
@@ -111,8 +102,6 @@ def behavior_checks() -> list[str]:
 
 
 def envelope_is_activatable(case: dict) -> bool:
-    """Check the Core binding from request -> decision -> secure envelope."""
-
     request = case["request"]
     decision = case["decision"]
     envelope = case["envelope"]
@@ -151,11 +140,10 @@ def envelope_is_activatable(case: dict) -> bool:
         "destination": "destination",
         "processing_location": "processing_location",
     }
-    for request_field, envelope_field in bindings.items():
-        if request.get(request_field) != envelope.get(envelope_field):
-            return False
-
-    return True
+    return all(
+        request.get(request_field) == envelope.get(envelope_field)
+        for request_field, envelope_field in bindings.items()
+    )
 
 
 def cross_object_checks() -> list[str]:
@@ -172,12 +160,75 @@ def cross_object_checks() -> list[str]:
     return failures
 
 
+def identity_link_permitted(case: dict) -> bool:
+    """Check only the minimum identity isolation guarantees fixed by Core v0.1.
+
+    This oracle intentionally does not define a complete identity-resolution
+    algorithm. It proves that explicit same-tenant user confirmation is a safe
+    positive fixture while known unsafe states cannot create an automatic link.
+    """
+
+    left = case["left"]
+    right = case["right"]
+
+    if left.get("tenant") != right.get("tenant"):
+        return False
+
+    blocked_states = {"conflicted", "rejected"}
+    if left.get("verification_state") in blocked_states:
+        return False
+    if right.get("verification_state") in blocked_states:
+        return False
+
+    if case.get("sensitive_context"):
+        uncertain_states = {"probable", "possible"}
+        if left.get("verification_state") in uncertain_states:
+            return False
+        if right.get("verification_state") in uncertain_states:
+            return False
+
+    return (
+        left.get("verification_state") == "user_confirmed"
+        and right.get("verification_state") == "user_confirmed"
+    )
+
+
+def ancestor_access_permitted(case: dict) -> bool:
+    """Child access never substitutes for an independent ancestor decision."""
+
+    if case.get("child_decision") != "allow":
+        return False
+    if case.get("ancestor_state") != "active":
+        return False
+    return case.get("ancestor_decision") == "allow"
+
+
+def privacy_boundary_checks() -> list[str]:
+    failures: list[str] = []
+    payload = load_json(CONF / "privacy-boundary-cases.json")
+
+    for case in payload["identity_link_cases"]:
+        actual = identity_link_permitted(case)
+        if actual != case["expected_link_permitted"]:
+            failures.append(
+                f"identity-boundary:{case['id']}: expected permitted={case['expected_link_permitted']}, got {actual}"
+            )
+
+    for case in payload["provenance_access_cases"]:
+        actual = ancestor_access_permitted(case)
+        if actual != case["expected_ancestor_access"]:
+            failures.append(
+                f"provenance-boundary:{case['id']}: expected access={case['expected_ancestor_access']}, got {actual}"
+            )
+
+    return failures
+
+
 def intersect_values(parents: list[dict], key: str) -> list[str]:
     values = [set(parent[key]) for parent in parents]
     if not values:
         return []
-    result = set.intersection(*values)
-    return sorted(result)
+    return sorted(set.intersection(*values))
 
 
 def most_restrictive(parents: list[dict], key: str, ranking: dict[str, int]) -> str:
@@ -235,8 +286,6 @@ def decision_is_fresh(case: dict) -> bool:
     if not snapshot or not current:
         return False
 
-    # Core v0.1 treats every recorded dependency in the authorization snapshot
-    # as material. Missing or changed values make the cached decision stale.
     return snapshot == current
 
 
@@ -255,8 +304,6 @@ def staleness_checks() -> list[str]:
 
 
 def propagate_revocation(case: dict) -> dict[str, str]:
-    """Apply the minimal Core v0.1 descendant impact semantics."""
-
     states = {node_id: node["state"] for node_id, node in case["nodes"].items()}
     children: dict[str, list[dict]] = defaultdict(list)
     parents: dict[str, list[dict]] = defaultdict(list)
@@ -338,6 +385,7 @@ def main() -> int:
         schema_checks()
         + behavior_checks()
         + cross_object_checks()
+        + privacy_boundary_checks()
         + policy_inheritance_checks()
         + staleness_checks()
         + revocation_checks()
