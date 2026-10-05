@@ -1,0 +1,19 @@
+{
+  "cases": [
+    {"id": "identity-claim-positive", "schema": "identity-claim.schema.json", "fixture": "positive/identity-claim.json", "valid": true},
+    {"id": "provider-capability-positive", "schema": "provider-capability.schema.json", "fixture": "positive/provider-capability.json", "valid": true},
+    {"id": "permission-request-positive", "schema": "permission-request.schema.json", "fixture": "positive/permission-request.json", "valid": true},
+    {"id": "permission-decision-positive", "schema": "permission-decision.schema.json", "fixture": "positive/permission-decision.json", "valid": true},
+    {"id": "context-assertion-positive", "schema": "context-assertion.schema.json", "fixture": "positive/context-assertion.json", "valid": true},
+    {"id": "secure-envelope-positive", "schema": "secure-envelope.schema.json", "fixture": "positive/secure-envelope.json", "valid": true},
+    {"id": "revocation-event-positive", "schema": "revocation-event.schema.json", "fixture": "positive/revocation-event.json", "valid": true},
+
+    {"id": "identity-claim-missing-issued-at", "schema": "identity-claim.schema.json", "fixture": "negative/identity-claim-missing-issued-at.json", "valid": false},
+    {"id": "provider-capability-missing-issued-at", "schema": "provider-capability.schema.json", "fixture": "negative/provider-capability-missing-issued-at.json", "valid": false},
+    {"id": "permission-request-missing-resource", "schema": "permission-request.schema.json", "fixture": "negative/permission-request-missing-resource.json", "valid": false},
+    {"id": "permission-decision-conditional-without-conditions", "schema": "permission-decision.schema.json", "fixture": "negative/permission-decision-conditional-without-conditions.json", "valid": false},
+    {"id": "context-assertion-without-scope", "schema": "context-assertion.schema.json", "fixture": "negative/context-assertion-without-scope.json", "valid": false},
+    {"id": "secure-envelope-without-decision-ref", "schema": "secure-envelope.schema.json", "fixture": "negative/secure-envelope-without-decision-ref.json", "valid": false},
+    {"id": "revocation-event-empty-scope", "schema": "revocation-event.schema.json", "fixture": "negative/revocation-event-empty-scope.json", "valid": false}
+  ]
+}
