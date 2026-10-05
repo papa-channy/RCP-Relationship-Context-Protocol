@@ -1,0 +1,8 @@
+{
+  "revision": "mail-state-1",
+  "subject": "provider-local:b-mail",
+  "identities": [{"type":"email","value":"b@example.test"}],
+  "interactions": [{"id":"mail-thread-42","occurred_at":"2026-09-12T03:00:00Z"}],
+  "raw_content": [{"id":"mail-message-123","text":"Let's revisit Project X in November."}],
+  "provider_context": [{"type":"commitment","statement":"A and B agreed to revisit Project X in November."}]
+}

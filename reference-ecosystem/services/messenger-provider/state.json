@@ -1,0 +1,8 @@
+{
+  "revision": "messenger-state-1",
+  "subject": "provider-local:b-messenger",
+  "identities": [{"type":"messenger_id","value":"user_59127"}],
+  "interactions": [{"id":"chat-88","occurred_at":"2026-09-21T08:00:00Z"}],
+  "raw_content": [{"id":"message-991","text":"I am preparing for a Japan trip."}],
+  "provider_context": [{"type":"status","statement":"B is preparing for a Japan trip."}]
+}

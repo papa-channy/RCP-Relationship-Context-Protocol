@@ -1,0 +1,19 @@
+{
+  "type": "rcp.provider_capability",
+  "rcp_version": "0.1",
+  "provider": "demo:phone",
+  "capability_version": "1",
+  "capabilities": {
+    "identity": "allow",
+    "interaction_metadata": "allow",
+    "content": "deny",
+    "provider_context": "deny",
+    "external_processing": "limited",
+    "secure_envelope": "allow",
+    "revocation_events": "allow",
+    "policy_events": "allow"
+  },
+  "limitation_refs": {"external_processing":["demo:phone:policy:metadata-only-v1"]},
+  "processing_locations": ["device", "consumer"],
+  "issued_at": "2026-10-05T00:00:00Z"
+}

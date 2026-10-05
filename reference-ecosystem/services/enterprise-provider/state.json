@@ -1,0 +1,10 @@
+{
+  "revision": "enterprise-state-1",
+  "account_context": "work_managed",
+  "organization": "demo:org-a",
+  "subject": "provider-local:b-enterprise",
+  "identities": [{"type":"work_email","value":"b@company.example"}],
+  "interactions": [{"id":"meeting-project-x","occurred_at":"2026-09-28T02:00:00Z"}],
+  "raw_content": [{"id":"enterprise-message-44","classification":"organization_confidential","text":"Internal Project X discussion."}],
+  "provider_context": [{"type":"event","statement":"A and B attended a Project X meeting."}]
+}
