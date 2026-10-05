@@ -11,7 +11,8 @@
     "start:meeting": "node services/meeting-provider/server.mjs",
     "start:control": "node services/control-plane/server.mjs",
     "smoke": "node tests/topology-smoke.mjs",
-    "test:permission": "node tests/permission-before-retrieval.mjs"
+    "test:permission": "node tests/permission-before-retrieval.mjs",
+    "test:revocation": "node tests/revocation-recompute.mjs"
   },
   "dependencies": {
     "canonicalize": "5.1.0",
