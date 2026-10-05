@@ -21,7 +21,7 @@ function start(script, env = {}) {
   return child
 }
 
-async function waitFor(url, attempts = 80) {
+async function waitFor(url, attempts = 100) {
   for (let i = 0; i < attempts; i += 1) {
     try {
       const response = await fetch(url)
@@ -50,12 +50,14 @@ async function health(port) {
 async function assertReadCounts(expected) {
   for (const [name, , port] of definitions) {
     const status = await health(port)
-    assert.equal(
-      status.protected_reads,
-      expected[name],
-      `${name} protected read count mismatch`,
-    )
+    assert.equal(status.protected_reads, expected[name], `${name} protected read count mismatch`)
   }
+}
+
+function assertionsFromProvider(assertions, provider) {
+  return assertions.filter((assertion) =>
+    assertion.provenance.source_refs.some((ref) => ref.startsWith(`${provider}:`)),
+  )
 }
 
 async function main() {
@@ -73,13 +75,7 @@ async function main() {
     })
     await waitFor(`http://127.0.0.1:${controlPort}/health`)
 
-    const zeroReads = {
-      mail: 0,
-      messenger: 0,
-      enterprise: 0,
-      phone: 0,
-      meeting: 0,
-    }
+    const zeroReads = { mail: 0, messenger: 0, enterprise: 0, phone: 0, meeting: 0 }
     await assertReadCounts(zeroReads)
 
     const forgedRequest = {
@@ -164,32 +160,66 @@ async function main() {
     const executedResponse = await post(`http://127.0.0.1:${controlPort}/rcp/execute`, evaluated)
     assert.equal(executedResponse.response.ok, true)
     const executed = executedResponse.body
-    assert.equal(executed.results.length, 4)
+    assert.equal(executed.envelopes.length, 4)
+    assert.equal(executed.assertions.length, 4)
     assert.equal(executed.trace.at(-1).protected_data_retrieved, true)
     assert.equal(executed.trace.at(-1).retrieved_provider_count, 4)
+    assert.equal(executed.trace.at(-1).activated_assertion_count, 4)
 
-    const resultMap = new Map(executed.results.map((result) => [result.provider, result]))
-    assert.equal(resultMap.get('demo:mail').representation, 'provider_context')
-    assert.equal(resultMap.get('demo:messenger').representation, 'provider_context')
-    assert.equal(resultMap.get('demo:enterprise').representation, 'interaction_metadata')
-    assert.equal(resultMap.get('demo:meeting').representation, 'provider_context')
-    assert.equal(resultMap.has('demo:phone'), false)
+    for (const envelope of executed.envelopes) {
+      assert.equal(envelope.type, 'rcp.secure_envelope')
+      assert.equal(envelope.rcp_version, '0.1')
+      assert.equal(envelope.payload.profile, 'rcp-jose-x25519-a256gcm-ed25519-v0.1')
+      assert.equal(envelope.signature.profile, 'rcp-jose-x25519-a256gcm-ed25519-v0.1')
+      assert.equal(typeof envelope.payload.jwe, 'string')
+      assert.equal(envelope.payload.jwe.split('.').length, 5)
+      assert.equal(typeof envelope.signature.signature, 'string')
+    }
 
-    const serialized = JSON.stringify(executed.results)
+    for (const assertion of executed.assertions) {
+      assert.equal(assertion.type, 'rcp.context_assertion')
+      assert.equal(assertion.rcp_version, '0.1')
+      assert.deepEqual(assertion.subjects, ['user:a', 'person:b'])
+      assert.ok(assertion.provenance.source_refs.length > 0)
+      assert.equal(assertion.status, 'active')
+    }
+
+    const mailAssertions = assertionsFromProvider(executed.assertions, 'demo:mail')
+    assert.equal(mailAssertions.length, 1)
+    assert.equal(mailAssertions[0].assertion_type, 'commitment')
+    assert.equal(mailAssertions[0].epistemic_class, 'system_interpretation')
+    assert.equal(mailAssertions[0].provenance.visibility, 'redacted')
+
+    const messengerAssertions = assertionsFromProvider(executed.assertions, 'demo:messenger')
+    assert.equal(messengerAssertions.length, 1)
+    assert.equal(messengerAssertions[0].assertion_type, 'status')
+    assert.equal(messengerAssertions[0].epistemic_class, 'system_interpretation')
+
+    const enterpriseAssertions = assertionsFromProvider(executed.assertions, 'demo:enterprise')
+    assert.equal(enterpriseAssertions.length, 1)
+    assert.equal(enterpriseAssertions[0].assertion_type, 'event')
+    assert.equal(enterpriseAssertions[0].epistemic_class, 'extracted_fact')
+    assert.equal(enterpriseAssertions[0].provenance.visibility, 'type_only')
+
+    const meetingAssertions = assertionsFromProvider(executed.assertions, 'demo:meeting')
+    assert.equal(meetingAssertions.length, 1)
+    assert.equal(meetingAssertions[0].assertion_type, 'event')
+    assert.equal(meetingAssertions[0].epistemic_class, 'system_interpretation')
+
+    assert.equal(assertionsFromProvider(executed.assertions, 'demo:phone').length, 0)
+
+    const serialized = JSON.stringify({
+      envelopes: executed.envelopes,
+      assertions: executed.assertions,
+    })
     assert.equal(serialized.includes("Let's revisit Project X in November."), false)
     assert.equal(serialized.includes('I am preparing for a Japan trip.'), false)
     assert.equal(serialized.includes('Internal Project X discussion.'), false)
     assert.equal(serialized.includes('Transcript content retained inside provider boundary.'), false)
 
-    await assertReadCounts({
-      mail: 1,
-      messenger: 1,
-      enterprise: 1,
-      phone: 0,
-      meeting: 1,
-    })
+    await assertReadCounts({ mail: 1, messenger: 1, enterprise: 1, phone: 0, meeting: 1 })
 
-    console.log('RCP permission-before-retrieval integration: PASS')
+    console.log('RCP permission + SecureEnvelope + provenance integration: PASS')
   } finally {
     for (const child of children.reverse()) child.kill('SIGTERM')
   }

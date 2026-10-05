@@ -1,5 +1,9 @@
 import http from 'node:http'
 import { randomUUID } from 'node:crypto'
+import {
+  createRecipientKeyMaterial,
+  verifyAndDecryptSecureEnvelope,
+} from '../../packages/secure-envelope/index.mjs'
 
 const port = Number(process.env.PORT ?? 4190)
 const providers = [
@@ -15,6 +19,26 @@ const REPRESENTATION_PREFERENCE = [
   'interaction_metadata',
   'content',
 ]
+const ASSERTION_TYPES = new Set([
+  'fact',
+  'source_statement',
+  'commitment',
+  'decision',
+  'preference',
+  'interest',
+  'goal',
+  'status',
+  'event',
+  'open_loop',
+  'followup',
+  'constraint',
+  'risk',
+  'organization_context',
+  'relationship_context',
+  'strategy',
+])
+const consumerId = 'consumer:relationship-agent'
+const recipientMaterialPromise = createRecipientKeyMaterial(`${consumerId}:enc:1`)
 
 function json(res, statusCode, payload) {
   res.statusCode = statusCode
@@ -27,6 +51,13 @@ async function readJsonBody(req) {
   for await (const chunk of req) chunks.push(chunk)
   if (chunks.length === 0) return {}
   return JSON.parse(Buffer.concat(chunks).toString('utf8'))
+}
+
+async function getJson(url) {
+  const response = await fetch(url)
+  const body = await response.json()
+  if (!response.ok) throw new Error(`${url} failed with ${response.status}: ${JSON.stringify(body)}`)
+  return body
 }
 
 async function postJson(url, payload) {
@@ -44,9 +75,7 @@ async function postJson(url, payload) {
 
 async function discover() {
   return Promise.all(providers.map(async ([id, baseUrl]) => {
-    const response = await fetch(`${baseUrl}/rcp/capabilities`)
-    if (!response.ok) throw new Error(`capability discovery failed for ${id}: ${response.status}`)
-    const capability = await response.json()
+    const capability = await getJson(`${baseUrl}/rcp/capabilities`)
     if (capability.provider !== id) throw new Error(`provider identity mismatch: expected ${id}`)
     return { id, base_url: baseUrl, capability }
   }))
@@ -131,13 +160,7 @@ function makePlan(discovered, input) {
     subject,
     created_at: requestedAt,
     steps,
-    trace: [
-      {
-        event: 'plan.created',
-        at: requestedAt,
-        protected_data_retrieved: false,
-      },
-    ],
+    trace: [{ event: 'plan.created', at: requestedAt, protected_data_retrieved: false }],
   }
 }
 
@@ -165,18 +188,99 @@ async function evaluatePlan(plan) {
     evaluated_at: evaluatedAt,
     trace: [
       ...(plan.trace ?? []),
-      {
-        event: 'plan.permissions_evaluated',
-        at: evaluatedAt,
-        protected_data_retrieved: false,
-      },
+      { event: 'plan.permissions_evaluated', at: evaluatedAt, protected_data_retrieved: false },
     ],
   }
 }
 
+function assertEnvelopeBinding(envelope, step) {
+  const expected = {
+    action: step.request.action,
+    resource_ref: step.request.resource,
+    purpose: step.request.purpose,
+    destination: step.request.destination,
+    processing_location: step.request.processing_location,
+    permission_decision_ref: step.decision.decision_id,
+    sender: step.provider,
+    recipient: consumerId,
+  }
+  for (const [field, value] of Object.entries(expected)) {
+    if (envelope[field] !== value) {
+      throw new Error(`secure envelope binding mismatch for ${field}`)
+    }
+  }
+  if (Date.parse(envelope.expires_at) > Date.parse(step.decision.expires_at)) {
+    throw new Error('secure envelope outlives permission decision')
+  }
+  if (Date.parse(envelope.issued_at) < Date.parse(step.decision.evaluated_at)) {
+    throw new Error('secure envelope predates permission decision')
+  }
+}
+
+function assertionTypeFor(item, representation) {
+  if (representation === 'interaction_metadata') return 'event'
+  if (representation === 'content') return 'source_statement'
+  if (ASSERTION_TYPES.has(item.type)) return item.type
+  return 'relationship_context'
+}
+
+function statementFor(item, representation, provider) {
+  if (representation === 'provider_context') {
+    return item.statement ?? `Provider-generated relationship context from ${provider}.`
+  }
+  if (representation === 'interaction_metadata') {
+    const id = item.id ?? 'unknown-interaction'
+    const occurred = item.occurred_at ? ` at ${item.occurred_at}` : ''
+    const duration = item.duration_seconds ? ` lasting ${item.duration_seconds} seconds` : ''
+    return `Interaction ${id} occurred${occurred}${duration}.`
+  }
+  if (representation === 'content') {
+    return item.text ?? `Source content from ${provider}.`
+  }
+  return `Relationship data from ${provider}.`
+}
+
+function normalizeProviderResult(providerResult, step, envelope, subject) {
+  return providerResult.items.map((item, index) => {
+    const representation = providerResult.representation
+    const providerContext = representation === 'provider_context'
+    const metadata = representation === 'interaction_metadata'
+    return {
+      type: 'rcp.context_assertion',
+      rcp_version: '0.1',
+      assertion_id: `assertion:${randomUUID()}`,
+      assertion_type: assertionTypeFor(item, representation),
+      epistemic_class: providerContext
+        ? 'system_interpretation'
+        : metadata
+          ? 'extracted_fact'
+          : 'source_statement',
+      statement: statementFor(item, representation, providerResult.provider),
+      subjects: [step.request.requester, subject],
+      provenance: {
+        origin_type: providerContext ? 'provider_generated' : 'external_provider',
+        source_refs: [`${providerResult.resource}#item:${item.id ?? index}`],
+        visibility: providerContext ? 'redacted' : metadata ? 'type_only' : 'full',
+      },
+      policy_refs: step.decision.policy_versions ?? [],
+      status: 'active',
+      created_at: new Date().toISOString(),
+      valid_from: item.occurred_at,
+    }
+  }).map((assertion) => {
+    if (assertion.valid_from === undefined) {
+      const { valid_from, ...withoutUndefined } = assertion
+      return withoutUndefined
+    }
+    return assertion
+  })
+}
+
 async function executePlan(plan) {
   const executedAt = new Date().toISOString()
-  const results = []
+  const recipientMaterial = await recipientMaterialPromise
+  const envelopes = []
+  const assertions = []
   const steps = []
 
   for (const step of plan.steps) {
@@ -185,27 +289,53 @@ async function executePlan(plan) {
       continue
     }
 
-    const result = await postJson(`${step.base_url}/rcp/retrieve`, {
+    const keySet = await getJson(`${step.base_url}/rcp/keys`)
+    const signingPublicJwk = keySet.signing_keys?.[0]
+    if (!signingPublicJwk) throw new Error(`provider signing key unavailable: ${step.provider}`)
+
+    const envelope = await postJson(`${step.base_url}/rcp/retrieve`, {
       request: step.request,
       decision_id: step.decision.decision_id,
       representation: step.representation,
+      recipient: consumerId,
+      recipient_public_jwk: recipientMaterial.publicJwk,
     })
-    results.push(result)
-    steps.push({ ...step, execution_status: 'retrieved' })
+
+    const providerResult = await verifyAndDecryptSecureEnvelope({
+      envelope,
+      signingPublicJwk,
+      recipientPrivateKey: recipientMaterial.privateKey,
+    })
+    assertEnvelopeBinding(envelope, step)
+
+    if (
+      providerResult.provider !== step.provider ||
+      providerResult.resource !== step.request.resource ||
+      providerResult.representation !== step.representation ||
+      providerResult.decision_id !== step.decision.decision_id
+    ) {
+      throw new Error(`decrypted provider result binding mismatch: ${step.provider}`)
+    }
+
+    envelopes.push(envelope)
+    assertions.push(...normalizeProviderResult(providerResult, step, envelope, plan.subject))
+    steps.push({ ...step, execution_status: 'retrieved_and_verified' })
   }
 
   return {
     ...plan,
     steps,
-    results,
+    envelopes,
+    assertions,
     executed_at: executedAt,
     trace: [
       ...(plan.trace ?? []),
       {
         event: 'plan.executed',
         at: executedAt,
-        protected_data_retrieved: results.length > 0,
-        retrieved_provider_count: results.length,
+        protected_data_retrieved: envelopes.length > 0,
+        retrieved_provider_count: envelopes.length,
+        activated_assertion_count: assertions.length,
       },
     ],
   }
@@ -217,30 +347,22 @@ const server = http.createServer(async (req, res) => {
       json(res, 200, { status: 'ok', role: 'rcp-control-plane' })
       return
     }
-
     if (req.method === 'GET' && req.url === '/rcp/providers') {
       json(res, 200, { providers: await discover() })
       return
     }
-
     if (req.method === 'POST' && req.url === '/rcp/plan') {
-      const input = await readJsonBody(req)
-      json(res, 200, makePlan(await discover(), input))
+      json(res, 200, makePlan(await discover(), await readJsonBody(req)))
       return
     }
-
     if (req.method === 'POST' && req.url === '/rcp/evaluate') {
-      const plan = await readJsonBody(req)
-      json(res, 200, await evaluatePlan(plan))
+      json(res, 200, await evaluatePlan(await readJsonBody(req)))
       return
     }
-
     if (req.method === 'POST' && req.url === '/rcp/execute') {
-      const plan = await readJsonBody(req)
-      json(res, 200, await executePlan(plan))
+      json(res, 200, await executePlan(await readJsonBody(req)))
       return
     }
-
     json(res, 404, { error: 'not_found' })
   } catch (error) {
     json(res, 502, { error: 'control_plane_failed', message: error.message })
