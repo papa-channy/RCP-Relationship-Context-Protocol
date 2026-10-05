@@ -4,7 +4,15 @@
   "title": "RCP IdentityClaim",
   "type": "object",
   "additionalProperties": false,
-  "required": ["type", "claim_id", "provider", "identity_type", "identifier", "verification_state"],
+  "required": [
+    "type",
+    "claim_id",
+    "provider",
+    "identity_type",
+    "identifier",
+    "verification_state",
+    "issued_at"
+  ],
   "properties": {
     "type": {"const": "rcp.identity_claim"},
     "claim_id": {"type": "string", "minLength": 1},
@@ -12,9 +20,23 @@
     "identity_type": {"type": "string", "minLength": 1},
     "identifier": {"type": "string", "minLength": 1},
     "verification_state": {
-      "enum": ["verified", "provider_confirmed", "user_confirmed", "probable", "possible", "conflicted", "rejected"]
+      "enum": [
+        "verified",
+        "provider_confirmed",
+        "user_confirmed",
+        "probable",
+        "possible",
+        "conflicted",
+        "rejected"
+      ]
     },
-    "subject_hint": {"type": "string"},
-    "issued_at": {"type": "string", "format": "date-time"}
+    "subject_hint": {"type": "string", "minLength": 1},
+    "evidence_refs": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "issued_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"}
   }
 }
