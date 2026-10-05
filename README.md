@@ -228,6 +228,20 @@ Use [`docs/INDEPENDENT_IMPLEMENTATION_REPORT_TEMPLATE.md`](./docs/INDEPENDENT_IM
 
 **No unrelated third-party clean-room implementation has been claimed as passing yet.** The black-box harness makes that validation externally testable; it does not substitute for the validation itself.
 
+## External validation — start here
+
+RCP is now actively looking for **independent implementation and adversarial review**, not adoption endorsements.
+
+- [External validation index](./docs/outreach/README.md)
+- [Technical brief](./docs/outreach/TECHNICAL_BRIEF.md)
+- [Clean-room Provider implementation challenge](./docs/outreach/IMPLEMENTATION_CHALLENGE.md)
+- [Security & privacy review request](./docs/outreach/SECURITY_REVIEW_REQUEST.md)
+- [Recommended outreach sequence](./docs/outreach/OUTREACH_SEQUENCE.md)
+
+If you did not participate in RCP's design and can either implement the tested Provider profile, identify an interoperability ambiguity, or produce a strong security/privacy counterexample, that evidence is more useful to the project right now than additional feature requests.
+
+Current validation milestone: [Issue #19 — first unrelated clean-room implementation](https://github.com/papa-channy/RCP-Relationship-Context-Protocol/issues/19).
+
 ## Operator-blind relay claim
 
 The reference relay demonstrates **payload blindness, not metadata anonymity**.
@@ -245,6 +259,7 @@ The relay can route a signed/encrypted `SecureEnvelope` without possessing recip
 ├── CONTRIBUTING.md
 ├── SECURITY.md
 ├── docs/
+│   ├── outreach/
 │   ├── IMPLEMENTER_GUIDE.md
 │   ├── INDEPENDENT_IMPLEMENTATION_REPORT_TEMPLATE.md
 │   ├── SECURITY_PRIVACY_REVIEW_CHECKLIST.md
