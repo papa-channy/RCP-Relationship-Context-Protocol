@@ -1,0 +1,39 @@
+{
+  "cases": [
+    {
+      "id": "two-party-interaction-may-project-to-same-relationship",
+      "interaction_participants": ["user:a", "person:b"],
+      "target_relationship_participants": ["user:a", "person:b"],
+      "bilateral_basis": false,
+      "expected_projection_permitted": true
+    },
+    {
+      "id": "group-interaction-cannot-silently-collapse-to-a-b",
+      "interaction_participants": ["user:a", "person:b", "person:c"],
+      "target_relationship_participants": ["user:a", "person:b"],
+      "bilateral_basis": false,
+      "expected_projection_permitted": false
+    },
+    {
+      "id": "group-interaction-can-support-bilateral-context-with-explicit-basis",
+      "interaction_participants": ["user:a", "person:b", "person:c"],
+      "target_relationship_participants": ["user:a", "person:b"],
+      "bilateral_basis": true,
+      "expected_projection_permitted": true
+    },
+    {
+      "id": "target-relationship-must-be-subset-of-interaction",
+      "interaction_participants": ["user:a", "person:b", "person:c"],
+      "target_relationship_participants": ["user:a", "person:d"],
+      "bilateral_basis": true,
+      "expected_projection_permitted": false
+    },
+    {
+      "id": "full-group-context-may-remain-group-scoped",
+      "interaction_participants": ["user:a", "person:b", "person:c"],
+      "target_relationship_participants": ["user:a", "person:b", "person:c"],
+      "bilateral_basis": false,
+      "expected_projection_permitted": true
+    }
+  ]
+}
