@@ -1,93 +1,170 @@
 # RCP Roadmap
 
-## M0 — Public foundation
+> RCP remains experimental. Completed milestones below mean the repository contains working reference/conformance evidence for that milestone; they do not imply production certification, external platform adoption, or standards-body endorsement.
 
-- [x] README
-- [x] Project charter
+## M0 — Public foundation ✅
+
+Completed:
+
+- [x] Public README and project charter
 - [x] Architecture draft
-- [x] Rights/threat design drafts
-- [x] Initial schemas
-- [ ] Public issue taxonomy
-- [ ] RFC template
+- [x] Threat/rights model
+- [x] Permission model
+- [x] Data-object model
+- [x] Provenance/derivation model
+- [x] Initial schemas and registries
+- [x] Public issue/RFC workspace
 
-## M1 — Normative Core v0.1
+Outcome: the project has a public problem statement, principles, protocol vocabulary, and open repository structure.
 
-Define MUST/SHOULD/MAY behavior for:
+## M1 — Experimental Normative Core v0.1 🟡
 
-- IdentityClaim
-- ProviderCapability
-- PermissionRequest / PermissionDecision
-- ContextAssertion
-- SecureEnvelope
-- RevocationEvent
+Implemented internally:
 
-Exit criterion: schemas and prose define the same semantics and all examples validate.
+- [x] `IdentityClaim`
+- [x] `ProviderCapability`
+- [x] `PermissionRequest` / `PermissionDecision`
+- [x] `ContextAssertion`
+- [x] `SecureEnvelope`
+- [x] `RevocationEvent`
+- [x] MUST/SHOULD/MAY semantics
+- [x] canonical registries/reason codes
+- [x] schema-positive and schema-negative fixtures
+- [x] capability negotiation semantics
+- [x] permission-before-retrieval semantics
+- [x] derived-policy inheritance
+- [x] revocation propagation/recomputation semantics
+- [x] request → decision → envelope authorization binding
+- [x] experimental JOSE profile
+- [x] Node ↔ Python bidirectional crypto interoperability
 
-## M2 — Reference Core
+Still required before treating M1 as strong external evidence:
 
-Implement:
+- [ ] unrelated clean-room implementation result
+- [ ] independent security/privacy review, especially JOSE/key-discovery assumptions
 
-- capability negotiation,
-- permission engine,
-- policy engine,
-- provenance graph,
-- derivation dependencies,
-- revocation impact analysis,
-- secure envelope signing/encryption.
+M1 intentionally remains open until those external validation signals exist.
 
-Exit criterion: deterministic reference scenarios pass locally.
+## M2 — Reference Ecosystem v0.1 ✅
 
-## M3 — Reference Ecosystem
+Completed executable scenarios:
 
-Implement independent mock providers:
+- [x] five separately stateful mock Providers (Mail, Messenger, Enterprise, Phone, Meeting)
+- [x] control-plane / relationship consumer
+- [x] provider capability discovery
+- [x] provider-scoped identity resolution
+- [x] minimum-data ProcessingPlan
+- [x] provider-issued PermissionDecision
+- [x] protected state lazy-read only after authorization
+- [x] JOSE `SecureEnvelope` on provider→consumer data path
+- [x] provenance-preserving `ContextAssertion` normalization
+- [x] persistent relationship context / materialized brief
+- [x] source revocation + downstream recomputation
+- [x] enterprise policy drift + stale authorization rejection
+- [x] raw-content boundary scenarios
+- [x] operator-blind payload relay
+- [x] one-command canonical demo + machine-readable trace + human-readable brief
 
-1. Mail
-2. Messenger
-3. Enterprise collaboration
-4. Phone
-5. Meeting
+Canonical entry point:
 
-Implement one relationship consumer.
+```bash
+cd reference-ecosystem
+npm install
+npm run demo
+```
 
-Exit criterion: one user/counterparty relationship can be reconstructed from heterogeneous provider permissions without violating provider policies.
+## M3 — External implementation & review readiness ✅
 
-## M4 — Rights-aware demo
+Completed:
 
-Canonical demos:
+- [x] clean-room Implementer Guide
+- [x] explicit normative-vs-reference boundary
+- [x] non-normative external Provider HTTP harness profile
+- [x] black-box Provider conformance harness
+- [x] machine-readable external conformance report
+- [x] CI self-test with Provider in a separate process
+- [x] CI guard preventing harness dependency on `reference-ecosystem`
+- [x] independent implementation report template
+- [x] security/privacy review checklist
 
-1. Multi-provider relationship recall.
-2. Provider source revocation and downstream recomputation.
-3. Organization policy change and processing downgrade.
-4. Ambiguous identity link requiring user confirmation.
-5. Provider-side context extraction with opaque provenance.
+Outcome: a third-party implementer can work from `/spec` + the Implementer Guide and test a separately running Provider without importing the reference implementation.
 
-## M5 — Conformance
+## M4 — First independent validation ← next
 
-Build provider and consumer test suites covering:
+Goal: obtain evidence from an implementation not written as part of the RCP reference implementation.
 
-- unknown permission denial,
-- raw-content restriction,
-- purpose binding,
-- policy inheritance,
-- derived-data laundering prevention,
-- revocation propagation,
-- cross-tenant isolation,
-- stale policy invalidation.
+Required work:
 
-## M6 — Independent implementation
+- [ ] recruit at least one external implementer/reviewer
+- [ ] implement a Provider or Consumer from the specification without using reference code as a library
+- [ ] run the black-box harness
+- [ ] submit an Independent Implementation Report
+- [ ] classify each failure as spec ambiguity, harness assumption, or implementation defect
+- [ ] update the Core only where independent evidence reveals an underspecified contract
 
-Give the specification to an external implementer without reference code guidance.
+Exit criterion: at least one unrelated clean-room implementation interoperates with the applicable RCP Core/profile cases and publishes reproducible evidence.
 
-Exit criterion: an independently built provider or consumer interoperates with the reference ecosystem.
+## M5 — Independent security/privacy review
 
-## M7 — Bridges and external review
+Focus areas:
 
-Only after the reference protocol is coherent:
+- [ ] JOSE profile / canonicalization / algorithm confusion
+- [ ] key discovery, authenticity, rotation, compromise, and revocation
+- [ ] authorization binding and stale decisions
+- [ ] identity isolation / cross-tenant correlation
+- [ ] provenance and derived-data laundering
+- [ ] revocation lifecycle and retained copies
+- [ ] operator-blind relay metadata leakage
+- [ ] organization-managed data boundaries
+- [ ] logs, telemetry, backups, and support tooling
 
-- build one bridge to an existing public API,
-- invite security/privacy review,
-- publish an interoperability whitepaper,
-- approach standards communities and platform interoperability teams.
+Exit criterion: findings are published or tracked, critical/high issues are resolved or explicitly deferred with rationale, and protocol-vs-implementation findings are separated.
+
+## M6 — Production-oriented trust profiles
+
+Only after independent implementation/security feedback:
+
+- [ ] normative or interoperable key-discovery profile
+- [ ] key rotation/revocation events
+- [ ] stronger replay/nonce guidance where needed
+- [ ] deployment/audit profile
+- [ ] richer interaction/provenance wire model
+- [ ] retention/deletion lifecycle guidance
+- [ ] optional jurisdiction/legal-basis profiles without embedding one jurisdiction into Core
+
+## M7 — First real platform bridge
+
+Build one bridge only where the source platform officially permits the required data access/processing.
+
+Candidate classes:
+
+- email provider with official OAuth/API access,
+- calendar/meeting provider,
+- enterprise collaboration provider,
+- OS-level interaction-event source.
+
+The bridge must preserve the same RCP principles:
+
+- capability ≠ permission;
+- permission before protected retrieval;
+- least-data representation;
+- provenance;
+- provider/org restrictions;
+- revocation/staleness;
+- no permission expansion.
+
+No bridge should rely on bypassing closed-platform access controls.
+
+## M8 — Interoperability outreach / RFC governance
+
+When independent implementation evidence exists:
+
+- [ ] publish interoperability report/whitepaper
+- [ ] invite platform interoperability/security/privacy engineers to review
+- [ ] expand the RFC process
+- [ ] define change-control/versioning expectations
+- [ ] explore neutral stewardship
+- [ ] evaluate appropriate standards communities rather than prematurely declaring a standard
 
 ## Long-term
 
@@ -95,7 +172,10 @@ If adoption emerges:
 
 - public RFC governance,
 - neutral stewardship,
-- formal conformance certification,
-- jurisdiction profiles,
+- formal conformance/certification profiles,
 - provider/consumer SDK ecosystem,
+- jurisdiction/policy extensions,
+- multiple independent implementations,
 - standards-body engagement.
+
+The long-term success criterion is not that RCP traffic passes through infrastructure operated by the original project. It is that independent systems can implement the protocol and preserve the same rights boundaries without depending on a central RCP operator.

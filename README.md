@@ -1,6 +1,6 @@
 # RCP — Relationship Context Protocol
 
-> **Experimental draft. RCP is not yet a standard.**
+> **Experimental protocol. RCP is not yet a standard and is not production-certified.**
 
 **RCP is an open protocol for exchanging relationship context across platforms while preserving the rights, policies, provenance, and privacy boundaries attached to the underlying data.**
 
@@ -8,7 +8,7 @@ People maintain relationships across many independent systems: email, messaging,
 
 RCP explores a common interoperability layer for that problem.
 
-RCP is **not** a central relationship database and **not** a protocol for bypassing platform permissions. Its goal is to let cooperating providers exchange the minimum relationship context a user is allowed to use, under explicit machine-readable policy, without requiring the RCP infrastructure operator to read the underlying payload.
+RCP is **not** a central relationship database and **not** a protocol for bypassing platform permissions. Its goal is to let cooperating providers exchange the minimum relationship context a user is allowed to use, under explicit machine-readable policy, without requiring an RCP infrastructure operator to read the protected payload.
 
 ## Why RCP?
 
@@ -28,11 +28,11 @@ A single relationship may be distributed like this:
                      Human A
 ```
 
-A personal AI that helps A prepare for a meeting with B should not need unrestricted access to every underlying service. A provider may permit only metadata, another may provide a provider-generated context assertion, and an enterprise system may prohibit external processing entirely.
+A personal AI that helps A prepare for a meeting with B should not need unrestricted access to every underlying service. A provider may permit only interaction metadata, another may expose provider-generated context, and an enterprise system may prohibit external processing entirely.
 
-RCP attempts to make those differences interoperable.
+RCP makes those differences explicit and interoperable.
 
-## Core idea
+## Core model
 
 RCP separates three concerns:
 
@@ -46,30 +46,31 @@ RCP separates three concerns:
 ┌──────────────────────────────────────────────────────────┐
 │                  RCP SECURE DATA PLANE                   │
 │       Provider → encrypted context → Consumer            │
-│       RCP infrastructure need not decrypt payload        │
+│        intermediary need not decrypt payload             │
 └────────────────────────────┬─────────────────────────────┘
                              │
                              ▼
 ┌──────────────────────────────────────────────────────────┐
 │                     RCP TRUST PLANE                      │
-│ Signature · Provenance · Audit · Attestation · Metering  │
+│ Signature · Provenance · Audit · Policy dependencies     │
 └──────────────────────────────────────────────────────────┘
 ```
 
-The control plane knows **what may happen**.  
+The control plane decides **what may happen**.  
 The data plane moves **what is allowed to move**.  
-The trust plane proves **how it happened**.
+The trust plane preserves **why the result can be trusted and where it came from**.
 
 ## Example
 
-Assume A communicates with B through four RCP-aware providers:
+Assume A communicates with B through several RCP-aware providers:
 
 | Provider profile | Identity | Interaction metadata | Raw content | Provider context | External processing |
 | --- | --- | --- | --- | --- | --- |
 | Mail-like | allow | allow | allow | allow | allow |
 | Messenger-like | allow | allow | deny | allow | limited |
 | Enterprise-like | allow | allow | deny | limited | organization policy |
-| Phone-like | allow | allow | deny | none | metadata only |
+| Phone-like | allow | allow | deny | deny | metadata only |
+| Meeting-like | limited | allow | limited | allow | allow |
 
 A asks:
 
@@ -77,13 +78,15 @@ A asks:
 
 An RCP consumer can:
 
-1. resolve provider-specific identities for B,
+1. resolve provider-specific identities for B within the user's scope,
 2. discover each provider's capabilities,
-3. build a minimum-data processing plan,
-4. evaluate permissions and policies before retrieval,
-5. obtain only the allowed context,
-6. preserve provenance and restrictions on derived context,
-7. recompute or invalidate downstream context when a source is revoked.
+3. build a minimum-data processing plan **before retrieval**,
+4. evaluate permissions and policy dependencies,
+5. select only an allowed representation,
+6. receive protected context in a signed/encrypted `SecureEnvelope`,
+7. preserve provenance when activating `ContextAssertion` objects,
+8. recompute downstream relationship context when a source is revoked,
+9. invalidate stale authorization when provider/organization policy changes.
 
 The protocol does **not** turn `A can view this` into `RCP may freely copy, retain, derive, disclose, or train on this`.
 
@@ -96,13 +99,14 @@ RCP starts from a small set of non-negotiable rules:
 - Delegation **MUST NOT** imply processing.
 - Processing **MUST NOT** imply retention or derivation.
 - Retention **MUST NOT** imply disclosure.
-- Provider capability **MUST NOT** be treated as legal permission.
+- Provider capability **MUST NOT** be treated as permission.
 - Transformation **MUST NOT** erase source restrictions.
 - Persistent derived context **MUST** retain provenance.
 - Unknown permission **MUST NOT** execute.
+- Stale authorization **MUST NOT** execute.
 - Cross-user counterparty profiling is denied by default.
-- RCP infrastructure **SHOULD NOT** require custody of relationship content.
-- RCP infrastructure **SHOULD** be deployable so the operator cannot decrypt relationship payloads.
+- RCP infrastructure **SHOULD NOT** require custody of plaintext relationship content.
+- RCP infrastructure **SHOULD** be deployable so an intermediary cannot decrypt protected relationship payloads.
 
 See [CHARTER.md](./CHARTER.md) for the project principles.
 
@@ -120,9 +124,9 @@ RCP is not:
 
 The protocol is intended to be **vendor-neutral and freely implementable**.
 
-## Initial protocol surface
+## Experimental Core v0.1 surface
 
-The first experimental protocol surface is intentionally small:
+The current Core surface is intentionally small:
 
 1. `IdentityClaim`
 2. `ProviderCapability`
@@ -131,7 +135,104 @@ The first experimental protocol surface is intentionally small:
 5. `SecureEnvelope`
 6. `RevocationEvent`
 
-Draft JSON Schemas live in [`spec/schemas`](./spec/schemas/).
+Normative experimental semantics live in [`spec/core-v0.1.md`](./spec/core-v0.1.md), with schemas under [`spec/schemas`](./spec/schemas/) and profiles/registries under [`spec`](./spec/).
+
+The current JOSE profile uses:
+
+- X25519 + `ECDH-ES`,
+- `A256GCM`,
+- Ed25519 detached JWS,
+- RFC 8785 JSON canonicalization.
+
+This profile is **experimentally interoperable in the repository tests**, not independently security-certified.
+
+## Run the end-to-end reference demo
+
+The repository contains five independently stateful mock Providers, a control-plane/consumer, an operator-blind relay, tenant-scoped identity resolution, permission-before-retrieval enforcement, encrypted data exchange, persistent relationship context, revocation/recomputation, and policy-drift scenarios.
+
+```bash
+cd reference-ecosystem
+npm install
+npm run demo
+```
+
+The canonical demo produces:
+
+```text
+reference-ecosystem/out/canonical-trace.json
+reference-ecosystem/out/canonical-brief.txt
+```
+
+The flow is:
+
+```text
+provider-scoped identity claims
+        ↓
+ProcessingPlan
+        ↓
+provider-issued PermissionDecision
+        ↓
+execution-time capability revalidation
+        ↓
+protected state lazy-read
+        ↓
+JOSE SecureEnvelope
+        ↓
+operator-blind relay (optional transport)
+        ↓
+consumer verification + decryption
+        ↓
+ContextAssertion + provenance
+        ↓
+relationship context store / brief
+```
+
+See [`reference-ecosystem/README.md`](./reference-ecosystem/README.md).
+
+## Conformance and interoperability evidence
+
+Current repository evidence includes:
+
+- schema-positive and schema-negative fixtures;
+- fail-closed permission semantics;
+- capability/representation boundary tests;
+- identity tenant-isolation tests;
+- provenance ancestor-access separation;
+- derived-policy inheritance;
+- revocation propagation;
+- stale-decision behavior;
+- JOSE tamper/wrong-key/algorithm-substitution tests;
+- **Node ↔ Python bidirectional SecureEnvelope interoperability**;
+- an external black-box Provider harness that does not import the reference implementation;
+- CI self-test of that harness against a separately running Provider process.
+
+Run the existing suites from [`conformance/README.md`](./conformance/README.md).
+
+### Test an independently implemented Provider
+
+Read [`docs/IMPLEMENTER_GUIDE.md`](./docs/IMPLEMENTER_GUIDE.md) and the non-normative [`conformance/external/provider-harness-profile-v0.1.md`](./conformance/external/provider-harness-profile-v0.1.md), then run:
+
+```bash
+npm install --prefix conformance/external
+
+RCP_PROVIDER_URL=http://127.0.0.1:9001 \
+RCP_TEST_PROVIDER_SUBJECT=provider-local:test-subject \
+RCP_IMPLEMENTATION_NAME=my-provider \
+RCP_IMPLEMENTATION_VERSION=0.1.0 \
+RCP_IMPLEMENTATION_LANGUAGE=rust \
+RCP_CONFORMANCE_REPORT=./provider-report.json \
+npm run provider --prefix conformance/external
+```
+
+Use [`docs/INDEPENDENT_IMPLEMENTATION_REPORT_TEMPLATE.md`](./docs/INDEPENDENT_IMPLEMENTATION_REPORT_TEMPLATE.md) to report results.
+
+**No unrelated third-party clean-room implementation has been claimed as passing yet.** The black-box harness makes that validation externally testable; it does not substitute for the validation itself.
+
+## Operator-blind relay claim
+
+The reference relay demonstrates **payload blindness, not metadata anonymity**.
+
+The relay can route a signed/encrypted `SecureEnvelope` without possessing recipient private keys. It may still observe protocol-visible envelope metadata. The demo minimizes the relay's persistent audit and removes transient ciphertext after one-time delivery, but RCP does not currently claim unlinkable or metadata-private routing.
 
 ## Repository layout
 
@@ -144,68 +245,71 @@ Draft JSON Schemas live in [`spec/schemas`](./spec/schemas/).
 ├── CONTRIBUTING.md
 ├── SECURITY.md
 ├── docs/
+│   ├── IMPLEMENTER_GUIDE.md
+│   ├── INDEPENDENT_IMPLEMENTATION_REPORT_TEMPLATE.md
+│   ├── SECURITY_PRIVACY_REVIEW_CHECKLIST.md
 │   ├── threat-and-rights-model.md
 │   ├── rights-and-permission-model.md
 │   ├── data-object-model.md
-│   ├── provenance-and-derivation-model.md
-│   └── glossary.md
+│   └── provenance-and-derivation-model.md
 ├── spec/
-│   ├── README.md
+│   ├── core-v0.1.md
+│   ├── profiles/
+│   ├── registries/
 │   └── schemas/
+├── conformance/
+│   ├── external/
+│   ├── crypto/
+│   └── fixtures/
+├── implementations/
+│   └── python-probe/
+├── reference-ecosystem/
+│   ├── packages/
+│   ├── services/
+│   ├── scenarios/
+│   └── tests/
 ├── examples/
-│   ├── relationship-query.json
-│   └── providers/
-├── reference/
-│   └── README.md
-└── conformance/
-    └── README.md
+└── rfcs/
 ```
-
-## Reference ecosystem goal
-
-The first meaningful milestone is **RCP Reference Ecosystem v0.1**, not integration with a specific commercial platform.
-
-The reference ecosystem will simulate multiple independent providers with intentionally different capability and policy profiles:
-
-```text
-Mail Provider ─────┐
-Messenger Provider ├──→ RCP Core ───→ Relationship Consumer
-Enterprise Provider├──→           ───→ Personal AI Adapter
-Phone Provider ────┤
-Meeting Provider ──┘
-```
-
-Each provider should have its own data store, policy state, capability manifest, and keys. The demo should show successful context exchange, policy downgrade, source revocation, and downstream recomputation.
 
 ## Project status
 
-**Stage:** pre-spec / reference architecture  
+**Stage:** experimental Core + executable reference ecosystem + external-validation readiness  
 **Stability:** experimental  
 **Production use:** not recommended  
-**Interoperability claims:** none yet
+**Reference ecosystem:** implemented and CI-verified  
+**Internal cross-language interoperability:** demonstrated (Node ↔ Python)  
+**External black-box validation surface:** implemented  
+**Independent third-party interoperability claim:** not yet established  
+**Independent security/privacy review:** not yet completed
 
-The current documents are design drafts. They should be treated as hypotheses to challenge, not settled standards.
+The protocol documents remain drafts that should be challenged. Passing current tests does not imply legal compliance, formal verification, cryptographic proof, or production security.
 
 ## Roadmap
 
-Near-term milestones:
+Completed engineering milestones include:
 
-- [x] Project charter
-- [x] Initial rights and threat model
-- [x] Initial permission model
-- [x] Initial data object model
-- [x] Initial provenance/derivation model
-- [x] Draft minimal JSON schemas
-- [ ] Normative Core Specification v0.1
-- [ ] Reference RCP Core
-- [ ] Five independent mock providers
-- [ ] Secure envelope implementation
-- [ ] Relationship consumer demo
-- [ ] Revocation propagation demo
-- [ ] Organization policy-change demo
-- [ ] Conformance suite
-- [ ] Independent third-party provider implementation
-- [ ] External security/privacy review
+- [x] Public foundation and project charter
+- [x] Rights/threat, permission, data-object, and provenance models
+- [x] Experimental Core v0.1 + machine-readable schemas/registries
+- [x] Schema/semantic/privacy-boundary conformance suite
+- [x] JOSE SecureEnvelope profile + tamper/negative tests
+- [x] Node ↔ Python bidirectional crypto interoperability
+- [x] Five-provider reference ecosystem
+- [x] Permission-before-retrieval flow
+- [x] Relationship ContextAssertion persistence + provenance
+- [x] Source revocation + downstream recomputation
+- [x] Enterprise policy drift + stale decision enforcement
+- [x] Operator-blind payload relay
+- [x] Provider-scoped identity resolution
+- [x] One-command canonical demo
+- [x] Clean-room implementer guide and external Provider harness
+- [x] Independent implementation report template and security/privacy review checklist
+- [ ] First unrelated clean-room Provider/Consumer implementation
+- [ ] Independent security/privacy review
+- [ ] Production-grade key discovery/rotation/revocation profile
+- [ ] First real public-platform bridge
+- [ ] Standards-community / platform interoperability outreach
 
 See [ROADMAP.md](./ROADMAP.md).
 
@@ -217,23 +321,28 @@ There is no requirement that RCP traffic pass through infrastructure operated by
 
 ## Contributing
 
-The most useful contributions at this stage are adversarial:
+The most useful contributions now are independent and adversarial:
 
-- identify a rights conflict the model cannot express,
-- produce a counterexample to a permission invariant,
-- demonstrate an ambiguous identity merge,
-- show a revocation case that cannot be propagated correctly,
-- implement the draft schema independently and report where it is underspecified.
+- implement an RCP Provider or Consumer **without using the reference implementation as a library**;
+- run the external black-box harness and report ambiguities;
+- identify a rights conflict the model cannot express;
+- produce a counterexample to a permission invariant;
+- demonstrate an ambiguous or unsafe identity merge;
+- show a revocation/policy-drift case that is not handled correctly;
+- review the JOSE/key-discovery assumptions;
+- review privacy leakage through relay-visible metadata or provenance.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## Security
+## Security and privacy review
 
 Relationship metadata and provenance can be sensitive even when payloads are encrypted. Security reports should follow [SECURITY.md](./SECURITY.md).
 
+Reviewers can use [`docs/SECURITY_PRIVACY_REVIEW_CHECKLIST.md`](./docs/SECURITY_PRIVACY_REVIEW_CHECKLIST.md) as a bounded review aid. Completion of that checklist is not certification.
+
 ## Licensing
 
-Reference code and machine-readable schemas are intended to be available under the Apache License 2.0. Specification and documentation licensing will be finalized before a normative release.
+Reference code and machine-readable schemas are intended to be available under the Apache License 2.0. Specification and documentation licensing will be finalized before a stable normative release.
 
 ---
 
