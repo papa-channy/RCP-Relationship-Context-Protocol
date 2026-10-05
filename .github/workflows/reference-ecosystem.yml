@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 jobs:
-  topology-smoke:
+  reference-ecosystem:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,3 +29,7 @@ jobs:
       - name: Run independent provider topology smoke test
         working-directory: reference-ecosystem
         run: npm run smoke
+
+      - name: Run permission-before-retrieval integration test
+        working-directory: reference-ecosystem
+        run: npm run test:permission
