@@ -1,0 +1,13 @@
+{
+  "type": "rcp.provider_capability",
+  "provider": "demo:phone",
+  "capability_version": "0.1",
+  "capabilities": {
+    "identity": "allow",
+    "interaction_metadata": "allow",
+    "content": "deny",
+    "provider_context": "deny",
+    "external_processing": "limited"
+  },
+  "processing_locations": ["device", "consumer"]
+}
