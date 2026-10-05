@@ -1,5 +1,6 @@
 {
   "type": "rcp.permission_decision",
+  "rcp_version": "0.1",
   "decision_id": "decision:invalid:conditional",
   "request_id": "req:meeting-prep:b:001",
   "decision": "conditional",

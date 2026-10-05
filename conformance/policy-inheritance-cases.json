@@ -1,0 +1,68 @@
+{
+  "cases": [
+    {
+      "id": "intersection-and-most-restrictive-propagation",
+      "parents": [
+        {
+          "allowed_purposes": ["relationship_memory", "meeting_preparation"],
+          "allowed_destinations": ["user:a:private-memory", "org:a:crm"],
+          "allowed_processing_locations": ["device", "consumer"],
+          "retention_max_seconds": 31536000,
+          "confidentiality": "private_communication",
+          "sensitivity": "private",
+          "training": "deny"
+        },
+        {
+          "allowed_purposes": ["meeting_preparation"],
+          "allowed_destinations": ["user:a:private-memory"],
+          "allowed_processing_locations": ["device"],
+          "retention_max_seconds": 2592000,
+          "confidentiality": "organization_confidential",
+          "sensitivity": "sensitive",
+          "training": "allow"
+        }
+      ],
+      "expected": {
+        "allowed_purposes": ["meeting_preparation"],
+        "allowed_destinations": ["user:a:private-memory"],
+        "allowed_processing_locations": ["device"],
+        "retention_max_seconds": 2592000,
+        "confidentiality": "organization_confidential",
+        "sensitivity": "sensitive",
+        "training": "deny"
+      }
+    },
+    {
+      "id": "empty-purpose-intersection-remains-empty",
+      "parents": [
+        {
+          "allowed_purposes": ["relationship_memory"],
+          "allowed_destinations": ["user:a:private-memory"],
+          "allowed_processing_locations": ["device"],
+          "retention_max_seconds": 86400,
+          "confidentiality": "private_communication",
+          "sensitivity": "private",
+          "training": "deny"
+        },
+        {
+          "allowed_purposes": ["meeting_preparation"],
+          "allowed_destinations": ["user:a:private-memory"],
+          "allowed_processing_locations": ["device"],
+          "retention_max_seconds": 172800,
+          "confidentiality": "private_communication",
+          "sensitivity": "private",
+          "training": "deny"
+        }
+      ],
+      "expected": {
+        "allowed_purposes": [],
+        "allowed_destinations": ["user:a:private-memory"],
+        "allowed_processing_locations": ["device"],
+        "retention_max_seconds": 86400,
+        "confidentiality": "private_communication",
+        "sensitivity": "private",
+        "training": "deny"
+      }
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 {
   "type": "rcp.permission_decision",
+  "rcp_version": "0.1",
   "decision_id": "decision:meeting-prep:b:001",
   "request_id": "req:meeting-prep:b:001",
   "decision": "allow",

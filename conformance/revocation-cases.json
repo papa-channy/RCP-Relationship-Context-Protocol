@@ -1,0 +1,66 @@
+{
+  "cases": [
+    {
+      "id": "sole-essential-source-invalidates-descendants",
+      "nodes": {
+        "M1": {"kind": "source", "state": "active"},
+        "C1": {"kind": "derived", "state": "active"},
+        "S1": {"kind": "derived", "state": "active"}
+      },
+      "edges": [
+        {"parent": "M1", "child": "C1", "dependency": "essential"},
+        {"parent": "C1", "child": "S1", "dependency": "essential"}
+      ],
+      "revoke": "M1",
+      "recomputable": [],
+      "expected_states": {
+        "M1": "revoked",
+        "C1": "invalidated",
+        "S1": "invalidated"
+      }
+    },
+    {
+      "id": "independent-support-requires-recomputation",
+      "nodes": {
+        "M1": {"kind": "source", "state": "active"},
+        "N1": {"kind": "source", "state": "active"},
+        "C1": {"kind": "derived", "state": "active"},
+        "S1": {"kind": "derived", "state": "active"}
+      },
+      "edges": [
+        {"parent": "M1", "child": "C1", "dependency": "supporting"},
+        {"parent": "N1", "child": "C1", "dependency": "supporting"},
+        {"parent": "C1", "child": "S1", "dependency": "essential"}
+      ],
+      "revoke": "M1",
+      "recomputable": ["C1", "S1"],
+      "expected_states": {
+        "M1": "revoked",
+        "N1": "active",
+        "C1": "recompute_required",
+        "S1": "recompute_required"
+      }
+    },
+    {
+      "id": "unrelated-branch-is-unchanged",
+      "nodes": {
+        "M1": {"kind": "source", "state": "active"},
+        "N1": {"kind": "source", "state": "active"},
+        "C1": {"kind": "derived", "state": "active"},
+        "C2": {"kind": "derived", "state": "active"}
+      },
+      "edges": [
+        {"parent": "M1", "child": "C1", "dependency": "essential"},
+        {"parent": "N1", "child": "C2", "dependency": "essential"}
+      ],
+      "revoke": "M1",
+      "recomputable": [],
+      "expected_states": {
+        "M1": "revoked",
+        "N1": "active",
+        "C1": "invalidated",
+        "C2": "active"
+      }
+    }
+  ]
+}

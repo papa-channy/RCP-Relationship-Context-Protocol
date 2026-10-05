@@ -1,11 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://rcp.example/spec/schemas/context-assertion.schema.json",
+  "$id": "urn:rcp:schema:context-assertion:0.1",
   "title": "RCP ContextAssertion",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "type",
+    "rcp_version",
     "assertion_id",
     "assertion_type",
     "epistemic_class",
@@ -16,6 +17,7 @@
   ],
   "properties": {
     "type": {"const": "rcp.context_assertion"},
+    "rcp_version": {"const": "0.1"},
     "assertion_id": {"type": "string", "minLength": 1},
     "assertion_type": {
       "anyOf": [

@@ -1,11 +1,10 @@
 {
   "type": "rcp.identity_claim",
-  "rcp_version": "0.1",
-  "claim_id": "claim:demo-mail:b-email",
+  "rcp_version": "9.9",
+  "claim_id": "claim:invalid:version",
   "provider": "demo:mail",
   "identity_type": "email",
   "identifier": "b@example.test",
   "verification_state": "provider_confirmed",
-  "evidence_refs": ["demo:mail:account:b@example.test"],
   "issued_at": "2026-10-05T10:00:00Z"
 }

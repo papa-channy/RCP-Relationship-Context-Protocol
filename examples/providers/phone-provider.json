@@ -1,5 +1,6 @@
 {
   "type": "rcp.provider_capability",
+  "rcp_version": "0.1",
   "provider": "demo:phone",
   "capability_version": "0.1",
   "capabilities": {

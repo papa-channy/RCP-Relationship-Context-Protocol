@@ -1,0 +1,88 @@
+{
+  "cases": [
+    {
+      "id": "unchanged-dependencies-remain-fresh",
+      "decision": {
+        "decision": "allow",
+        "expires_at": "2026-10-05T13:00:00Z",
+        "dependency_snapshot": {
+          "provider_capability_version": "7",
+          "organization_policy_version": "11",
+          "user_grant_version": "2",
+          "identity_resolution_version": "4"
+        }
+      },
+      "current_dependencies": {
+        "provider_capability_version": "7",
+        "organization_policy_version": "11",
+        "user_grant_version": "2",
+        "identity_resolution_version": "4"
+      },
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": true
+    },
+    {
+      "id": "organization-policy-change-stales-allow",
+      "decision": {
+        "decision": "allow",
+        "expires_at": "2026-10-05T13:00:00Z",
+        "dependency_snapshot": {
+          "provider_capability_version": "7",
+          "organization_policy_version": "11",
+          "user_grant_version": "2",
+          "identity_resolution_version": "4"
+        }
+      },
+      "current_dependencies": {
+        "provider_capability_version": "7",
+        "organization_policy_version": "12",
+        "user_grant_version": "2",
+        "identity_resolution_version": "4"
+      },
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": false
+    },
+    {
+      "id": "capability-change-stales-allow",
+      "decision": {
+        "decision": "allow",
+        "expires_at": "2026-10-05T13:00:00Z",
+        "dependency_snapshot": {
+          "provider_capability_version": "7",
+          "organization_policy_version": "11",
+          "user_grant_version": "2",
+          "identity_resolution_version": "4"
+        }
+      },
+      "current_dependencies": {
+        "provider_capability_version": "8",
+        "organization_policy_version": "11",
+        "user_grant_version": "2",
+        "identity_resolution_version": "4"
+      },
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": false
+    },
+    {
+      "id": "identity-resolution-change-stales-allow",
+      "decision": {
+        "decision": "allow",
+        "expires_at": "2026-10-05T13:00:00Z",
+        "dependency_snapshot": {
+          "provider_capability_version": "7",
+          "organization_policy_version": "11",
+          "user_grant_version": "2",
+          "identity_resolution_version": "4"
+        }
+      },
+      "current_dependencies": {
+        "provider_capability_version": "7",
+        "organization_policy_version": "11",
+        "user_grant_version": "2",
+        "identity_resolution_version": "5"
+      },
+      "as_of": "2026-10-05T12:00:00Z",
+      "expected_executable": false
+    }
+  ]
+}

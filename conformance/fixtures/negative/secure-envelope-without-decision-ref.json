@@ -1,5 +1,6 @@
 {
   "type": "rcp.secure_envelope",
+  "rcp_version": "0.1",
   "envelope_id": "envelope:invalid:no-decision",
   "sender": "provider:demo-mail",
   "recipient": "consumer:relationship-agent",
