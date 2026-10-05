@@ -1,6 +1,10 @@
 import http from 'node:http'
 import fs from 'node:fs'
 import { randomUUID } from 'node:crypto'
+import {
+  createSecureEnvelope,
+  createSigningKeyMaterial,
+} from '../secure-envelope/index.mjs'
 
 export function loadJson(path) {
   return JSON.parse(fs.readFileSync(path, 'utf8'))
@@ -145,6 +149,8 @@ function evaluateRequest({ capability, request, representation, satisfiedLimitat
 export function createProviderServer({ capabilityPath, statePath, port }) {
   const capability = loadJson(capabilityPath)
   const issuedDecisions = new Map()
+  const signingKid = `${capability.provider}:sign:1`
+  const signingMaterialPromise = createSigningKeyMaterial(signingKid)
   let protectedReads = 0
 
   function readProtectedState() {
@@ -165,6 +171,15 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
 
       if (req.method === 'GET' && req.url === '/rcp/capabilities') {
         json(res, 200, capability)
+        return
+      }
+
+      if (req.method === 'GET' && req.url === '/rcp/keys') {
+        const signingMaterial = await signingMaterialPromise
+        json(res, 200, {
+          provider: capability.provider,
+          signing_keys: [signingMaterial.publicJwk],
+        })
         return
       }
 
@@ -191,7 +206,13 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
 
       if (req.method === 'POST' && req.url === '/rcp/retrieve') {
         const body = await readJsonBody(req)
-        const { request, decision_id: decisionId, representation } = body
+        const {
+          request,
+          decision_id: decisionId,
+          representation,
+          recipient,
+          recipient_public_jwk: recipientPublicJwk,
+        } = body
         const record = issuedDecisions.get(decisionId)
 
         if (!record) {
@@ -216,10 +237,14 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
           json(res, 400, { error: 'unknown_representation' })
           return
         }
+        if (!recipient || !recipientPublicJwk?.kid) {
+          json(res, 400, { error: 'recipient_key_required' })
+          return
+        }
 
         // Protected state is read only after every authorization check above.
         const state = readProtectedState()
-        json(res, 200, {
+        const providerResult = {
           type: 'rcp.provider_result',
           rcp_version: '0.1',
           provider: capability.provider,
@@ -228,7 +253,35 @@ export function createProviderServer({ capabilityPath, statePath, port }) {
           decision_id: decisionId,
           state_revision: state.revision,
           items: state[field] ?? [],
+        }
+
+        const signingMaterial = await signingMaterialPromise
+        const issuedAt = new Date().toISOString()
+        const envelope = await createSecureEnvelope({
+          payload: providerResult,
+          recipientPublicJwk,
+          signingPrivateKey: signingMaterial.privateKey,
+          signingKid,
+          metadata: {
+            type: 'rcp.secure_envelope',
+            rcp_version: '0.1',
+            envelope_id: `envelope:${randomUUID()}`,
+            sender: capability.provider,
+            recipient,
+            action: request.action,
+            resource_ref: request.resource,
+            resource_class: 'relationship_context',
+            purpose: request.purpose,
+            destination: request.destination,
+            processing_location: request.processing_location,
+            permission_decision_ref: decisionId,
+            policy_refs: record.decision.policy_versions ?? [],
+            issued_at: issuedAt,
+            expires_at: record.decision.expires_at,
+          },
         })
+
+        json(res, 200, envelope)
         return
       }
 
