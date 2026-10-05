@@ -74,24 +74,20 @@
     "payload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["profile", "alg", "kid", "ciphertext", "payload_hash"],
+      "required": ["profile", "jwe"],
       "properties": {
-        "profile": {"type": "string", "minLength": 1},
-        "alg": {"type": "string", "minLength": 1},
-        "kid": {"type": "string", "minLength": 1},
-        "ciphertext": {"type": "string", "minLength": 1},
-        "payload_hash": {"type": "string", "minLength": 1}
+        "profile": {"const": "rcp-jose-x25519-a256gcm-ed25519-v0.1"},
+        "jwe": {"type": "string", "minLength": 1}
       }
     },
     "signature": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["profile", "alg", "kid", "value"],
+      "required": ["profile", "protected", "signature"],
       "properties": {
-        "profile": {"type": "string", "minLength": 1},
-        "alg": {"type": "string", "minLength": 1},
-        "kid": {"type": "string", "minLength": 1},
-        "value": {"type": "string", "minLength": 1}
+        "profile": {"const": "rcp-jose-x25519-a256gcm-ed25519-v0.1"},
+        "protected": {"type": "string", "minLength": 1},
+        "signature": {"type": "string", "minLength": 1}
       }
     }
   }

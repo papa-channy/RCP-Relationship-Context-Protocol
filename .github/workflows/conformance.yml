@@ -28,8 +28,19 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install conformance dependencies
+      - name: Install schema and semantic conformance dependencies
         run: python -m pip install -r conformance/requirements.txt
 
-      - name: Run RCP conformance bootstrap
+      - name: Run RCP schema and semantic conformance
         run: python conformance/run.py
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install JOSE crypto conformance dependencies
+        run: npm install --prefix conformance/crypto
+
+      - name: Run RCP JOSE crypto profile tests
+        run: npm test --prefix conformance/crypto

@@ -1,0 +1,12 @@
+{
+  "name": "rcp-crypto-conformance",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node crypto-profile.test.mjs"
+  },
+  "dependencies": {
+    "canonicalize": "5.1.0",
+    "jose": "6.2.12"
+  }
+}
