@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rcp.example/spec/schemas/permission-decision.schema.json",
+  "title": "RCP PermissionDecision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "decision_id", "request_id", "decision", "evaluated_at"],
+  "properties": {
+    "type": {"const": "rcp.permission_decision"},
+    "decision_id": {"type": "string", "minLength": 1},
+    "request_id": {"type": "string", "minLength": 1},
+    "decision": {"enum": ["allow", "deny", "conditional", "unknown"]},
+    "reason_codes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "required_conditions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "policy_versions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"}
+  }
+}
