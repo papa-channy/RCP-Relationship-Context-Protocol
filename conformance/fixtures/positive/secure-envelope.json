@@ -15,16 +15,12 @@
   "issued_at": "2026-10-05T10:06:05Z",
   "expires_at": "2026-10-05T10:10:00Z",
   "payload": {
-    "profile": "demo:rcp-envelope-profile-v0",
-    "alg": "demo-aead",
-    "kid": "demo:consumer:key:1",
-    "ciphertext": "BASE64URL_CIPHERTEXT_PLACEHOLDER",
-    "payload_hash": "sha256:placeholder"
+    "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+    "jwe": "JWE_COMPACT_SERIALIZATION_PLACEHOLDER"
   },
   "signature": {
-    "profile": "demo:rcp-signature-profile-v0",
-    "alg": "demo-signature",
-    "kid": "demo:mail:key:1",
-    "value": "BASE64URL_SIGNATURE_PLACEHOLDER"
+    "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+    "protected": "JWS_PROTECTED_HEADER_PLACEHOLDER",
+    "signature": "JWS_SIGNATURE_PLACEHOLDER"
   }
 }
