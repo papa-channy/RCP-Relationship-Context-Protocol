@@ -4,7 +4,7 @@
   "title": "RCP PermissionRequest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["type", "request_id", "requester", "executor", "action", "purpose"],
+  "required": ["type", "request_id", "requester", "executor", "action", "purpose", "requested_at"],
   "properties": {
     "type": {"const": "rcp.permission_request"},
     "request_id": {"type": "string", "minLength": 1},
@@ -13,11 +13,24 @@
     "action": {
       "enum": ["discover", "access", "delegate", "transfer", "process", "derive", "store", "disclose", "act", "train"]
     },
-    "resource": {"type": "string"},
-    "subject": {"type": "string"},
+    "resource": {"type": "string", "minLength": 1},
+    "subject": {"type": "string", "minLength": 1},
     "purpose": {"type": "string", "minLength": 1},
-    "destination": {"type": "string"},
-    "processing_location": {"type": "string"},
+    "destination": {"type": "string", "minLength": 1},
+    "processing_location": {"type": "string", "minLength": 1},
     "requested_at": {"type": "string", "format": "date-time"}
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "enum": ["access", "delegate", "transfer", "process", "derive", "store", "disclose", "act", "train"]
+          }
+        },
+        "required": ["action"]
+      },
+      "then": {"required": ["resource"]}
+    }
+  ]
 }
