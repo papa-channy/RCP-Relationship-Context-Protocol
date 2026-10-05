@@ -1,0 +1,8 @@
+{
+  "type": "rcp.provider_capability",
+  "provider": "demo:mail",
+  "capability_version": "0.1",
+  "capabilities": {
+    "identity": "allow"
+  }
+}
