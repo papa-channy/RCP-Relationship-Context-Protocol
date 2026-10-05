@@ -1,0 +1,31 @@
+name: RCP Reference Ecosystem
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "reference-ecosystem/**"
+      - ".github/workflows/reference-ecosystem.yml"
+  pull_request:
+    paths:
+      - "reference-ecosystem/**"
+      - ".github/workflows/reference-ecosystem.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  topology-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run independent provider topology smoke test
+        working-directory: reference-ecosystem
+        run: npm run smoke
