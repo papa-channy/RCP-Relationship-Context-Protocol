@@ -9,5 +9,9 @@
     "provider_context": "deny",
     "external_processing": "limited"
   },
-  "processing_locations": ["device", "consumer"]
+  "limitation_refs": {
+    "external_processing": ["demo:phone:policy:device-mediated-only-v1"]
+  },
+  "processing_locations": ["device", "consumer"],
+  "issued_at": "2026-10-05T00:00:00Z"
 }
