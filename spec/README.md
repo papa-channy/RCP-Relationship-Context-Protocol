@@ -1,8 +1,19 @@
 # RCP Experimental Specification
 
-This directory contains machine-readable artifacts intended to become the normative RCP Core Specification.
+This directory contains the protocol artifacts intended to become the normative RCP specification.
 
-Current status: **experimental, incomplete, non-normative**.
+Current project status: **experimental draft, not a stable standard**.
+
+## Normative draft
+
+[`core-v0.1.md`](./core-v0.1.md) defines the current normative semantics for the experimental Core v0.1 work. `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` requirements in that document govern Core v0.1 behavior during M1.
+
+The JSON Schemas under [`schemas/`](./schemas/) define machine-readable structural constraints. If a schema is less strict than the normative prose, implementations still need to follow the prose. M1 aims to eliminate such gaps where practical.
+
+## Registries
+
+- [`registries/capabilities.md`](./registries/capabilities.md)
+- [`registries/reason-codes.md`](./registries/reason-codes.md)
 
 ## Initial schema surface
 
@@ -14,4 +25,10 @@ Current status: **experimental, incomplete, non-normative**.
 - `secure-envelope.schema.json`
 - `revocation-event.schema.json`
 
-Before RCP v0.1 can be called a protocol specification, the prose and schemas must define consistent MUST/SHOULD/MAY behavior and be backed by conformance tests.
+## Status warning
+
+Core v0.1 is intentionally incomplete. It does not yet define a stable cryptographic profile, transport binding, global identity system, legal/jurisdiction profile, or policy expression language.
+
+No implementation should claim production-grade RCP interoperability solely because it validates against the current schemas.
+
+Before RCP v0.1 can be called a stable protocol specification, the normative prose, schemas, registries, examples, and conformance tests must converge and receive independent implementation/security review.
