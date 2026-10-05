@@ -9,5 +9,9 @@
     "provider_context": "allow",
     "external_processing": "limited"
   },
-  "processing_locations": ["provider", "device"]
+  "limitation_refs": {
+    "external_processing": ["demo:messenger:policy:external-processing-v1"]
+  },
+  "processing_locations": ["provider", "device"],
+  "issued_at": "2026-10-05T00:00:00Z"
 }
