@@ -14,6 +14,7 @@ The JSON Schemas under [`schemas/`](./schemas/) define machine-readable structur
 
 - [`registries/capabilities.md`](./registries/capabilities.md)
 - [`registries/reason-codes.md`](./registries/reason-codes.md)
+- [`registries/assertion-types.md`](./registries/assertion-types.md)
 
 ## Initial schema surface
 
