@@ -1,0 +1,23 @@
+{
+  "type": "rcp.secure_envelope",
+  "envelope_id": "envelope:invalid:no-decision",
+  "sender": "provider:demo-mail",
+  "recipient": "consumer:relationship-agent",
+  "resource_class": "relationship_context",
+  "purpose": "meeting_preparation",
+  "issued_at": "2026-10-05T10:06:05Z",
+  "expires_at": "2026-10-05T10:10:00Z",
+  "payload": {
+    "profile": "demo:rcp-envelope-profile-v0",
+    "alg": "demo-aead",
+    "kid": "demo:consumer:key:1",
+    "ciphertext": "BASE64URL_CIPHERTEXT_PLACEHOLDER",
+    "payload_hash": "sha256:placeholder"
+  },
+  "signature": {
+    "profile": "demo:rcp-signature-profile-v0",
+    "alg": "demo-signature",
+    "kid": "demo:mail:key:1",
+    "value": "BASE64URL_SIGNATURE_PLACEHOLDER"
+  }
+}
