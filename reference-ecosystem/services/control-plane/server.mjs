@@ -7,6 +7,7 @@ import {
 import { RelationshipContextStore } from '../../packages/context-store/index.mjs'
 
 const port = Number(process.env.PORT ?? 4190)
+const relayUrl = process.env.RCP_RELAY_URL ?? null
 const providers = [
   ['demo:mail', process.env.MAIL_URL ?? 'http://127.0.0.1:4101'],
   ['demo:messenger', process.env.MESSENGER_URL ?? 'http://127.0.0.1:4102'],
@@ -241,6 +242,7 @@ async function executePlan(plan) {
   const executedAt = new Date().toISOString()
   const recipientMaterial = await recipientMaterialPromise
   const envelopes = []
+  const relayReceipts = []
   const assertions = []
   const steps = []
   let staleProviderCount = 0
@@ -276,13 +278,25 @@ async function executePlan(plan) {
     const signingPublicJwk = keySet.signing_keys?.[0]
     if (!signingPublicJwk) throw new Error(`provider signing key unavailable: ${step.provider}`)
 
-    const envelope = await postJson(`${step.base_url}/rcp/retrieve`, {
+    const delivery = await postJson(`${step.base_url}/rcp/retrieve`, {
       request: step.request,
       decision_id: step.decision.decision_id,
       representation: step.representation,
       recipient: consumerId,
       recipient_public_jwk: recipientMaterial.publicJwk,
     })
+
+    let envelope = delivery
+    if (relayUrl) {
+      if (delivery.type !== 'rcp.relay_receipt' || typeof delivery.relay_id !== 'string') {
+        throw new Error(`provider did not return relay receipt: ${step.provider}`)
+      }
+      relayReceipts.push(delivery)
+      envelope = await getJson(`${relayUrl}/rcp/envelopes/${encodeURIComponent(delivery.relay_id)}`)
+      if (envelope.envelope_id !== delivery.envelope_id) {
+        throw new Error(`relay receipt envelope mismatch: ${step.provider}`)
+      }
+    }
 
     const providerResult = await verifyAndDecryptSecureEnvelope({
       envelope,
@@ -302,7 +316,10 @@ async function executePlan(plan) {
 
     envelopes.push(envelope)
     assertions.push(...normalizeProviderResult(providerResult, step, plan.subject))
-    steps.push({ ...step, execution_status: 'retrieved_and_verified' })
+    steps.push({
+      ...step,
+      execution_status: relayUrl ? 'relayed_verified_and_decrypted' : 'retrieved_and_verified',
+    })
   }
 
   const persistence = contextStore.upsertAssertions(plan.subject, assertions)
@@ -312,6 +329,7 @@ async function executePlan(plan) {
     ...plan,
     steps,
     envelopes,
+    relay_receipts: relayReceipts,
     assertions,
     context_revision: persistence.revision,
     brief,
@@ -325,6 +343,7 @@ async function executePlan(plan) {
         retrieved_provider_count: envelopes.length,
         activated_assertion_count: assertions.length,
         stale_provider_count: staleProviderCount,
+        relay_routed_count: relayReceipts.length,
         context_revision: persistence.revision,
       },
     ],
@@ -349,7 +368,7 @@ const server = http.createServer(async (req, res) => {
     const requestUrl = new URL(req.url, 'http://127.0.0.1')
 
     if (req.method === 'GET' && requestUrl.pathname === '/health') {
-      json(res, 200, { status: 'ok', role: 'rcp-control-plane' })
+      json(res, 200, { status: 'ok', role: 'rcp-control-plane', relay_enabled: Boolean(relayUrl) })
       return
     }
     if (req.method === 'GET' && requestUrl.pathname === '/rcp/providers') {

@@ -6,10 +6,12 @@ This workspace demonstrates RCP as a multi-provider interoperability system with
 
 ## Process topology
 
+Direct mode remains available for earlier scenarios, while D5 adds an explicit opaque relay:
+
 ```text
 mail-provider -----------┐
 messenger-provider ------┤
-enterprise-provider -----┼--> control-plane / consumer --> relationship context store
+enterprise-provider -----┼--> RCP opaque relay --> control-plane / consumer --> relationship context store
 phone-provider ----------┤
 meeting-provider --------┘
 ```
@@ -32,6 +34,10 @@ provider validates fresh issued allow
 protected state lazy-read
  ↓
 provider_result encrypted as RCP SecureEnvelope
+ ↓
+(optional) opaque relay stores ciphertext temporarily
+ ↓
+consumer one-time pulls SecureEnvelope
  ↓
 JWS verification + authorization-scope binding check
  ↓
@@ -61,9 +67,46 @@ The enterprise demo provider additionally exposes:
 
 The policy-profile endpoint is a **reference-scenario control**, not a proposed RCP Core endpoint. It lets the test harness move the enterprise provider from capability/policy version 1 to a stricter version 2 while the process is running.
 
-`POST /rcp/retrieve` returns an RCP `SecureEnvelope`, never plaintext provider data. Direct `/state` access remains unavailable.
+Without a relay, `POST /rcp/retrieve` returns an RCP `SecureEnvelope`. With `RCP_RELAY_URL` configured on the provider, the provider sends that envelope directly to the relay and returns only an `rcp.relay_receipt` to the caller. Direct `/state` access remains unavailable.
 
 When a provider-level source revocation is issued, that provider also fails closed for existing decision reuse and future permission evaluation.
+
+## Opaque relay endpoints
+
+The D5 relay exposes:
+
+- `GET /health`
+- `GET /rcp/audit`
+- `POST /rcp/envelopes`
+- `GET /rcp/envelopes/:relay_id`
+
+The relay intentionally exposes no key or decrypt endpoint.
+
+The relay receives the RCP `SecureEnvelope`, so it can observe the **clear envelope metadata** that the protocol places outside the JWE. It does not receive the consumer private key and does not import the JOSE decryption stack. The protected provider result remains JWE ciphertext until the consumer retrieves and decrypts it.
+
+Delivery is one-time in the reference implementation: after `GET /rcp/envelopes/:relay_id`, the pending envelope is deleted from relay memory.
+
+The relay's persistent audit deliberately stores less than the transient envelope:
+
+- relay/envelope IDs;
+- sender and recipient;
+- action, resource class, purpose, destination, processing location;
+- permission decision reference;
+- payload/signature profile names;
+- ciphertext byte length;
+- SHA-256 of the ciphertext;
+- received/delivered timestamps.
+
+It does **not** persist:
+
+- the JWE ciphertext itself after delivery;
+- `resource_ref`;
+- provider result objects;
+- relationship statements;
+- raw content;
+- consumer private keys.
+
+D5 therefore demonstrates **operator-blind payload routing**, not metadata anonymity. Metadata minimization and unlinkable routing remain separate protocol/privacy problems.
 
 ## Control-plane endpoints
 
@@ -75,6 +118,8 @@ When a provider-level source revocation is issued, that provider also fails clos
 - `POST /rcp/evaluate`
 - `POST /rcp/execute`
 - `POST /rcp/revoke-provider`
+
+When `RCP_RELAY_URL` is configured, execution expects provider relay receipts, pulls the corresponding envelope from the relay exactly once, and then performs the same signature, authorization-binding, and decryption checks used by direct mode.
 
 ## Representation selection
 
@@ -107,7 +152,7 @@ The provider encrypts selected results using:
 
 `rcp-jose-x25519-a256gcm-ed25519-v0.1`
 
-The consumer activates content only after provider signing-key discovery, detached JWS verification, exact authorization-scope/lifetime binding, JWE decryption, and decrypted provider-result binding.
+The consumer activates content only after provider signing-key discovery, detached JWS verification, exact authorization-scope/lifetime binding, JWE decryption, and decrypted provider-result binding. Relay transport does not weaken or replace any of those checks.
 
 ## Persistent context and recomputation
 
@@ -190,6 +235,7 @@ npm run smoke
 npm run test:permission
 npm run test:revocation
 npm run test:policy
+npm run test:relay
 ```
 
 The test suite verifies:
@@ -207,8 +253,12 @@ The test suite verifies:
 - rejection of old decisions and new permission requests after provider revocation;
 - runtime enterprise policy/capability drift;
 - control-plane and provider-side stale-decision enforcement;
-- replanning under the new policy without reusing old authorization.
+- replanning under the new policy without reusing old authorization;
+- provider→relay→consumer SecureEnvelope routing;
+- zero relay decryption keys/capability;
+- one-time ciphertext delivery and removal;
+- metadata-minimized relay audit containing transfer counts/size/hash but no protected relationship plaintext or resource identifier.
 
-## Next M2 slice
+## Remaining M2 work
 
-D1, D2, and D3 are now represented by executable reference scenarios, while D4 raw-content boundaries are already exercised by the permission tests. The next major slice is D5: introduce an explicit operator-blind relay between provider and consumer so the reference ecosystem proves that an intermediary can route RCP `SecureEnvelope` objects while observing only policy-visible metadata and ciphertext, never decrypted relationship payloads.
+D1, D2, D3, and D5 now have dedicated executable scenarios, and D4 raw-content boundaries are exercised by the permission and relay tests. Before calling M2 complete, the reference ecosystem still needs a canonical one-command demonstration that ties these pieces together, produces a machine-readable execution trace plus a human-readable relationship brief, and makes the provider-scoped identity resolution step explicit rather than relying on the current preselected `person:b` subject.

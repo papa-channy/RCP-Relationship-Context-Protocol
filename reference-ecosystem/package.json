@@ -9,11 +9,13 @@
     "start:enterprise": "node services/enterprise-provider/server.mjs",
     "start:phone": "node services/phone-provider/server.mjs",
     "start:meeting": "node services/meeting-provider/server.mjs",
+    "start:relay": "node services/relay/server.mjs",
     "start:control": "node services/control-plane/server.mjs",
     "smoke": "node tests/topology-smoke.mjs",
     "test:permission": "node tests/permission-before-retrieval.mjs",
     "test:revocation": "node tests/revocation-recompute.mjs",
-    "test:policy": "node tests/enterprise-policy-drift.mjs"
+    "test:policy": "node tests/enterprise-policy-drift.mjs",
+    "test:relay": "node tests/operator-blind-relay.mjs"
   },
   "dependencies": {
     "canonicalize": "5.1.0",
