@@ -9,5 +9,10 @@
     "provider_context": "allow",
     "external_processing": "limited"
   },
-  "processing_locations": ["provider", "device"]
+  "limitation_refs": {
+    "content": ["demo:meeting:policy:transcript-consent-v1"],
+    "external_processing": ["demo:meeting:policy:processing-location-v1"]
+  },
+  "processing_locations": ["provider", "device"],
+  "issued_at": "2026-10-05T00:00:00Z"
 }
