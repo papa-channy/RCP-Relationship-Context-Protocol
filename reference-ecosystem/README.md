@@ -9,23 +9,14 @@ This workspace demonstrates RCP as a multi-provider interoperability system with
 ```text
 mail-provider -----------┐
 messenger-provider ------┤
-enterprise-provider -----┼--> control-plane --> future relationship consumer
+enterprise-provider -----┼--> control-plane / consumer
 phone-provider ----------┤
 meeting-provider --------┘
 ```
 
-Each provider runs as a separate Node process and owns its own:
+Each provider owns its own capability manifest, protected state file, permission-decision cache, policy state, and ephemeral signing key material. There is no shared provider database.
 
-- capability manifest,
-- local protected state file,
-- permission-decision cache,
-- provider policy/capability state.
-
-There is no shared provider database.
-
-## Permission-before-retrieval flow
-
-The current M2 slice implements:
+## Current protected-data flow
 
 ```text
 Goal
@@ -36,28 +27,41 @@ ProcessingPlan + minimum representation selection
  ↓
 POST /rcp/evaluate
  ↓
-provider-issued PermissionDecision per step
+provider-issued PermissionDecision
  ↓
 POST /rcp/execute
  ↓
-provider-side decision validation
+provider validates fresh issued allow
  ↓
 protected state lazy-read
+ ↓
+provider_result encrypted as RCP SecureEnvelope
+ ↓
+consumer discovers provider signing key
+ ↓
+JWS verification + authorization-scope binding check
+ ↓
+JWE decryption
+ ↓
+ContextAssertion normalization + provenance activation
 ```
 
-Protected state files are **not read at provider startup**. A provider reads its state only after an issued, fresh `allow` decision is matched to the exact request snapshot and representation.
+Protected state is not read at provider startup or during planning/evaluation.
 
-### Provider endpoints
+## Provider endpoints
 
 - `GET /health`
-  - includes a non-sensitive `protected_reads` counter used by the reference tests.
+  - exposes only provider identity and a non-sensitive `protected_reads` test counter.
 - `GET /rcp/capabilities`
+- `GET /rcp/keys`
+  - exposes the provider's public signing JWK only.
 - `POST /rcp/permissions/evaluate`
 - `POST /rcp/retrieve`
+  - returns an RCP `SecureEnvelope`, never the plaintext provider result.
 
 Direct `/state` access remains unavailable.
 
-### Control-plane endpoints
+## Control-plane endpoints
 
 - `GET /health`
 - `GET /rcp/providers`
@@ -67,63 +71,81 @@ Direct `/state` access remains unavailable.
 
 ## Representation selection
 
-For the meeting-preparation scenario, the planner prefers:
+For meeting preparation the planner prefers:
 
 1. `provider_context`
 2. `interaction_metadata`
 3. `content`
 
-Within that preference order, an `allow` representation is preferred over a `limited` one. This means the reference planner may deliberately downgrade fidelity to avoid unnecessary conditions or raw-content access.
-
-Current canonical selections:
+An unconditional `allow` is preferred over a higher-fidelity `limited` representation. Current canonical selections are:
 
 - mail → `provider_context`
 - messenger → `provider_context`
-- enterprise → `interaction_metadata` (downgraded from limited provider context)
+- enterprise → `interaction_metadata`
 - phone → `interaction_metadata`
 - meeting → `provider_context`
 
-Processing location is also minimized: when external processing is not unconditionally allowed and provider-local processing is available, the planner keeps processing at the provider boundary.
+When external processing is not unconditionally allowed and provider-local processing exists, execution remains at the provider boundary.
 
 ## Provider-side authorization invariants
 
-`POST /rcp/retrieve` fails closed unless all of the following hold:
+Protected retrieval fails closed unless:
 
-- the decision ID was actually issued by that provider process;
-- the decision is `allow`;
-- the decision is unexpired;
-- the current capability version matches the evaluated version;
-- the request is byte-for-byte equivalent to the evaluated request snapshot;
-- the requested representation matches the evaluated representation.
+- the decision ID was issued by that provider process;
+- the decision is `allow` and unexpired;
+- the capability version is unchanged;
+- the request exactly matches the evaluated snapshot;
+- the representation exactly matches the evaluated representation;
+- a recipient encryption public key is supplied.
 
-A caller cannot create a fake JSON `allow` decision and use it to retrieve data.
+The protected state read occurs only after those checks.
+
+## SecureEnvelope activation invariants
+
+The provider encrypts the selected provider result using the experimental profile:
+
+`rcp-jose-x25519-a256gcm-ed25519-v0.1`
+
+The consumer activates decrypted context only after:
+
+1. provider signing-key discovery,
+2. detached JWS verification,
+3. exact match of sender/recipient/action/resource/purpose/destination/processing location/decision ID,
+4. authorization lifetime check,
+5. JWE decryption under the consumer recipient key,
+6. decrypted provider-result binding check.
+
+Cryptographic authenticity does not replace authorization-scope validation.
+
+## ContextAssertion normalization
+
+Decrypted provider results are normalized by the consumer:
+
+- provider-generated context → `system_interpretation`, provenance `provider_generated`, visibility `redacted`;
+- interaction metadata → `extracted_fact`, assertion type `event`, visibility `type_only`;
+- raw content, if ever explicitly selected and allowed, remains a `source_statement` rather than being promoted to a verified fact.
+
+Every activated assertion contains provider/resource source references and inherited permission-policy references.
 
 ## Tests
 
-Topology smoke:
-
 ```bash
+npm install
 npm run smoke
-```
-
-Permission-before-retrieval integration:
-
-```bash
 npm run test:permission
 ```
 
-The integration test verifies that:
+The integration test verifies:
 
-- all providers start with `protected_reads = 0`;
-- forged decision IDs cannot retrieve data;
-- planning performs no protected reads;
-- permission evaluation performs no protected reads;
-- request mutation after evaluation fails;
-- unresolved `conditional` decisions cannot retrieve data;
-- only executable steps trigger protected reads;
-- a raw-content-denied provider can contribute provider-generated context;
-- raw mail/message/transcript/enterprise content does not leak into the canonical execution result.
+- zero protected reads before execution;
+- forged decision rejection;
+- request-mutation rejection;
+- unresolved conditional rejection;
+- only executable steps trigger state reads;
+- provider→consumer data travels as JOSE `SecureEnvelope` objects;
+- four canonical provider results activate as four provenance-carrying `ContextAssertion` objects;
+- raw mail/message/enterprise/transcript strings do not appear in clear execution output.
 
 ## Next M2 slice
 
-The next slice should replace the current plaintext provider result path with the already-tested RCP JOSE `SecureEnvelope` profile and add consumer-side ContextAssertion normalization/provenance aggregation.
+Next, add persistent relationship-context aggregation and deterministic recomputation so source revocation can invalidate/rebuild the final relationship brief without losing provenance from unaffected providers.
