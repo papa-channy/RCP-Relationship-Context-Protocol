@@ -1,24 +1,82 @@
 # RCP Experimental Specification
 
-This directory contains the artifacts that define the experimental RCP Core v0.1 protocol contract.
+This directory contains both the preserved experimental v0.1 contract and the active v0.2 semantic-core design work.
 
 Current project status: **experimental draft, not a stable standard**.
 
-## Normative Core surface
+## Specification generations
 
-[`core-v0.1.md`](./core-v0.1.md) defines the current normative semantics for experimental Core v0.1. `MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` requirements in that document govern Core behavior.
+### v0.1 — preserved experimental baseline
 
-The JSON Schemas under [`schemas/`](./schemas/) define machine-readable structural constraints. If a schema is less strict than the normative prose, implementations still need to follow the prose. The project aims to eliminate such gaps where practical.
+[`core-v0.1.md`](./core-v0.1.md) remains the current normative experimental contract for the existing schemas, conformance suite, reference ecosystem, and external Provider harness.
 
-## Experimental normative profiles
+It defines seven wire objects:
 
-- [`profiles/secure-envelope-binding-v0.1.md`](./profiles/secure-envelope-binding-v0.1.md) — binds an encrypted envelope to the exact action, resource, purpose, destination, processing location, decision, and authorization lifetime that produced it.
-- [`profiles/crypto-jose-v0.1.md`](./profiles/crypto-jose-v0.1.md) — defines the first concrete `SecureEnvelope` cryptographic representation using JWE (`ECDH-ES` with X25519 + `A256GCM`), detached JWS (`Ed25519`), and RFC 8785 JSON canonicalization.
-- [`profiles/context-selection-boundaries-v0.1.md`](./profiles/context-selection-boundaries-v0.1.md) — prevents capability substitution (for example raw content export when only provider context is allowed) and prevents group interactions from silently collapsing into bilateral relationship context.
+1. `IdentityClaim`
+2. `ProviderCapability`
+3. `PermissionRequest`
+4. `PermissionDecision`
+5. `ContextAssertion`
+6. `SecureEnvelope`
+7. `RevocationEvent`
 
-Profiles refine Core behavior for a specific interoperability surface. A profile does not override a stricter Core requirement.
+The v0.1 work is intentionally retained because it provides reproducible evidence for:
 
-## Registries
+- fail-closed authorization behavior;
+- permission-before-retrieval;
+- identity isolation;
+- multi-party projection boundaries;
+- epistemic classes;
+- provenance/access separation;
+- derived-policy inheritance;
+- revocation/recomputation;
+- encrypted `SecureEnvelope` interoperability;
+- Node ↔ Python JOSE interoperability.
+
+Do not silently reinterpret v0.1 objects as v0.2 objects.
+
+### v0.2 — active semantic-core design
+
+[`core-v0.2-draft.md`](./core-v0.2-draft.md) is the active **non-normative design draft**.
+
+It proposes that RCP Core become a transport-independent relationship information/lifecycle model centered on concepts such as:
+
+- `ActorReference`;
+- `RelationshipScope`;
+- `InteractionEvidence`;
+- `ContextAssertion`;
+- `EpistemicClass`;
+- `DerivationDependency`;
+- `ContextLifecycle`;
+- `PolicyReference`.
+
+The draft intentionally re-evaluates generic v0.1 infrastructure concerns such as capability discovery, authorization requests/decisions, transport envelopes, and revocation signal delivery.
+
+See [`../docs/standards-boundary.md`](../docs/standards-boundary.md) for the responsibility split.
+
+## v0.2 Core rule
+
+A concept should remain in RCP Core only if independent systems still need to agree on its meaning when the transport/runtime changes.
+
+Conceptual test:
+
+> **Would two systems need the same semantic agreement if one carried the relationship object over MCP and the other carried the equivalent object over plain HTTP?**
+
+If not, the feature probably belongs in a binding/profile rather than Core.
+
+## Existing v0.1 profiles
+
+The following remain normative only for the v0.1 experimental contract unless explicitly migrated:
+
+- [`profiles/secure-envelope-binding-v0.1.md`](./profiles/secure-envelope-binding-v0.1.md)
+- [`profiles/crypto-jose-v0.1.md`](./profiles/crypto-jose-v0.1.md)
+- [`profiles/context-selection-boundaries-v0.1.md`](./profiles/context-selection-boundaries-v0.1.md)
+
+These profiles are valuable implementation evidence but should not be assumed to represent the final v0.2 Core boundary.
+
+## Existing registries
+
+Current v0.1 registries:
 
 - [`registries/capabilities.md`](./registries/capabilities.md)
 - [`registries/reason-codes.md`](./registries/reason-codes.md)
@@ -26,7 +84,18 @@ Profiles refine Core behavior for a specific interoperability surface. A profile
 - [`registries/purposes.md`](./registries/purposes.md)
 - [`registries/processing-locations.md`](./registries/processing-locations.md)
 
-## Initial schema surface
+Each registry will be classified during the v0.2 refactor as one of:
+
+1. relationship semantic Core;
+2. reusable RCP profile;
+3. transport/binding concern;
+4. better delegated to an external standard.
+
+No registry should be carried into v0.2 merely for compatibility with the current reference implementation.
+
+## Existing v0.1 schemas
+
+The machine-readable schemas under [`schemas/`](./schemas/) remain the syntax contract for v0.1:
 
 - `identity-claim.schema.json`
 - `provider-capability.schema.json`
@@ -36,39 +105,77 @@ Profiles refine Core behavior for a specific interoperability surface. A profile
 - `secure-envelope.schema.json`
 - `revocation-event.schema.json`
 
-All Core v0.1 wire objects carry `rcp_version: "0.1"`. A version mismatch MUST be treated as unsupported rather than silently coerced.
+All v0.1 wire objects carry `rcp_version: "0.1"`.
 
-The current `SecureEnvelope` schema is bound to the experimental JOSE profile identifier `rcp-jose-x25519-a256gcm-ed25519-v0.1`. This is intentional for interoperability testing; it is **not** a claim that the profile is production-ready or cryptographically reviewed.
+**No v0.2 wire schemas are frozen yet.**
+
+The project will define v0.2 schemas only after relationship-specific semantic scenarios stabilize.
+
+## Required v0.2 semantic scenarios
+
+Before v0.2 becomes normative, conformance work should cover at least:
+
+1. **multi-party projection** — `{A,B,C}` evidence does not silently become `{A,B}` context;
+2. **conflicting evidence** — independent Providers can express conflict/supersession without flattening both into current fact;
+3. **partial-source invalidation** — dependent context is re-evaluated and may survive only with independent valid support;
+4. **policy-preserving derivation** — lower-fidelity transformation does not automatically loosen restrictions;
+5. **cross-provider composition** — combined state preserves provider/evidence separation, disagreement, and restrictions;
+6. **epistemic preservation** — source statements, observations, interpretations, inferences, and strategies do not silently become verified facts.
+
+## Binding strategy
+
+RCP v0.2 should be capable of multiple bindings.
+
+Candidate bindings/profiles include:
+
+- RCP over MCP;
+- RCP over HTTP;
+- RCP over A2A;
+- provider-native API mapping;
+- AuthZEN-compatible relationship authorization profile;
+- Shared-Signals-compatible invalidation/change profile;
+- W3C PROV mapping;
+- ODRL/DPV policy mapping;
+- JOSE/COSE security profile.
+
+A binding may define transport framing, discovery, subscriptions, authentication integration, retries, and security mechanics. It must not redefine RCP semantic meaning.
 
 ## Normative vs non-normative project material
 
-A clean-room implementer should be able to implement Core behavior from:
+### v0.1 implementers
 
-1. this `/spec` directory;
-2. the machine-readable schemas and registries referenced here;
-3. [`../docs/IMPLEMENTER_GUIDE.md`](../docs/IMPLEMENTER_GUIDE.md), which explains how to read the experimental specification without depending on reference internals.
+A clean-room v0.1 implementer can still work from:
 
-The following are **not Core transport requirements**:
+1. [`core-v0.1.md`](./core-v0.1.md);
+2. applicable v0.1 profiles/registries/schemas;
+3. [`../docs/IMPLEMENTER_GUIDE.md`](../docs/IMPLEMENTER_GUIDE.md).
 
-- `/reference-ecosystem` service topology and HTTP endpoints;
-- `/conformance/external/provider-harness-profile-v0.1.md` HTTP routes;
-- demo ports, process layout, storage choices, or mock-provider state files;
-- any implementation-specific module/package structure.
+The existing black-box Provider harness remains a v0.1 validation tool.
 
-Those resources exist to demonstrate and test observable behavior. An implementation MAY use a completely different transport or architecture as long as it satisfies the applicable normative Core/profile contract.
+### v0.2 implementers
 
-## External implementation evidence
+There is not yet a stable v0.2 clean-room implementation target.
 
-The M3 external Provider harness provides a non-normative black-box test surface for independently implemented Providers. Passing that harness can provide interoperability evidence for the cases it covers, but the harness does not redefine Core semantics.
+The project should first finish semantic reconciliation and conformance scenarios, then publish machine-readable v0.2 definitions and a new implementation target.
 
-Independent implementation results should use [`../docs/INDEPENDENT_IMPLEMENTATION_REPORT_TEMPLATE.md`](../docs/INDEPENDENT_IMPLEMENTATION_REPORT_TEMPLATE.md), and security/privacy review should use [`../docs/SECURITY_PRIVACY_REVIEW_CHECKLIST.md`](../docs/SECURITY_PRIVACY_REVIEW_CHECKLIST.md) as a bounded review aid.
+## Reference ecosystem status
+
+`/reference-ecosystem` demonstrates v0.1 behavior. Its:
+
+- service topology;
+- control-plane process;
+- HTTP routes;
+- relay;
+- demo ports;
+- storage choices;
+- package/module structure
+
+are not v0.2 Core requirements.
 
 ## Status warning
 
-Core v0.1 remains incomplete. It does not yet define a normative transport binding, global identity system, legal/jurisdiction profile, complete policy expression language, complete interaction wire model, or production key-discovery/attestation model.
+RCP v0.2 is explicitly under scope reduction.
 
-The JOSE profile is experimental and MUST receive independent security/interoperability review before RCP can make a production-grade cryptographic interoperability claim.
+The project should prefer deleting or delegating a generic protocol responsibility over preserving it merely because the v0.1 reference implementation already contains it.
 
-No implementation should claim production-grade RCP interoperability solely because it validates against the current schemas or passes the current conformance suite.
-
-Before RCP v0.1 can be called a stable protocol specification, the normative prose, schemas, registries, examples, profiles, and conformance tests must converge and receive independent implementation/security review.
+Before any v0.2 stable claim, the semantic model, schemas, examples, bindings, and conformance cases must converge and receive independent implementation/security/privacy review.

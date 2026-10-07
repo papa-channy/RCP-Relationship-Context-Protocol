@@ -1,83 +1,76 @@
 # RCP External Validation & Outreach
 
-This directory contains concise materials for people who did **not** participate in the design of RCP and may be willing to challenge, implement, or review it.
+> **Status:** outreach package for the preserved v0.1 baseline. Active broad outreach is intentionally paused while RCP refactors toward the v0.2 transport-independent semantic Core.
 
-RCP is still an experimental protocol draft. These materials are intentionally written as **validation requests**, not as standards-adoption or production-readiness claims.
+These materials were created to help unrelated implementers and reviewers challenge RCP v0.1. They remain useful historical validation tools, but they should not be presented as the current implementation target for the project.
 
-## Start here by role
+## Active project direction
 
-### Independent implementer
+Read first:
 
-Read:
+1. [`../../spec/core-v0.2-draft.md`](../../spec/core-v0.2-draft.md)
+2. [`../standards-boundary.md`](../standards-boundary.md)
+3. [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md)
+4. [Issue #23 — semantic-core refactor](https://github.com/papa-channy/RCP-Relationship-Context-Protocol/issues/23)
 
-1. [`TECHNICAL_BRIEF.md`](./TECHNICAL_BRIEF.md)
-2. [`IMPLEMENTATION_CHALLENGE.md`](./IMPLEMENTATION_CHALLENGE.md)
-3. [`../IMPLEMENTER_GUIDE.md`](../IMPLEMENTER_GUIDE.md)
-4. [`../../spec/core-v0.1.md`](../../spec/core-v0.1.md)
+The current engineering goal is to determine whether RCP has a defensible transport-independent relationship information/lifecycle model, not to maximize adoption of the v0.1 Provider profile.
 
-The target outcome is a clean-room Provider implementation that can be tested with the external black-box harness without importing the RCP reference runtime.
+## Preserved v0.1 validation materials
 
-### Security or privacy reviewer
+The following remain useful for auditing or independently reproducing the v0.1 baseline:
 
-Read:
+- [`TECHNICAL_BRIEF.md`](./TECHNICAL_BRIEF.md)
+- [`IMPLEMENTATION_CHALLENGE.md`](./IMPLEMENTATION_CHALLENGE.md)
+- [`SECURITY_REVIEW_REQUEST.md`](./SECURITY_REVIEW_REQUEST.md)
+- [`../IMPLEMENTER_GUIDE.md`](../IMPLEMENTER_GUIDE.md)
+- [`../../spec/core-v0.1.md`](../../spec/core-v0.1.md)
+- [`../../conformance/external/provider-harness-profile-v0.1.md`](../../conformance/external/provider-harness-profile-v0.1.md)
 
-1. [`TECHNICAL_BRIEF.md`](./TECHNICAL_BRIEF.md)
-2. [`SECURITY_REVIEW_REQUEST.md`](./SECURITY_REVIEW_REQUEST.md)
-3. [`../SECURITY_PRIVACY_REVIEW_CHECKLIST.md`](../SECURITY_PRIVACY_REVIEW_CHECKLIST.md)
-4. [`../threat-and-rights-model.md`](../threat-and-rights-model.md)
+A clean-room v0.1 implementation is still meaningful evidence about the old contract, but passing the v0.1 harness does **not** establish compatibility with the emerging v0.2 semantic Core.
 
-The target outcome is not a generic code review. We want the reviewer to identify protocol ambiguity, unsafe permission semantics, metadata leakage, cryptographic-profile weaknesses, or rights-model gaps.
+## Standards/interoperability research
 
-### Standards / interoperability engineer
+These planning artifacts remain useful background:
 
-Read:
+- [`OUTREACH_SEQUENCE.md`](./OUTREACH_SEQUENCE.md)
+- [`TARGET_MAP.md`](./TARGET_MAP.md)
+- [`OUTREACH_TEMPLATES.md`](./OUTREACH_TEMPLATES.md)
 
-1. [`TECHNICAL_BRIEF.md`](./TECHNICAL_BRIEF.md)
-2. [`../../spec/README.md`](../../spec/README.md)
-3. [`../../CHARTER.md`](../../CHARTER.md)
-4. [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md)
-
-The useful question is not “should everyone adopt RCP?” yet. The useful question is whether the protocol surface defines a coherent interoperability problem that existing identity, authorization, portability, and secure-envelope standards do not already solve on their own.
-
-## Outreach workflow
-
-- [`OUTREACH_SEQUENCE.md`](./OUTREACH_SEQUENCE.md) defines the recommended order: implementers → security/privacy reviewers → standards/interoperability community → platform teams.
-- [`TARGET_MAP.md`](./TARGET_MAP.md) maps current public communities/projects that are relevant to each validation wave.
-- [`OUTREACH_TEMPLATES.md`](./OUTREACH_TEMPLATES.md) contains short first-contact templates for each audience.
-
-The project should advance its claims only as external evidence advances. Platform adoption outreach is intentionally later than clean-room interoperability and independent review.
+Do not use them for broad adoption outreach until the semantic-core refactor is stable enough that external reviewers are evaluating the intended protocol boundary rather than a superseded v0.1 shape.
 
 ## Current evidence
 
-The repository currently includes:
+The repository still contains substantial v0.1 evidence:
 
-- normative Core v0.1 draft semantics and JSON Schemas;
-- capability, permission, context, secure-envelope, and revocation objects;
-- semantic and privacy-boundary conformance tests;
-- experimental JOSE profile tests;
-- Node ↔ Python cryptographic interoperability probes;
-- an executable five-provider reference ecosystem;
-- permission-before-retrieval enforcement;
-- encrypted Provider → Consumer context delivery;
-- revocation propagation and relationship-brief recomputation;
-- policy-drift / stale-decision handling;
-- an operator-blind relay reference path;
-- a black-box external Provider harness.
+- normative experimental v0.1 semantics and schemas;
+- semantic/privacy-boundary conformance tests;
+- JOSE profile tests;
+- Node ↔ Python crypto interoperability;
+- a five-Provider reference ecosystem;
+- permission-before-retrieval;
+- provider-side safe projection/raw-content boundaries;
+- revocation/recomputation;
+- policy-drift handling;
+- operator-blind relay;
+- black-box external Provider harness.
 
-## Claims we are **not** making
+The v0.2 refactor is preserving these results while reducing RCP's responsibility to relationship-specific semantics.
+
+## Claims we are not making
 
 RCP does not currently claim:
 
 - standards-body endorsement;
-- independent implementation interoperability;
-- independent cryptographic or security review;
-- production security;
+- v0.2 independent implementation interoperability;
+- independent security/privacy certification;
+- production readiness;
 - legal compliance in any jurisdiction;
-- compatibility with private APIs that do not expose the required capabilities;
 - adoption by Google, Apple, Meta, Microsoft, Kakao, or any other platform.
 
 ## Where to report findings
 
-Use GitHub issues for protocol ambiguities, implementation failures, and review findings. For security vulnerabilities that should not be disclosed publicly before mitigation, follow [`../../SECURITY.md`](../../SECURITY.md).
+Use GitHub issues for protocol ambiguities and design findings. Security vulnerabilities that should not be publicly disclosed before mitigation should follow [`../../SECURITY.md`](../../SECURITY.md).
 
-Current clean-room validation milestone: [Issue #19](https://github.com/papa-channy/RCP-Relationship-Context-Protocol/issues/19).
+Current design milestone: [Issue #23](https://github.com/papa-channy/RCP-Relationship-Context-Protocol/issues/23).
+
+Preserved v0.1 clean-room milestone: [Issue #19](https://github.com/papa-channy/RCP-Relationship-Context-Protocol/issues/19).

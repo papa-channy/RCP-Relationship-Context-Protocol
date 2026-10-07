@@ -1,10 +1,19 @@
-# RCP Reference Ecosystem
+# RCP Reference Ecosystem — v0.1 Experimental Baseline
 
-> **Status:** M2 implemented and CI-verified. Experimental reference software; not a production deployment, external-adoption claim, or security certification.
+> **Status:** M2 implemented and CI-verified for the preserved RCP v0.1 design. Experimental reference software; not the normative v0.2 architecture, a production deployment, an external-adoption claim, or a security certification.
 
-This workspace demonstrates RCP as an executable multi-provider interoperability system rather than a collection of standalone schemas.
+RCP is now being refactored around a smaller transport-independent semantic Core. This workspace remains valuable because it demonstrates executable v0.1 behavior and provides regression evidence for semantics that may survive into v0.2.
 
-## Run the canonical demo
+For the active direction, see:
+
+- [`../spec/core-v0.2-draft.md`](../spec/core-v0.2-draft.md)
+- [`../docs/standards-boundary.md`](../docs/standards-boundary.md)
+- [`../ARCHITECTURE.md`](../ARCHITECTURE.md)
+- [Issue #23](https://github.com/papa-channy/RCP-Relationship-Context-Protocol/issues/23)
+
+The process topology, control-plane service, HTTP routes, relay, storage model, and v0.1 permission/envelope objects in this workspace are **reference implementation choices**, not mandatory v0.2 Core architecture.
+
+## Run the canonical v0.1 demo
 
 ```bash
 cd reference-ecosystem
@@ -12,79 +21,51 @@ npm install
 npm run demo
 ```
 
-The demo starts five independent providers, an operator-blind relay, and the RCP control-plane/consumer. It then:
+The demo starts five independent Providers, an operator-blind relay, and the reference control-plane/Consumer. It then:
 
 1. resolves five provider-scoped identities for the same human under one tenant;
 2. creates a minimum-data `ProcessingPlan`;
 3. obtains provider-issued `PermissionDecision` objects before protected retrieval;
 4. routes allowed results as signed/encrypted RCP `SecureEnvelope` objects;
 5. one-time delivers those envelopes through an opaque relay;
-6. verifies signature, authorization binding, lifetime, and ciphertext at the consumer;
+6. verifies signature, authorization binding, lifetime, and ciphertext at the Consumer;
 7. normalizes surviving data into provenance-carrying `ContextAssertion` objects;
 8. persists those assertions and materializes a relationship brief.
 
 It produces:
 
 ```text
-out/canonical-trace.json   # machine-readable end-to-end trace
-out/canonical-brief.txt    # human-readable relationship brief
+out/canonical-trace.json
+out/canonical-brief.txt
 ```
 
-The same artifacts are uploaded by the GitHub Actions reference-ecosystem workflow.
-
-## Process topology
+## Reference topology
 
 ```text
 mail-provider -----------┐
 messenger-provider ------┤
-enterprise-provider -----┼--> RCP opaque relay --> control-plane / consumer --> context store
+enterprise-provider -----┼--> opaque relay --> reference control-plane / consumer --> context store
 phone-provider ----------┤
 meeting-provider --------┘
 ```
 
-Each provider runs as its own process and owns its own:
+Each Provider runs as its own process and owns its own:
 
 - capability manifest;
-- protected state file;
+- protected state;
 - permission-decision cache;
 - provider policy state;
 - signing key material.
 
-There is no shared provider database.
+There is no shared Provider database.
 
-## Canonical provider profiles
+## What the reference implementation proves
 
-| Provider | Identity | Interaction metadata | Raw content | Provider context | External processing |
-| --- | --- | --- | --- | --- | --- |
-| mail | allow | allow | allow | allow | allow |
-| messenger | allow | allow | deny | allow | limited |
-| enterprise | allow | allow | deny | limited | limited |
-| phone | allow | allow | deny | deny | limited |
-| meeting | allow | allow | limited | allow | limited |
+The workspace demonstrates that the v0.1 design can execute several important relationship-context boundaries coherently across independently stateful mock Providers.
 
-The canonical planner prefers:
+### Provider-scoped identity resolution
 
-1. `provider_context`
-2. `interaction_metadata`
-3. `content`
-
-while preferring an unconditional `allow` over a higher-fidelity `limited` representation.
-
-The initial meeting-preparation plan therefore selects:
-
-- mail → `provider_context`
-- messenger → `provider_context`
-- enterprise → `interaction_metadata`
-- phone → `interaction_metadata`
-- meeting → `provider_context`
-
-The phone step remains conditional in the canonical scenario, so four provider sources become executable.
-
-## Provider-scoped identity resolution
-
-RCP does not assume that one global platform identifier represents Human B everywhere.
-
-The canonical scenario begins with five user-confirmed provider identities:
+The canonical scenario maps one logical person to provider-local identities under one tenant:
 
 ```text
 person:b
@@ -95,25 +76,13 @@ person:b
 └ demo:meeting    -> provider-local:b-meeting
 ```
 
-The control plane creates RCP `IdentityClaim` objects and a tenant-scoped resolution. The logical PermissionRequest subject remains `person:b`, while each provider resource uses the provider-local subject and retains the supporting `identity_claim_ref`.
+Only strong local evidence states are automatically bound in the reference resolver. Ambiguous/conflicted states do not silently merge, and resolutions are tenant-scoped.
 
-The reference resolver automatically binds only:
+The v0.2 design may narrow this into relationship-scoped identity dependencies rather than retain a generic `IdentityClaim` protocol object.
 
-- `verified`
-- `provider_confirmed`
-- `user_confirmed`
+### Permission before retrieval
 
-Claims marked `probable`, `possible`, `conflicted`, or `rejected` are not silently merged. Identity resolutions are tenant-scoped and cannot be read through a different tenant.
-
-Canonical identity seeds are in:
-
-```text
-scenarios/canonical-identity-seeds.json
-```
-
-## Permission before retrieval
-
-Protected state is not read at provider startup, during planning, or during permission evaluation.
+Protected state is not read at Provider startup, planning, or permission evaluation.
 
 ```text
 Goal
@@ -128,164 +97,95 @@ provider-issued PermissionDecision
  ↓
 execution-time capability revalidation
  ↓
-provider validates fresh issued allow
+Provider validates fresh issued allow
  ↓
-protected state lazy-read
+protected-state lazy read
 ```
 
-A provider rejects retrieval unless:
+Tests reject forged decisions, request mutation, unresolved conditional decisions, revoked Providers, and stale decisions.
 
-- the decision ID was actually issued by that provider process;
-- the decision is `allow` and unexpired;
-- the evaluated request still matches exactly;
-- the selected representation still matches;
-- the current capability version still matches the evaluated version.
+The v0.2 direction keeps the **no over-retrieval / no rights-expansion behavior** while reconsidering whether generic permission request/decision mechanics belong in RCP Core or an AuthZEN-compatible profile.
 
-The tests explicitly reject forged decisions, request mutation after evaluation, unresolved conditional decisions, revoked providers, and stale decisions.
+### Provider-side representation boundaries
 
-## SecureEnvelope data path
+The canonical Provider profiles distinguish:
 
-After authorization, providers do not return plaintext protected results to the consumer path.
+- identity;
+- interaction metadata;
+- raw content;
+- provider-generated context;
+- external processing.
 
-The selected provider result is encrypted and signed using the experimental profile:
+The planner prefers lower-risk provider-generated or metadata representations over raw content when possible.
+
+This remains important to v0.2 because a Provider should be able to keep raw/private evidence internal while emitting an interoperable relationship projection.
+
+### SecureEnvelope data path
+
+After authorization, the v0.1 reference Providers encrypt/sign selected results using:
 
 ```text
 rcp-jose-x25519-a256gcm-ed25519-v0.1
 ```
 
-The current profile uses:
+with:
 
-- X25519 / `ECDH-ES`
-- `A256GCM`
-- Ed25519 detached JWS
-- RFC 8785 JSON canonicalization
+- X25519 / `ECDH-ES`;
+- `A256GCM`;
+- Ed25519 detached JWS;
+- RFC 8785 JSON canonicalization.
 
-Consumer activation requires:
+The Consumer validates sender/recipient/action/resource/purpose/destination/processing-location/decision binding before activating plaintext.
 
-1. provider signing-key discovery;
-2. detached JWS verification;
-3. sender/recipient/action/resource/purpose/destination/processing-location/decision binding;
-4. authorization lifetime validation;
-5. JWE decryption with the consumer recipient key;
-6. decrypted provider-result binding validation.
+This remains useful crypto interoperability evidence, but v0.2 treats envelope/security mechanics as a binding/profile concern rather than the center of the semantic Core.
 
-Cryptographic authenticity never substitutes for authorization validation.
+### Operator-blind relay
 
-## Operator-blind relay
+With `RCP_RELAY_URL`, Providers send `SecureEnvelope` objects to a relay and return receipts. The Consumer one-time retrieves and decrypts the ciphertext.
 
-With `RCP_RELAY_URL` enabled, providers send the SecureEnvelope to the relay and return only an `rcp.relay_receipt`.
+The relay has no Consumer private key and persists only minimized transfer metadata.
 
-The consumer then one-time retrieves the ciphertext envelope from the relay before performing its normal verification and decryption.
+This demonstrates **payload blindness, not metadata anonymity**.
 
-The relay has no consumer private key and exposes no key or decrypt endpoint. After successful delivery, pending ciphertext is removed from relay memory.
+The relay is optional reference transport infrastructure; no v0.2 deployment is required to use it.
 
-Its persistent audit is intentionally minimized to transfer metadata such as:
+### ContextAssertion activation
 
-- sender / recipient;
-- action and resource class;
-- purpose / destination / processing location;
-- permission-decision reference;
-- crypto profile identifiers;
-- ciphertext byte length and SHA-256;
-- received / delivered timestamps.
+Provider data is normalized without silently promoting it to verified fact.
 
-It does not persist:
+Reference mappings include:
 
-- JWE ciphertext after delivery;
-- `resource_ref`;
-- provider-result objects;
-- relationship statements;
-- raw provider content;
-- consumer private keys.
+- provider-generated context → `system_interpretation`;
+- interaction metadata → `extracted_fact`;
+- allowed raw content → `source_statement`.
 
-This demonstrates **operator-blind payload routing**, not metadata anonymity. Unlinkable routing and stronger traffic-analysis resistance remain future privacy work.
+This epistemic separation is one of the strongest candidates for the v0.2 semantic Core.
 
-## ContextAssertion activation
+### Persistent context and source revocation
 
-After decryption, provider data is normalized rather than silently promoted to verified fact.
+The Consumer stores assertions and materializes current relationship context from active state.
 
-Current reference mapping:
+Provider/source revocation can transition affected assertions, recompute the current brief, preserve unrelated context, and keep historical provenance.
 
-- provider-generated context → `system_interpretation`, provenance `provider_generated`;
-- interaction metadata → `extracted_fact`, assertion type `event`;
-- explicitly allowed raw content → `source_statement`.
+The v0.2 design keeps the **downstream lifecycle consequence model** while reconsidering whether RCP needs to own a generic `RevocationEvent` transport object.
 
-Every persistent assertion retains source provenance and inherited policy references.
+### Enterprise policy drift
 
-## Persistent context and source revocation — D2
+The enterprise Provider can move from a permissive capability/policy version to a stricter runtime version.
 
-The consumer stores assertions by logical subject and materializes the current relationship brief only from `active` assertions.
+Old authorization becomes stale and new retrieval is blocked before protected state is read.
 
-Provider revocation does not rewrite history:
+The v0.2 design keeps policy/identity/source changes as material dependencies while moving generic authorization mechanics toward profiles/mappings.
 
-```text
-before
-  mail        active
-  messenger   active
-  enterprise  active
-  meeting     active
+### Raw-content boundary
 
-revoke demo:messenger
+The messenger Provider can expose provider-generated context while denying raw content export.
 
-historical store
-  mail        active
-  messenger   revoked
-  enterprise  active
-  meeting     active
+Known raw fixture strings are tested not to leak into the canonical clear result or relay audit.
 
-current brief
-  active assertions = 3
-```
+This provider-side safe projection pattern remains central to the v0.2 architecture.
 
-After provider revocation:
-
-- matching provenance is transitioned to `revoked`;
-- unrelated context survives;
-- the brief is recomputed;
-- old provider decisions cannot be reused;
-- future permission evaluation fails closed.
-
-## Enterprise policy drift — D3
-
-The enterprise demo supports a runtime transition:
-
-```text
-managed-context-v1 / capability 1
-  interaction_metadata = allow
-  provider_context     = limited
-  external_processing  = limited
-
-            ↓
-
-lockdown-v2 / capability 2
-  interaction_metadata = deny
-  provider_context     = deny
-  content              = deny
-  external_processing  = deny
-```
-
-When this change occurs after an `allow` was issued:
-
-- the provider rejects replay of the old decision;
-- the control plane independently sees the capability-version mismatch and marks the step `stale` before retrieval;
-- the enterprise protected-read counter remains unchanged;
-- unaffected providers continue;
-- replanning under v2 excludes the enterprise source with `no_usable_representation`.
-
-Previously persisted context is not retroactively reclassified in this slice. A formal `restricted` lifecycle state is future specification work rather than an overloaded use of `revoked` or `invalidated`.
-
-## Raw-content boundary — D4
-
-The messenger provider contains raw fixture content but advertises:
-
-```text
-content = deny
-provider_context = allow
-```
-
-The canonical flow can therefore receive provider-generated context without exporting the underlying raw message. Tests assert that known raw mail/message/enterprise/transcript strings do not leak into the clear canonical result or relay audit.
-
-## Executable scenarios
+## Executable v0.1 scenarios
 
 ```bash
 npm run smoke
@@ -297,38 +197,43 @@ npm run test:identity
 npm run demo
 ```
 
-The CI workflow runs all of them on every relevant pull request.
+The CI workflow runs the relevant tests on pull requests.
 
-### Coverage
+Current v0.1 coverage includes:
 
-- **D1 — multi-provider relationship preparation:** implemented
-- **D2 — source revocation + downstream recomputation:** implemented
-- **D3 — enterprise policy drift + stale decisions:** implemented
-- **D4 — raw-content boundary / provider-context fallback:** implemented and tested
-- **D5 — operator-blind encrypted relay:** implemented
-- **Provider-scoped identity resolution:** implemented for the canonical user-confirmed case
-- **One-command trace + human brief:** implemented
+- D1 — multi-provider relationship preparation;
+- D2 — source revocation + downstream recomputation;
+- D3 — enterprise policy drift + stale decisions;
+- D4 — raw-content boundary / provider-context fallback;
+- D5 — operator-blind encrypted relay;
+- Provider-scoped identity resolution;
+- one-command trace + human-readable brief.
 
 ## Current boundary of the claim
 
-M2 demonstrates that the current RCP v0.1 design can be executed coherently across independent mock provider boundaries.
+The reference ecosystem does **not** prove:
 
-It does **not** prove:
-
-- adoption by Google, Apple, Kakao, Microsoft, Meta, or any other platform;
-- production-grade key management or transport security;
-- jurisdiction-wide legal correctness;
+- that this service topology is the final RCP architecture;
+- v0.2 semantic interoperability;
+- adoption by any real platform;
+- production-grade key management/security;
+- legal correctness;
 - metadata anonymity;
 - external independent interoperability;
 - security certification.
 
-Those require separate work and external review.
-
 ## Next direction
 
-With the reference ecosystem now executable end-to-end, the next useful work should shift from adding more mock behavior to external validation:
+Do not add more mock infrastructure merely to make the v0.1 reference stack larger.
 
-1. have an independent developer implement one Provider or Consumer from the public spec without using the reference code;
-2. conduct an external security/privacy review of the Core + JOSE profile + relay metadata model;
-3. tighten the remaining normative gaps discovered by those reviews;
-4. only then consider a real non-RCP platform bridge as a compatibility demonstration.
+The next engineering work should use the reference ecosystem selectively as a testbed for the v0.2 semantic refactor:
+
+1. encode multi-party projection scenarios;
+2. encode conflicting/supporting/superseding evidence;
+3. encode partial-source invalidation with independent surviving support;
+4. encode policy-preserving derivation;
+5. separate the semantic engine from HTTP/control-plane mechanics;
+6. carry equivalent v0.2 semantic objects over at least two bindings, such as MCP and HTTP;
+7. compare resulting relationship state for semantic equivalence.
+
+Only after the v0.2 semantic surface stabilizes should the project resume unrelated clean-room implementation as the main milestone.

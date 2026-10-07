@@ -1,14 +1,26 @@
 # RCP Core v0.1 — Clean-Room Implementer Guide
 
-> Status: experimental implementer guidance for RCP Core v0.1. This guide is not itself a standards claim.
+> **Status:** preserved experimental guidance for the v0.1 baseline.
+>
+> RCP is currently refactoring toward a transport-independent v0.2 semantic Core. This guide remains valid for reproducing and independently testing the **v0.1** contract, but v0.1 is no longer the active target for new protocol-scope decisions.
 
-This document is for developers who want to implement RCP **without copying or importing the reference implementation**.
+For the active direction, read:
 
-The most useful external validation for RCP is not another wrapper around the existing code. It is an implementation that reaches compatible protocol-visible behavior from the public specification alone.
+- [`../spec/core-v0.2-draft.md`](../spec/core-v0.2-draft.md)
+- [`standards-boundary.md`](./standards-boundary.md)
+- [Issue #23](https://github.com/papa-channy/RCP-Relationship-Context-Protocol/issues/23)
 
-## 1. What is normative?
+Do not claim that passing the v0.1 harness establishes compatibility with the future v0.2 semantic Core.
 
-For Core v0.1, implementers should treat the following as the current normative draft surface:
+## 1. Purpose of this guide
+
+This document is for developers who want to implement the preserved RCP v0.1 contract **without copying or importing the reference implementation**.
+
+A clean-room v0.1 implementation remains useful evidence for understanding ambiguities in the historical baseline, but the project should avoid treating new v0.1 Provider implementations as a substitute for validating the redesigned v0.2 semantic model.
+
+## 2. What is normative for v0.1?
+
+Implementers should treat the following as the v0.1 normative draft surface:
 
 1. [`../spec/core-v0.1.md`](../spec/core-v0.1.md)
 2. JSON Schemas in [`../spec/schemas/`](../spec/schemas/)
@@ -23,24 +35,22 @@ The current experimental profiles include:
 
 When prose and schema differ, the stricter normative requirement governs until the inconsistency is fixed.
 
-## 2. What is not Core?
+## 3. What is not v0.1 Core?
 
-The following are **reference or test infrastructure**, not mandatory RCP architecture:
+The following are reference or test infrastructure, not mandatory architecture:
 
-- `reference-ecosystem/`
-- the Node reference provider runtime;
+- `reference-ecosystem/`;
+- the Node reference Provider runtime;
 - the reference control-plane HTTP routes;
-- the demo opaque relay implementation;
-- the M2 relationship brief UI/data shape;
-- the external black-box harness HTTP profile in `conformance/external/`.
+- the opaque relay implementation;
+- the M2 relationship brief shape;
+- the external black-box harness HTTP profile.
 
-An RCP implementation may use Rust, Go, Java, Python, Swift, Kotlin, another transport, another storage model, or no centralized server at all.
+An implementation may use another language, transport, storage model, topology, or no centralized service at all.
 
-Conformance is about protocol-visible semantics and the chosen interoperability profile, not reproducing the reference repository layout.
+## 4. v0.1 wire surface
 
-## 3. Minimum Core objects
-
-A Core v0.1 implementation should be able to parse, validate, emit, or otherwise correctly handle the objects relevant to its role:
+A v0.1 implementation should correctly handle the objects relevant to its role:
 
 - `IdentityClaim`
 - `ProviderCapability`
@@ -50,7 +60,7 @@ A Core v0.1 implementation should be able to parse, validate, emit, or otherwise
 - `SecureEnvelope`
 - `RevocationEvent`
 
-All Core v0.1 wire objects carry:
+All carry:
 
 ```json
 {"rcp_version":"0.1"}
@@ -58,97 +68,77 @@ All Core v0.1 wire objects carry:
 
 Unsupported versions must fail closed rather than being silently coerced.
 
-## 4. Provider implementation checklist
+## 5. Provider implementation checklist
 
-A Provider implementation should, at minimum:
+A v0.1 Provider should:
 
-- expose or otherwise communicate a `ProviderCapability`;
-- evaluate permissions before protected retrieval;
+- expose or otherwise communicate `ProviderCapability`;
+- evaluate permission before protected retrieval;
 - keep capability support distinct from permission;
-- treat `deny`, `unknown`, and unresolved `conditional` decisions as non-executable;
-- bind an executable decision to the request and material policy/capability dependencies that produced it;
-- reject stale decisions when a material dependency changes;
-- enforce representation boundaries (`content`, `provider_context`, metadata, etc.);
+- treat `deny`, `unknown`, and unresolved `conditional` as non-executable;
+- bind executable decisions to the request and material dependencies;
+- reject stale decisions;
+- enforce representation boundaries;
 - preserve restrictions when deriving context;
-- use the selected SecureEnvelope profile when claiming that profile;
+- use the selected SecureEnvelope profile when claiming it;
 - make revocation observable and fail closed for affected future operations.
 
-A Provider must not rely on a caller merely presenting JSON that says `"decision":"allow"`. The Provider must have a trustworthy way to know the decision was validly issued for that request.
+A Provider must not trust arbitrary caller-supplied JSON merely because it says `"decision":"allow"`.
 
-## 5. Consumer implementation checklist
+## 6. Consumer implementation checklist
 
-A Consumer implementation should, at minimum:
+A v0.1 Consumer should:
 
 - distinguish logical people/relationships from provider-local identities;
 - avoid cross-tenant global identity promotion by default;
-- require stronger evidence or explicit confirmation before merging ambiguous identities;
-- build or receive authorization before protected retrieval;
-- validate SecureEnvelope cryptographic authenticity **and** authorization-scope binding;
-- treat source statements, observations, interpretations, and inferences as different epistemic classes;
+- avoid sensitive automatic merge on ambiguous identity evidence;
+- obtain/validate authorization before protected retrieval;
+- validate SecureEnvelope authenticity and authorization-scope binding;
+- preserve epistemic distinctions;
 - retain provenance on persistent derived context;
-- recompute, restrict, invalidate, or revoke downstream context when source authorization changes;
-- avoid granting source access merely because a derived child is readable.
+- recompute/restrict/invalidate downstream context when material sources change;
+- avoid granting source access because a derived child is readable.
 
-## 6. SecureEnvelope profile
+## 7. SecureEnvelope profile
 
-The first concrete profile identifier is:
+The preserved experimental profile identifier is:
 
 ```text
 rcp-jose-x25519-a256gcm-ed25519-v0.1
 ```
 
-Read [`../spec/profiles/crypto-jose-v0.1.md`](../spec/profiles/crypto-jose-v0.1.md) before implementing it.
+Read [`../spec/profiles/crypto-jose-v0.1.md`](../spec/profiles/crypto-jose-v0.1.md).
 
-The profile deliberately uses established JOSE/JCS primitives rather than custom cryptography. Passing the current conformance tests does **not** mean the profile has completed independent security review.
+The profile uses established JOSE/JCS primitives, but passing its conformance tests does not imply independent security review or v0.2 adoption.
 
-Do not infer extra cryptographic requirements from the Node reference code. If a requirement is necessary for interoperability, it belongs in the profile document or conformance material.
+## 8. Identity and derivation boundaries
 
-## 7. Identity resolution
+v0.1 does not define a universal global identity graph.
 
-RCP does not define a universal global identity graph in Core v0.1.
+Minimum safe behavior includes:
 
-Minimum safe behavior is defined by boundaries:
+- tenant/user scoped identity links;
+- no automatic sensitive merge from `probable` / `possible` evidence;
+- no positive merge from `conflicted` / `rejected` evidence;
+- explicit local user confirmation as a valid positive case.
 
-- identity links are tenant/user scoped by default;
-- `probable` / `possible` evidence does not independently justify sensitive automatic merging;
-- `conflicted` / `rejected` evidence cannot authorize a merge;
-- explicit same-tenant user confirmation is a valid local positive case;
-- a provider-local identifier may map to a logical person without exposing that mapping globally.
+Derived relationship context must retain enough provenance/policy dependency for revocation, reevaluation, deletion/retention, and explanation where permitted.
 
-The M2 reference ecosystem demonstrates one possible local resolver. It is not the required RCP algorithm.
+A readable derived assertion does not imply access to its restricted source.
 
-## 8. Derived data and provenance
+## 9. Clean-room v0.1 process
 
-Do not treat transformation as policy laundering.
+1. Read only `/spec`, this guide, and `/conformance` documentation/fixtures.
+2. Do not copy source from `/reference-ecosystem` or existing implementation probes.
+3. Implement the v0.1 objects/profile relevant to your role.
+4. Run the structural/semantic conformance suites.
+5. If implementing the external Provider harness profile, run it against your Provider as a separate process.
+6. Record failures/ambiguities before inspecting reference code.
+7. Submit an independent implementation report.
 
-If restricted source data becomes a summary, embedding, assertion, inference, or materialized view, the derived object must retain sufficient policy/provenance dependency for:
+If the specification is insufficient and reference code is required to guess behavior, record that as a specification defect.
 
-- permission reevaluation;
-- revocation impact analysis;
-- deletion/retention handling;
-- explanation/audit where permitted.
-
-A readable derived object does not imply that the consumer can retrieve its restricted source.
-
-## 9. Clean-room implementation process
-
-Recommended process for an independent implementation:
-
-1. Clone or download the repository.
-2. Read only:
-   - `/spec`
-   - this implementer guide
-   - `/conformance` documentation/fixtures
-3. Do **not** copy source from `/reference-ecosystem` or existing implementation probes.
-4. Implement the Core objects/profile relevant to your Provider or Consumer.
-5. Run the structural/semantic conformance suites.
-6. If implementing the experimental Provider Interop Harness Profile, start your implementation as a separate process and run the black-box harness against it.
-7. Record failures and ambiguities before inspecting the reference implementation.
-8. Submit an independent implementation report.
-
-If the specification is insufficient and you need to inspect reference code to guess required behavior, record that as a **specification defect**. That result is useful to RCP.
-
-## 10. Existing local conformance suites
+## 10. Existing v0.1 conformance suites
 
 Core schema/semantic tests:
 
@@ -165,28 +155,35 @@ npm install --prefix conformance/crypto
 npm test --prefix conformance/crypto
 ```
 
-The black-box external Provider harness is documented separately in:
+External Provider harness:
 
 [`../conformance/external/provider-harness-profile-v0.1.md`](../conformance/external/provider-harness-profile-v0.1.md)
 
-## 11. What counts as an independent implementation?
+## 11. What counts as an independent v0.1 implementation?
 
-For RCP project reporting, an implementation should only be described as independent when:
+An implementation should only be described as independent when:
 
-- it was written by a person/team not relying on the RCP reference implementation source for behavioral decisions;
-- it does not import RCP reference implementation runtime modules;
-- protocol behavior is derived from public spec/profiles/schemas/conformance documentation;
+- it was written without using reference implementation source for behavioral decisions;
+- it does not import RCP reference runtime modules;
+- behavior is derived from public spec/profiles/schemas/conformance documentation;
 - language/library choices are independently selected;
-- deviations and ambiguities are reported rather than silently patched from reference behavior.
+- ambiguities are reported rather than silently patched from reference behavior.
 
-Using standard third-party JOSE, JSON Schema, HTTP, or cryptographic libraries is expected and does not make the implementation non-independent.
+Using standard JOSE, JSON Schema, HTTP, or cryptographic libraries is expected.
 
-## 12. Claims
+## 12. Claims and migration warning
 
-Passing schemas alone means only structural compatibility.
+Passing schemas alone means structural compatibility with v0.1.
 
-Passing the semantic suite means compatibility with the tested semantics.
+Passing semantic suites means compatibility with tested v0.1 semantics.
 
-Passing the external harness means compatibility with that **test transport/profile**, not universal RCP compatibility.
+Passing the external harness means compatibility with that v0.1 test binding/profile.
 
-A production-grade interoperability or security claim requires independent implementation evidence and independent review beyond the current repository-maintained tests.
+None of these imply:
+
+- v0.2 semantic-Core compatibility;
+- production readiness;
+- independent security certification;
+- universal RCP interoperability.
+
+New external implementation efforts should wait for a stable enough v0.2 semantic target unless the explicit goal is to audit the preserved v0.1 baseline.
