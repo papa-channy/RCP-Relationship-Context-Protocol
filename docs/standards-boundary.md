@@ -7,7 +7,7 @@ RCP should be as small as possible while still defining semantics that independe
 
 > **If an established standard can carry, authorize, describe, signal, or secure a generic concern without losing relationship-specific meaning, RCP should bind to or profile that standard rather than reimplement it.**
 
-The detailed field-level reconciliation is in [`standards-reconciliation-v0.2.md`](./standards-reconciliation-v0.2.md).
+The detailed field-level reconciliation is in [`standards-mapping-v0.2.md`](./standards-mapping-v0.2.md).
 
 ## 1. Current layering model
 
@@ -228,12 +228,7 @@ RCP does not need a new schema language. The current project uses JSON Schema fo
 
 ## 11. Eclipse Dataspace Protocol precedent
 
-Eclipse Dataspace Protocol is a useful architecture precedent because it:
-
-- defines domain protocol state/semantics;
-- reuses external standards such as DCAT/ODRL;
-- defines bindings separately;
-- allows autonomous entities to run their own participant agents/connectors.
+Eclipse Dataspace Protocol is a useful architecture precedent because it defines governed data-sharing semantics and transport bindings for autonomous parties while reusing external vocabularies such as ODRL/DCAT.
 
 RCP follows the same architectural discipline but applies it to a different semantic problem: relationship context rather than dataset catalog/contract/transfer negotiation.
 
@@ -258,11 +253,11 @@ confidence != verification
 The axes are now orthogonal:
 
 ```text
-assertion_type  = what the assertion concerns
-                  commitment / preference / event / state / ...
+assertion_type   = what the assertion concerns
+                   commitment / preference / event / state / ...
 
 epistemic_class = how it is known or intended
-                  statement / fact / observation / inference / strategy / ...
+                   statement / fact / observation / inference / strategy / ...
 ```
 
 ### Reduced: evidence channel taxonomy
