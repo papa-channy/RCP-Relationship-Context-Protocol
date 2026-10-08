@@ -1,0 +1,596 @@
+{
+  "case_pack_version": "rcp-v0.2-cleanroom-cases-1",
+  "rcp_revision": "repository-self-test",
+  "cases": [
+    {
+      "id": "basic-bilateral-evidence",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:basic",
+        "assertion_type": "event",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "source_statement",
+        "statement": "B said the review is on November 12.",
+        "provenance": {
+          "mode": "evidence",
+          "visibility": "full",
+          "evidence": [
+            {
+              "evidence_ref": "evidence:mail-1",
+              "evidence_type": "interaction",
+              "representation": "source_statement",
+              "source_participants": [
+                {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+                {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+              ]
+            }
+          ]
+        },
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-01T10:01:00Z"
+      },
+      "expected": {
+        "accepted": true,
+        "semantic_digest": {
+          "assertion_id": "assertion:basic",
+          "assertion_type": "event",
+          "epistemic_class": "source_statement",
+          "scope_type": "bilateral",
+          "target_participants": [
+            ["tenant:t1", "A", "person"],
+            ["tenant:t1", "B", "person"]
+          ],
+          "evidence_refs": ["evidence:mail-1"],
+          "material_dependency_refs": [],
+          "support_sets": [],
+          "policy_refs": [],
+          "lifecycle_state": "active",
+          "required_extensions": []
+        }
+      }
+    },
+    {
+      "id": "explicit-group-to-bilateral-projection",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:projected",
+        "assertion_type": "commitment",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "extracted_fact",
+        "statement": "A and B agreed to review the proposal together.",
+        "provenance": {
+          "mode": "evidence",
+          "visibility": "type_only",
+          "evidence": [
+            {
+              "evidence_ref": "evidence:group-1",
+              "evidence_type": "interaction",
+              "representation": "metadata",
+              "source_participants": [
+                {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+                {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"},
+                {"actor_id": "C", "scope": "tenant:t1", "actor_type": "person"}
+              ],
+              "projection_basis_ref": "basis:explicit-a-b-commitment"
+            }
+          ]
+        },
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-02T11:00:00Z"
+      },
+      "expected": {
+        "accepted": true,
+        "semantic_digest": {
+          "assertion_id": "assertion:projected",
+          "assertion_type": "commitment",
+          "epistemic_class": "extracted_fact",
+          "scope_type": "bilateral",
+          "target_participants": [
+            ["tenant:t1", "A", "person"],
+            ["tenant:t1", "B", "person"]
+          ],
+          "evidence_refs": ["evidence:group-1"],
+          "material_dependency_refs": [],
+          "support_sets": [],
+          "policy_refs": [],
+          "lifecycle_state": "active",
+          "required_extensions": []
+        }
+      }
+    },
+    {
+      "id": "silent-group-to-bilateral-projection-rejected",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:unsafe-projection",
+        "assertion_type": "event",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "extracted_fact",
+        "statement": "C disclosed something in a group interaction.",
+        "provenance": {
+          "mode": "evidence",
+          "visibility": "redacted",
+          "evidence": [
+            {
+              "evidence_ref": "evidence:group-sensitive",
+              "evidence_type": "provider_projection",
+              "representation": "metadata",
+              "source_participants": [
+                {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+                {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"},
+                {"actor_id": "C", "scope": "tenant:t1", "actor_type": "person"}
+              ]
+            }
+          ]
+        },
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-02T12:00:00Z"
+      },
+      "expected": {"accepted": false}
+    },
+    {
+      "id": "derived-independent-support-with-policy-and-identity",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:commitment-k",
+        "assertion_type": "commitment",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1",
+          "identity_dependency_refs": ["identity:a-b"]
+        },
+        "epistemic_class": "system_interpretation",
+        "statement": "A and B have an open commitment to revisit Project X.",
+        "provenance": {
+          "mode": "derived",
+          "visibility": "redacted",
+          "derivation": {
+            "dependencies": [
+              {"dependency_ref": "evidence:a", "dependency_type": "evidence", "role": "supports", "material": true},
+              {"dependency_ref": "evidence:b", "dependency_type": "evidence", "role": "corroborates", "material": true},
+              {"dependency_ref": "identity:a-b", "dependency_type": "identity_binding", "role": "derived_from", "material": true},
+              {"dependency_ref": "policy:no-training", "dependency_type": "policy", "role": "derived_from", "material": true},
+              {"dependency_ref": "assertion:nonmaterial-note", "dependency_type": "assertion", "role": "refines", "material": false}
+            ],
+            "support_sets": [["evidence:b"], ["evidence:a"]]
+          }
+        },
+        "policy_refs": ["policy:no-training"],
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T09:00:00Z"
+      },
+      "expected": {
+        "accepted": true,
+        "semantic_digest": {
+          "assertion_id": "assertion:commitment-k",
+          "assertion_type": "commitment",
+          "epistemic_class": "system_interpretation",
+          "scope_type": "bilateral",
+          "target_participants": [
+            ["tenant:t1", "A", "person"],
+            ["tenant:t1", "B", "person"]
+          ],
+          "evidence_refs": [],
+          "material_dependency_refs": ["evidence:a", "evidence:b", "identity:a-b", "policy:no-training"],
+          "support_sets": [["evidence:a"], ["evidence:b"]],
+          "policy_refs": ["policy:no-training"],
+          "lifecycle_state": "active",
+          "required_extensions": []
+        }
+      }
+    },
+    {
+      "id": "support-set-unknown-reference-rejected",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:bad-support",
+        "assertion_type": "commitment",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "system_interpretation",
+        "statement": "A commitment exists.",
+        "provenance": {
+          "mode": "derived",
+          "visibility": "redacted",
+          "derivation": {
+            "dependencies": [
+              {"dependency_ref": "evidence:a", "dependency_type": "evidence", "role": "supports", "material": true}
+            ],
+            "support_sets": [["evidence:missing"]]
+          }
+        },
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T10:00:00Z"
+      },
+      "expected": {"accepted": false}
+    },
+    {
+      "id": "verified-fact-with-resolved-basis",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:verified",
+        "assertion_type": "event",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "verified_fact",
+        "statement": "The review is scheduled for November 15.",
+        "verification_basis_refs": ["evidence:calendar"],
+        "provenance": {
+          "mode": "evidence",
+          "visibility": "full",
+          "evidence": [
+            {
+              "evidence_ref": "evidence:calendar",
+              "evidence_type": "interaction",
+              "representation": "metadata",
+              "source_participants": [
+                {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+                {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+              ]
+            }
+          ]
+        },
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T11:00:00Z"
+      },
+      "expected": {
+        "accepted": true,
+        "semantic_digest": {
+          "assertion_id": "assertion:verified",
+          "assertion_type": "event",
+          "epistemic_class": "verified_fact",
+          "scope_type": "bilateral",
+          "target_participants": [
+            ["tenant:t1", "A", "person"],
+            ["tenant:t1", "B", "person"]
+          ],
+          "evidence_refs": ["evidence:calendar"],
+          "material_dependency_refs": [],
+          "support_sets": [],
+          "policy_refs": [],
+          "lifecycle_state": "active",
+          "required_extensions": []
+        }
+      }
+    },
+    {
+      "id": "verified-fact-without-basis-rejected",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:unbased",
+        "assertion_type": "event",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "verified_fact",
+        "statement": "The meeting is confirmed.",
+        "provenance": {"mode": "opaque", "visibility": "opaque"},
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T12:00:00Z"
+      },
+      "expected": {"accepted": false}
+    },
+    {
+      "id": "verified-fact-unresolved-basis-rejected",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:bad-basis",
+        "assertion_type": "event",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "verified_fact",
+        "statement": "The meeting is confirmed.",
+        "verification_basis_refs": ["evidence:missing"],
+        "provenance": {
+          "mode": "evidence",
+          "visibility": "type_only",
+          "evidence": [
+            {
+              "evidence_ref": "evidence:actual",
+              "evidence_type": "interaction",
+              "representation": "type_only",
+              "source_participants": [
+                {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+                {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+              ]
+            }
+          ]
+        },
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T13:00:00Z"
+      },
+      "expected": {"accepted": false}
+    },
+    {
+      "id": "unknown-scope-fails-closed",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:unknown-scope",
+        "assertion_type": "other",
+        "relationship_scope": {
+          "scope_type": "unknown",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "unknown",
+        "statement": "Context exists but scope semantics are unknown.",
+        "provenance": {"mode": "opaque", "visibility": "opaque"},
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T14:00:00Z"
+      },
+      "expected": {"accepted": false}
+    },
+    {
+      "id": "required-extension-supported",
+      "supported_extensions": ["x-example:calibration"],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:extension",
+        "assertion_type": "preference",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "user_observation",
+        "statement": "B appears to prefer asynchronous updates.",
+        "provenance": {"mode": "opaque", "visibility": "opaque"},
+        "required_extensions": ["x-example:calibration"],
+        "extensions": {"x-example:calibration": {"profile": "example-v1"}},
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T15:00:00Z"
+      },
+      "expected": {
+        "accepted": true,
+        "semantic_digest": {
+          "assertion_id": "assertion:extension",
+          "assertion_type": "preference",
+          "epistemic_class": "user_observation",
+          "scope_type": "bilateral",
+          "target_participants": [
+            ["tenant:t1", "A", "person"],
+            ["tenant:t1", "B", "person"]
+          ],
+          "evidence_refs": [],
+          "material_dependency_refs": [],
+          "support_sets": [],
+          "policy_refs": [],
+          "lifecycle_state": "active",
+          "required_extensions": ["x-example:calibration"]
+        }
+      }
+    },
+    {
+      "id": "required-extension-unsupported",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:extension-unsupported",
+        "assertion_type": "preference",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "user_observation",
+        "statement": "B appears to prefer asynchronous updates.",
+        "provenance": {"mode": "opaque", "visibility": "opaque"},
+        "required_extensions": ["x-example:calibration"],
+        "extensions": {"x-example:calibration": {"profile": "example-v1"}},
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T15:01:00Z"
+      },
+      "expected": {"accepted": false}
+    },
+    {
+      "id": "removed-confidence-field-rejected",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:legacy-confidence",
+        "assertion_type": "preference",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "system_inference",
+        "statement": "B may prefer async updates.",
+        "confidence": 0.82,
+        "provenance": {"mode": "opaque", "visibility": "opaque"},
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T16:00:00Z"
+      },
+      "expected": {"accepted": false}
+    },
+    {
+      "id": "epistemic-duplicate-assertion-type-rejected",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:legacy-inference-type",
+        "assertion_type": "inference",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "system_inference",
+        "statement": "B may prefer async updates.",
+        "provenance": {"mode": "opaque", "visibility": "opaque"},
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T16:01:00Z"
+      },
+      "expected": {"accepted": false}
+    },
+    {
+      "id": "self-conflict-rejected",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:self-conflict",
+        "assertion_type": "event",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "source_statement",
+        "statement": "The review date is disputed.",
+        "provenance": {"mode": "opaque", "visibility": "opaque"},
+        "assertion_relations": [
+          {"relation": "conflicts_with", "assertion_ref": "assertion:self-conflict"}
+        ],
+        "lifecycle": {"state": "disputed"},
+        "created_at": "2026-10-03T17:00:00Z"
+      },
+      "expected": {"accepted": false}
+    },
+    {
+      "id": "namespaced-evidence-channel-accepted",
+      "supported_extensions": [],
+      "assertion": {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.2-draft",
+        "assertion_id": "assertion:namespaced-evidence",
+        "assertion_type": "event",
+        "relationship_scope": {
+          "scope_type": "bilateral",
+          "participants": [
+            {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"},
+            {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"}
+          ],
+          "trust_domain": "tenant:t1"
+        },
+        "epistemic_class": "source_statement",
+        "statement": "B sent a message about Project X.",
+        "provenance": {
+          "mode": "evidence",
+          "visibility": "type_only",
+          "evidence": [
+            {
+              "evidence_ref": "evidence:provider-message",
+              "evidence_type": "x-example:message",
+              "provider_ref": "provider:example",
+              "representation": "type_only",
+              "source_participants": [
+                {"actor_id": "B", "scope": "tenant:t1", "actor_type": "person"},
+                {"actor_id": "A", "scope": "tenant:t1", "actor_type": "person"}
+              ]
+            }
+          ]
+        },
+        "lifecycle": {"state": "active"},
+        "created_at": "2026-10-03T18:00:00Z"
+      },
+      "expected": {
+        "accepted": true,
+        "semantic_digest": {
+          "assertion_id": "assertion:namespaced-evidence",
+          "assertion_type": "event",
+          "epistemic_class": "source_statement",
+          "scope_type": "bilateral",
+          "target_participants": [
+            ["tenant:t1", "A", "person"],
+            ["tenant:t1", "B", "person"]
+          ],
+          "evidence_refs": ["evidence:provider-message"],
+          "material_dependency_refs": [],
+          "support_sets": [],
+          "policy_refs": [],
+          "lifecycle_state": "active",
+          "required_extensions": []
+        }
+      }
+    }
+  ]
+}
