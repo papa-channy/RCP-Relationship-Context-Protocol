@@ -55,7 +55,7 @@ See:
 - [`spec/core-v0.2-draft.md`](./spec/core-v0.2-draft.md)
 - [`spec/wire-v0.2-draft.md`](./spec/wire-v0.2-draft.md)
 - [`docs/standards-boundary.md`](./docs/standards-boundary.md)
-- [`docs/standards-mapping-v0.2.md`](./docs/standards-mapping-v0.2.md)
+- [`docs/standards-reconciliation-v0.2.md`](./docs/standards-reconciliation-v0.2.md)
 
 ## Candidate v0.2 wire model
 
@@ -260,7 +260,7 @@ See [`ROADMAP.md`](./ROADMAP.md).
 ├── ROADMAP.md
 ├── docs/
 │   ├── standards-boundary.md
-│   ├── standards-mapping-v0.2.md
+│   ├── standards-reconciliation-v0.2.md
 │   └── ...
 ├── spec/
 │   ├── core-v0.1.md
