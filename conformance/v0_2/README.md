@@ -1,8 +1,10 @@
-# RCP v0.2 Draft Semantic Conformance
+# RCP v0.2 Draft Conformance
 
-> **Status:** non-normative design conformance. This suite does not freeze a v0.2 wire format or claim stable v0.2 protocol conformance.
+> **Status:** non-normative design conformance. These suites do not claim stable v0.2 protocol conformance.
 
-This directory tests whether the proposed v0.2 relationship semantics can be expressed and evaluated independently of transport/runtime choices.
+This directory now validates the v0.2 direction at two separate levels.
+
+## 1. Abstract semantic suite
 
 Run:
 
@@ -10,57 +12,72 @@ Run:
 python conformance/v0_2/run.py
 ```
 
-The suite uses an intentionally small abstract representation. It is **not** a candidate JSON wire schema. The purpose is to stabilize semantic invariants before deciding which concepts deserve first-class wire objects, embedded structures, registries, or external-standard mappings.
+This suite uses an intentionally abstract representation and does not depend on a wire schema.
 
-## Covered semantics
+It tests whether the proposed relationship semantics are deterministic independently of transport/runtime choices.
 
-The current fixtures exercise:
+Covered behavior includes:
 
-1. **multi-party projection** — group evidence does not silently collapse into a narrower relationship scope;
-2. **evidence relations** — conflict and supersession are semantic relations, not transport-order effects;
-3. **dependency invalidation** — downstream state is recomputed or invalidated according to surviving independent evidence support paths;
-4. **policy-preserving derivation** — projection cannot silently loosen source restrictions;
-5. **epistemic preservation** — statement/inference/observation does not become verified fact without a verification basis;
-6. **source-access separation** — access to a derived child does not grant evidence access;
-7. **identity dependency** — a changed identity binding triggers re-evaluation only when it is a material dependency;
-8. **cross-provider composition** — composition creates a new assertion with explicit lineage and does not erase source assertions;
-9. **arrival-order neutrality** — later receipt alone is not supersession;
-10. **binding equivalence** — MCP-like and HTTP-like wrappers with equivalent semantic payloads normalize to the same semantic state.
+1. multi-party projection;
+2. conflict vs supersession;
+3. dependency invalidation and independent support paths;
+4. policy-preserving derivation;
+5. epistemic preservation;
+6. source-access separation;
+7. identity dependencies;
+8. cross-provider composition;
+9. arrival-order neutrality;
+10. abstract binding equivalence.
 
-## Important design boundary
+## 2. Draft wire suite
 
-This suite deliberately does **not** test:
+Install the shared conformance dependency set and run:
 
-- MCP tool/resource invocation;
-- A2A task mechanics;
-- HTTP endpoint shape;
-- OAuth/OIDC authentication;
-- AuthZEN request/decision wire format;
-- Shared Signals event delivery;
-- JOSE/COSE encryption/signing;
-- provider-specific storage/query architecture.
+```bash
+python -m pip install -r conformance/requirements.txt
+python conformance/v0_2/run_wire.py
+```
 
-Those are binding/profile/infrastructure concerns. If a relationship semantic case cannot be decided without hidden transport-specific state, that is treated as evidence that either:
+The wire suite validates:
 
-1. the RCP semantic model is incomplete; or
-2. the behavior belongs in the binding rather than Core.
+- [`wire-cases.json`](./wire-cases.json)
+- [`../../spec/schemas/v0.2-draft/context-assertion.schema.json`](../../spec/schemas/v0.2-draft/context-assertion.schema.json)
 
-## Abstract support-path model
+The candidate representation is documented in:
 
-For source invalidation cases, `support_sets` represent alternative evidence sets that are each independently sufficient to support a derived assertion.
+[`../../spec/wire-v0.2-draft.md`](../../spec/wire-v0.2-draft.md)
 
-Example:
+The wire suite deliberately separates two layers:
+
+```text
+JSON Schema
+  structure / local constraints
+
+RCP semantic validator
+  cross-reference / relationship invariants
+```
+
+Examples of semantic checks that are intentionally not forced into JSON Schema include:
+
+- a direct `{A,B,C}` interaction cannot become `{A,B}` context without `projection_basis_ref`;
+- `support_sets` must reference declared material evidence/assertion dependencies;
+- material identity dependencies declared by relationship scope must exist in derivation lineage;
+- material policy dependencies must remain carried by the derived assertion;
+- a `verified_fact` verification basis must resolve to declared lineage;
+- an assertion cannot conflict with or supersede itself;
+- an unsupported required semantic extension fails closed.
+
+## Support-path model
+
+`support_sets` represent alternative evidence sets that are each independently sufficient for a derived assertion.
 
 ```json
 {
-  "all_sources": ["A", "B"],
   "support_sets": [["A"], ["B"]]
 }
 ```
 
-means either A or B independently supports the assertion. Removing A therefore requires recomputation/new lineage, but does not force the assertion to become false or invalid.
-
-By contrast:
+means either A or B independently supports the assertion.
 
 ```json
 {
@@ -68,12 +85,71 @@ By contrast:
 }
 ```
 
-means A and B are jointly required. Removing either source removes the currently sufficient evidence path.
+means A and B are jointly required.
 
-This support-path representation is a test abstraction for `DerivationDependency`; it is not yet a frozen wire model.
+The wire model carries this representation directly because the distinction materially changes downstream invalidation/recomputation behavior.
+
+## Participant projection
+
+The assertion's target participants live in:
+
+```text
+relationship_scope.participants
+```
+
+Each evidence reference separately carries:
+
+```text
+source_participants
+```
+
+For direct interaction evidence, a participant-scope change requires an explicit:
+
+```text
+projection_basis_ref
+```
+
+This is the wire-level representation of the M4.2 no-silent-participant-collapse invariant.
+
+## Binding equivalence
+
+`wire-cases.json` contains the same draft `ContextAssertion` carried through:
+
+- an MCP-like `structuredContent` wrapper; and
+- an HTTP-like response body.
+
+`run_wire.py` strips binding framing, normalizes only RCP semantic state, and asserts equivalence.
+
+This is still a synthetic boundary proof. It is **not yet a production RCP-over-MCP or RCP-over-HTTP implementation**.
+
+## Important design boundary
+
+Neither suite tests or defines:
+
+- MCP tool/resource invocation semantics;
+- A2A task mechanics;
+- HTTP endpoint layout;
+- OAuth/OIDC authentication;
+- AuthZEN request/decision wire format;
+- Shared Signals delivery;
+- JOSE/COSE encryption/signing;
+- Provider storage/query architecture.
+
+Those remain binding/profile/infrastructure concerns.
 
 ## Relationship to v0.1
 
-The existing v0.1 schema/semantic/JOSE/external-harness suites remain unchanged and continue to validate the preserved experimental v0.1 baseline.
+All v0.1 schema, semantic, privacy-boundary, JOSE, cross-language, and external-harness tests remain separate and unchanged.
 
-The v0.2 suite is additive. A passing result means only that the current draft semantics are internally executable under these cases. It does not mean the v0.2 information model is complete, externally validated, or ready to freeze as schemas.
+The v0.2 suites are additive. Passing them means only that the current semantic and draft wire models are internally executable under the tested cases.
+
+## Before normative v0.2
+
+The candidate model still needs:
+
+- broader negative and temporal lifecycle cases;
+- real MCP and HTTP bindings rather than synthetic wrappers;
+- reconciliation of dependency/support semantics with W3C PROV;
+- policy-reference mappings to existing policy standards;
+- independent implementation/adversarial review;
+- a deliberate decision on whether any embedded structure needs promotion to an independently addressable top-level RCP object.
