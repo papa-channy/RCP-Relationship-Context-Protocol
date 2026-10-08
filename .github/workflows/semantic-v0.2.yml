@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "conformance/v0_2/**"
+      - "bindings/v0_2/**"
       - "spec/core-v0.2-draft.md"
       - "spec/wire-v0.2-draft.md"
       - "spec/schemas/v0.2-draft/**"
@@ -14,6 +15,7 @@ on:
   pull_request:
     paths:
       - "conformance/v0_2/**"
+      - "bindings/v0_2/**"
       - "spec/core-v0.2-draft.md"
       - "spec/wire-v0.2-draft.md"
       - "spec/schemas/v0.2-draft/**"
@@ -44,3 +46,14 @@ jobs:
 
       - name: Run RCP v0.2 draft wire conformance
         run: python conformance/v0_2/run_wire.py
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install binding proof dependencies
+        run: npm install --prefix bindings/v0_2
+
+      - name: Run real MCP and HTTP binding equivalence proof
+        run: npm test --prefix bindings/v0_2
