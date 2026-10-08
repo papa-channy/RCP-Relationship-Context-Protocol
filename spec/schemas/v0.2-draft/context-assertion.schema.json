@@ -179,6 +179,7 @@
           "uniqueItems": true,
           "items": {"$ref": "#/$defs/ActorReference"}
         },
+        "projection_basis_ref": {"type": "string", "minLength": 1},
         "occurred_at": {"type": "string", "format": "date-time"},
         "policy_refs": {
           "type": "array",
