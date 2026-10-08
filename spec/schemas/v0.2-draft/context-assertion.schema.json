@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rcp:schema:context-assertion:0.2-draft",
+  "title": "RCP ContextAssertion v0.2 Draft",
+  "description": "Non-normative candidate wire model for transport-independent relationship context semantics.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "rcp_version",
+    "assertion_id",
+    "assertion_type",
+    "relationship_scope",
+    "epistemic_class",
+    "statement",
+    "provenance",
+    "lifecycle",
+    "created_at"
+  ],
+  "properties": {
+    "type": {"const": "rcp.context_assertion"},
+    "rcp_version": {"const": "0.2-draft"},
+    "assertion_id": {"type": "string", "minLength": 1},
+    "assertion_type": {"$ref": "#/$defs/ExtensibleName"},
+    "relationship_scope": {"$ref": "#/$defs/RelationshipScope"},
+    "epistemic_class": {
+      "enum": [
+        "source_statement",
+        "verified_fact",
+        "extracted_fact",
+        "user_observation",
+        "system_interpretation",
+        "system_inference",
+        "strategy",
+        "unknown"
+      ]
+    },
+    "statement": {"type": "string", "minLength": 1},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "verification_basis_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "provenance": {"$ref": "#/$defs/Provenance"},
+    "assertion_relations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/AssertionRelation"}
+    },
+    "policy_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "lifecycle": {"$ref": "#/$defs/Lifecycle"},
+    "required_extensions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/ExtensionName"}
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {"$ref": "#/$defs/ExtensionName"},
+      "additionalProperties": true
+    },
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"epistemic_class": {"const": "verified_fact"}},
+        "required": ["epistemic_class"]
+      },
+      "then": {"required": ["verification_basis_refs"]}
+    }
+  ],
+  "$defs": {
+    "ExtensionName": {
+      "type": "string",
+      "pattern": "^x-[A-Za-z0-9.-]+:[A-Za-z0-9_.-]+$"
+    },
+    "ExtensibleName": {
+      "anyOf": [
+        {
+          "enum": [
+            "commitment",
+            "open_loop",
+            "preference",
+            "event",
+            "relationship_state",
+            "shared_topic",
+            "constraint",
+            "observation",
+            "interpretation",
+            "inference",
+            "strategy",
+            "other"
+          ]
+        },
+        {"$ref": "#/$defs/ExtensionName"}
+      ]
+    },
+    "ActorReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "scope", "actor_type"],
+      "properties": {
+        "actor_id": {"type": "string", "minLength": 1},
+        "scope": {"type": "string", "minLength": 1},
+        "actor_type": {
+          "anyOf": [
+            {"enum": ["person", "organization", "service", "agent", "unknown"]},
+            {"$ref": "#/$defs/ExtensionName"}
+          ]
+        }
+      }
+    },
+    "RelationshipScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope_type", "participants", "trust_domain"],
+      "properties": {
+        "relationship_ref": {"type": "string", "minLength": 1},
+        "scope_type": {
+          "anyOf": [
+            {"enum": ["bilateral", "group", "organization_mediated", "provider_defined", "unknown"]},
+            {"$ref": "#/$defs/ExtensionName"}
+          ]
+        },
+        "participants": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/ActorReference"}
+        },
+        "trust_domain": {"type": "string", "minLength": 1},
+        "identity_dependency_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "EvidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_ref", "evidence_type", "representation", "source_participants"],
+      "properties": {
+        "evidence_ref": {"type": "string", "minLength": 1},
+        "evidence_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "message",
+                "thread",
+                "call",
+                "meeting",
+                "calendar_event",
+                "crm_interaction",
+                "social_interaction",
+                "provider_projection",
+                "user_note",
+                "assertion",
+                "unknown"
+              ]
+            },
+            {"$ref": "#/$defs/ExtensionName"}
+          ]
+        },
+        "provider_ref": {"type": "string", "minLength": 1},
+        "representation": {
+          "enum": ["opaque_ref", "type_only", "metadata", "source_statement", "provider_projection"]
+        },
+        "source_participants": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/ActorReference"}
+        },
+        "occurred_at": {"type": "string", "format": "date-time"},
+        "policy_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "Dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dependency_ref", "dependency_type", "role", "material"],
+      "properties": {
+        "dependency_ref": {"type": "string", "minLength": 1},
+        "dependency_type": {
+          "enum": ["evidence", "assertion", "identity_binding", "policy"]
+        },
+        "role": {
+          "enum": ["supports", "corroborates", "derived_from", "refines"]
+        },
+        "material": {"type": "boolean"}
+      }
+    },
+    "Derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dependencies"],
+      "properties": {
+        "transformation": {"$ref": "#/$defs/ExtensibleName"},
+        "dependencies": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/Dependency"}
+        },
+        "support_sets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+    "Provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "visibility"],
+      "properties": {
+        "mode": {"enum": ["evidence", "derived", "opaque", "unavailable"]},
+        "visibility": {"enum": ["full", "redacted", "type_only", "opaque", "hidden"]},
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/EvidenceReference"}
+        },
+        "derivation": {"$ref": "#/$defs/Derivation"},
+        "note": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"mode": {"const": "evidence"}}, "required": ["mode"]},
+          "then": {"required": ["evidence"]}
+        },
+        {
+          "if": {"properties": {"mode": {"const": "derived"}}, "required": ["mode"]},
+          "then": {"required": ["derivation"]}
+        }
+      ]
+    },
+    "AssertionRelation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relation", "assertion_ref"],
+      "properties": {
+        "relation": {
+          "enum": ["supports", "corroborates", "conflicts_with", "supersedes", "refines"]
+        },
+        "assertion_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    "Lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": {
+          "enum": ["active", "superseded", "disputed", "expired", "invalidated", "revoked", "historical"]
+        },
+        "valid_from": {"type": "string", "format": "date-time"},
+        "valid_until": {"type": "string", "format": "date-time"},
+        "reason_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
