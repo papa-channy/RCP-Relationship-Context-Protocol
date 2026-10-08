@@ -6,15 +6,15 @@
 
 ## 1. Design objective
 
-The v0.2 wire model should encode the smallest transport-independent relationship-context contract required by the M4.2 semantic scenarios.
+The v0.2 wire model encodes the smallest transport-independent relationship-context contract currently required by executable semantic scenarios.
 
-The current candidate deliberately starts with **one top-level semantic object**:
+After the M4.5 standards-reconciliation pass, the candidate deliberately keeps **one top-level semantic object**:
 
 ```text
 ContextAssertion
 ```
 
-The following concepts are embedded semantic structures rather than independent protocol services or mandatory top-level resources:
+Embedded structures provide only the relationship-specific information necessary to interpret that assertion:
 
 ```text
 ActorReference
@@ -26,7 +26,12 @@ ContextLifecycle
 PolicyReference(s)
 ```
 
-This is intentionally smaller than the v0.1 seven-object Core. Generic capability discovery, authorization requests/decisions, revocation-signal delivery, encryption envelopes, and transport framing remain outside this draft semantic wire model.
+Generic authorization, event transport, provenance ontology, policy language, cryptography, schema language, and transport framing remain outside semantic Core.
+
+See:
+
+- [`../docs/standards-boundary.md`](../docs/standards-boundary.md)
+- [`../docs/standards-reconciliation-v0.2.md`](../docs/standards-reconciliation-v0.2.md)
 
 ## 2. Candidate top-level shape
 
@@ -46,15 +51,82 @@ This is intentionally smaller than the v0.1 seven-object Core. Generic capabilit
 }
 ```
 
-The draft schema is:
+The candidate schema is:
 
 [`schemas/v0.2-draft/context-assertion.schema.json`](./schemas/v0.2-draft/context-assertion.schema.json)
 
-## 3. Relationship scope
+`type`, `rcp_version`, identifiers, and timestamps are wire scaffolding. They are not claimed as RCP-specific protocol novelty.
 
-`relationship_scope` describes the relationship context to which the assertion applies.
+## 3. `assertion_type` and `epistemic_class` are orthogonal
 
-It does **not** claim to solve global identity.
+M4.5 removed an accidental duplication between what an assertion is **about** and how it is **known/intended**.
+
+Base `assertion_type` values are now limited to relationship-context subject categories:
+
+- `commitment`
+- `open_loop`
+- `preference`
+- `event`
+- `relationship_state`
+- `shared_topic`
+- `constraint`
+- `other`
+- namespaced extensions
+
+The following are **not** base `assertion_type` values:
+
+- observation
+- interpretation
+- inference
+- strategy
+
+Those belong exclusively to `epistemic_class`.
+
+Current epistemic classes are:
+
+- `source_statement`
+- `verified_fact`
+- `extracted_fact`
+- `user_observation`
+- `system_interpretation`
+- `system_inference`
+- `strategy`
+- `unknown`
+
+`verified_fact` requires explicit `verification_basis_refs`, and semantic conformance requires those references to resolve to declared lineage.
+
+## 4. Confidence is not Core
+
+The earlier draft had a top-level numeric `confidence` field. M4.5 removed it.
+
+A bare number is not interoperable unless a profile defines what it means, how it is calibrated, and whether values from different Providers/models are comparable.
+
+RCP keeps only the invariant:
+
+```text
+confidence != verification
+```
+
+A Provider that needs model confidence should use a namespaced extension/profile, for example:
+
+```json
+{
+  "required_extensions": ["x-example:confidence-model"],
+  "extensions": {
+    "x-example:confidence-model": {
+      "score": 0.71,
+      "model_version": "1",
+      "semantics": "provider-defined calibrated probability"
+    }
+  }
+}
+```
+
+## 5. Relationship scope
+
+`relationship_scope` defines the target participant set to which the assertion applies.
+
+It does not define a global identity system or a social relationship predicate such as `friendOf`.
 
 Actor identifiers are explicitly scoped:
 
@@ -66,84 +138,94 @@ Actor identifiers are explicitly scoped:
 }
 ```
 
-String equality outside the declared scope is not global identity equality.
+String equality outside the declared scope does not imply global identity equality.
 
 The relationship scope contains:
 
 - target participants;
-- a scope type such as `bilateral` or `group`;
+- a scope type such as bilateral or group;
 - a trust/tenant domain;
-- optional identity-binding dependencies.
+- optional material identity-binding dependencies.
 
-Identity bindings that materially affect interpretation belong in semantic lineage rather than invisible preprocessing.
+ActivityStreams and other social vocabularies may describe relationship predicates or activities. RCP's distinct responsibility is the **scope of a context assertion and its dependency on scoped identity interpretation**.
 
-## 4. Evidence references and participant projection
+## 6. Evidence references and participant projection
 
-Evidence remains Provider-controlled. RCP does not require raw evidence export.
+Evidence remains Provider-controlled. RCP does not require raw evidence export or a universal evidence store.
 
-An `EvidenceReference` can describe:
+The base `evidence_type` registry is intentionally abstract after M4.5:
 
-- an opaque reference;
-- type-only information;
-- metadata;
-- a bounded source statement;
-- a provider-generated projection.
+- `interaction`
+- `provider_projection`
+- `user_note`
+- `assertion`
+- `unknown`
+- namespaced extensions
 
-It includes `source_participants` separately from the assertion's target `relationship_scope.participants`.
+Specific channel vocabularies such as email message, Slack DM, meeting transcript, phone call, CRM event, or ActivityStreams activity should be expressed through a namespaced extension or external mapping, not a growing Core registry.
 
-This distinction is required for the no-silent-participant-collapse invariant.
+An evidence reference still declares `source_participants` separately from the assertion's target `relationship_scope.participants`.
 
-Example:
+This distinction is central:
 
 ```text
-source interaction = {A, B, C}
-target relationship = {A, B}
+source participants = {A,B,C}
+target relationship = {A,B}
 ```
 
-For direct interaction evidence, changing participant scope requires an explicit semantic basis. The draft field is:
+Whenever those sets differ, **regardless of evidence type**, an explicit semantic basis is required:
 
 ```json
 {"projection_basis_ref": "basis:explicit-a-b-commitment"}
 ```
 
-The field identifies the basis; this draft does not define a universal proof format for that basis.
+The field identifies the basis. This draft does not define a universal proof language for the basis.
 
-## 5. Epistemic meaning
+## 7. Evidence representation
 
-The draft retains the semantic classes proven useful in v0.1/M4.2:
+`representation` describes how much evidence representation is exposed through this RCP object:
 
+- `opaque_ref`
+- `type_only`
+- `metadata`
 - `source_statement`
-- `verified_fact`
-- `extracted_fact`
-- `user_observation`
-- `system_interpretation`
-- `system_inference`
-- `strategy`
-- `unknown`
+- `provider_projection`
 
-`verified_fact` requires at least one explicit `verification_basis_ref` structurally, and conformance additionally checks that the reference resolves to declared evidence/dependency lineage.
+This is intentionally not a content-format registry. It supports the RCP requirement that Provider-held raw evidence may remain unavailable while an authorized lower-fidelity relationship projection remains usable.
 
-Confidence is not verification.
+## 8. Provenance and W3C PROV mapping
 
-## 6. Provenance modes
+RCP should not invent a competing provenance ontology.
 
-The candidate model supports four provenance modes:
+The candidate model supports four exposure modes:
 
-- `evidence` — the assertion directly references evidence;
-- `derived` — the assertion is produced from explicit dependencies;
-- `opaque` — a Provider exposes the assertion while withholding detailed lineage;
-- `unavailable` — lineage cannot be supplied.
+- `evidence`
+- `derived`
+- `opaque`
+- `unavailable`
 
-Opaque provenance does not automatically imply untrusted or unusable context. Authorization/policy profiles may permit Provider-generated projections without granting source access.
+A future PROV profile should map generic lineage concepts such as:
 
-## 7. Derivation and support paths
+```text
+ContextAssertion             -> prov:Entity
+EvidenceReference            -> prov:Entity
+Provider / derivation system -> prov:Agent
+Derivation process           -> prov:Activity
+source dependency            -> prov:wasDerivedFrom / qualified Derivation
+```
 
-A flat `derived_from` edge is insufficient for lifecycle behavior.
+RCP keeps only relationship-specific consequences that generic lineage does not settle, including participant projection, materiality, evidence sufficiency, and downstream lifecycle behavior.
 
-The draft therefore represents both:
+Opaque provenance does not automatically make an assertion unusable. A Provider may be authorized to expose a projection without exposing its source.
 
-1. dependency records; and
-2. independently sufficient support sets.
+## 9. Derivation and support paths
+
+Generic derivation lineage is mappable to PROV, but lifecycle behavior requires additional relationship validity semantics.
+
+The draft therefore represents:
+
+1. typed/material dependencies; and
+2. independently sufficient evidence `support_sets`.
 
 Example:
 
@@ -170,7 +252,7 @@ Example:
 }
 ```
 
-This means A and B are independently sufficient support paths.
+This means either A or B independently supports the assertion.
 
 By contrast:
 
@@ -180,27 +262,29 @@ By contrast:
 
 means both are jointly required.
 
-This distinction lets a Consumer determine whether source removal requires recomputation with surviving evidence or removes all currently sufficient support.
+The earlier draft `transformation` field was removed from this base structure. Generic transformation activity belongs in provenance/profile metadata unless a relationship-specific transformation semantic is later proven necessary.
 
-## 8. Policy dependencies
+## 10. Policy dependencies
 
-RCP v0.2 does not define a universal policy language.
+RCP v0.2 does not define a universal policy or privacy vocabulary.
 
-The draft carries:
+The draft carries references only:
 
-- `policy_refs` on the resulting assertion;
-- optional `policy_refs` on evidence references;
+- `policy_refs` on the assertion;
+- optional `policy_refs` on evidence;
 - material `policy` dependencies in derivation lineage.
 
-Conformance requires material policy dependencies to remain referenced on the derived assertion unless a future explicit declassification/re-derivation profile defines a valid loosening operation.
+A future profile may point these references to ODRL Policies, DPV processing/purpose descriptions, Provider policy, or another compatible policy system.
 
-The policy documents themselves may be expressed using ODRL, DPV, AuthZEN-related context, Provider-native policy, or another compatible system.
+Core owns the relationship-specific rule:
 
-## 9. Assertion relations
+> derivation or projection does not silently erase material restrictions.
 
-Cross-provider composition needs explicit semantic relations that transport ordering cannot substitute for.
+Conformance requires material policy dependencies to remain carried by the derived assertion unless a future explicit declassification/re-derivation profile defines valid loosening semantics.
 
-The draft includes:
+## 11. Assertion relations
+
+Cross-provider composition needs relations that transport arrival order cannot substitute for:
 
 - `supports`
 - `corroborates`
@@ -208,13 +292,15 @@ The draft includes:
 - `supersedes`
 - `refines`
 
+Some parts can map to generic provenance/version vocabularies. The relationship-specific requirement is that Consumers can deterministically preserve disagreement, replacement, and evidentiary support without an LLM inventing the relation from prose.
+
 An assertion cannot meaningfully declare one of these relations to itself.
 
 A later arrival does not automatically become `supersedes`.
 
-## 10. Lifecycle
+## 12. Lifecycle
 
-The draft lifecycle states are:
+The current assertion states are:
 
 - `active`
 - `superseded`
@@ -224,11 +310,13 @@ The draft lifecycle states are:
 - `revoked`
 - `historical`
 
-`recompute` and `re-evaluate` are processing operations, not public lifecycle states. A dependency change triggers evaluation whose result may be a new active lineage, restriction, dispute, invalidation, supersession, or archival transition.
+`recompute` and `re-evaluate` remain processing operations rather than public lifecycle states.
+
+A dependency change may cause a Consumer/Provider to re-evaluate support and policy, resulting in a new active lineage, restriction, dispute, invalidation, supersession, revocation, or historical transition.
 
 Historical lineage must not be rewritten to imply a removed source was never used.
 
-## 11. Required extensions
+## 13. Required extensions
 
 Namespaced extensions use:
 
@@ -236,53 +324,60 @@ Namespaced extensions use:
 x-<namespace>:<name>
 ```
 
-A semantic extension that is required to safely interpret an assertion appears in `required_extensions`.
+A semantic extension required to safely interpret an assertion appears in `required_extensions`.
 
-A Consumer that does not support a required extension must fail closed rather than ignore it.
+A Consumer that does not support such an extension must fail closed rather than ignore it.
 
-Optional extension data may remain ignorable when it is not listed as required and does not alter Core meaning.
+Optional extension data may remain ignorable only when it does not alter Core meaning.
 
-## 12. Binding independence
+## 14. Binding independence — implemented for MCP and HTTP
 
-This wire object is designed to be carried through different bindings.
-
-For example:
+The repository now carries the same draft `ContextAssertion` through two real binding implementations:
 
 ```text
-MCP response
-  └ structuredContent
-       └ ContextAssertion
+Provider fixture
+   ├─ official MCP SDK Resource -> official MCP Client --┐
+   └─ plain HTTP GET -> fetch ---------------------------┤
+                                                        ▼
+                                          same validator/normalizer
+                                                        │
+                                                        ▼
+                                             identical semantic state
 ```
 
-or:
+See [`../bindings/v0_2/`](../bindings/v0_2/).
 
-```text
-HTTP response body
-  └ ContextAssertion
-```
+MCP Resource URIs, `resources/read`, stdio connection mechanics, HTTP paths, headers, and status codes are binding state. They are not included in normalized RCP semantic state.
 
-Binding-specific framing is removed before the RCP semantic engine evaluates the object.
+This is an **internal executable binding-independence proof** for the tested slice. It is not production binding certification or unrelated third-party interoperability.
 
-The conformance suite checks that equivalent MCP-like and HTTP-like wrappers normalize to equivalent relationship semantic state.
+## 15. AuthZEN / Shared Signals / security profiles remain external
 
-This does not yet constitute production MCP/HTTP interoperability. It proves only that the candidate wire object does not require hidden transport state for the tested semantics.
+The semantic wire object does not contain generic authorization requests/decisions, signal transport envelopes, or cryptographic envelopes.
 
-## 13. Why embedded structures first
+Future profiles should prefer:
 
-The draft does not currently define separate top-level wire schemas for `RelationshipScope`, `EvidenceReference`, or `DerivationDependency`.
+- OAuth/OIDC for authentication/delegation;
+- AuthZEN for generic authorization request/decision mechanics;
+- Shared Signals / appropriate profile-defined SET events for change-signal delivery;
+- JOSE/COSE for security envelopes where a binding requires them.
 
-This is deliberate.
+RCP owns the relationship resource meaning and downstream lifecycle consequences, not those generic mechanisms.
 
-A concept should become an independently addressable RCP wire object only if implementations need to:
+## 16. Why embedded structures remain embedded
+
+This draft still does not define separate top-level wire schemas for `RelationshipScope`, `EvidenceReference`, or `DerivationDependency`.
+
+A concept should become independently addressable only if implementation evidence shows a need to:
 
 - exchange it independently of an assertion;
 - version it independently;
-- reference it across many assertions in a way that cannot be represented safely by scoped refs;
+- reference it across many assertions beyond safe scoped refs;
 - apply independent lifecycle or authorization semantics to it.
 
-Until one of those requirements is demonstrated, embedded structures keep the Core smaller.
+Until then, embedded structures keep the Core smaller.
 
-## 14. What this model does not define
+## 17. What this model does not define
 
 This draft does not define:
 
@@ -296,13 +391,16 @@ This draft does not define:
 - retries/idempotency;
 - Provider storage architecture;
 - a universal social relationship taxonomy;
-- a universal provenance or policy ontology.
+- a universal provenance ontology;
+- a universal policy/privacy vocabulary;
+- a universal evidence-channel taxonomy;
+- a universal model-confidence metric.
 
-Those concerns belong to bindings, profiles, or established standards.
+Those concerns belong to bindings, profiles, extensions, or established standards.
 
-## 15. Validation rule
+## 18. Validation rule
 
-A candidate v0.2 wire object is acceptable only when both levels pass:
+A candidate v0.2 object is acceptable only when both levels pass:
 
 ```text
 JSON Schema structure
@@ -310,21 +408,19 @@ JSON Schema structure
 RCP semantic cross-reference/invariant validation
 ```
 
-JSON Schema is intentionally not forced to encode every graph or lifecycle rule.
+JSON Schema is intentionally not forced to encode every graph/lifecycle rule.
 
-The executable draft checks live under:
+The executable checks live under [`../conformance/v0_2/`](../conformance/v0_2/).
 
-[`../conformance/v0_2/`](../conformance/v0_2/)
+## 19. Open questions before normative freeze
 
-## 16. Open questions before normative freeze
-
-- Should evidence details remain embedded or become independently resolvable objects in some profiles?
-- Does `projection_basis_ref` need a small standardized basis vocabulary?
-- Do `assertion_relations` require inverse relations such as `superseded_by`, or is forward lineage sufficient?
-- Should `support_sets` become a general boolean evidence-expression model, or is disjunctive-normal support sufficient?
-- Which policy constraints, if any, must be normalized inline rather than referenced?
-- Should opaque Provider assertions be required to carry a Provider attestation/profile reference?
-- Which `assertion_type` values truly belong in Core rather than an extension registry?
-- Can W3C PROV map cleanly onto the dependency/support-path structure without losing RCP lifecycle meaning?
+- Should evidence details remain embedded or become independently resolvable in some profiles?
+- Does `projection_basis_ref` need a standardized basis vocabulary or only namespaced profiles?
+- Do assertion relations require inverse relations such as `superseded_by`?
+- Is disjunctive-normal `support_sets` sufficient, or will real Providers require richer evidence expressions?
+- Which policy dimensions, if any, must be normalized inline rather than externally referenced?
+- Should opaque Provider assertions carry a Provider-attestation profile reference?
+- Which base `assertion_type` values survive real Provider implementation?
+- Can a PROV profile carry all generic dependency information without duplicating it in RCP serialization while preserving RCP support/lifecycle behavior?
 
 No answer should be frozen merely for schema convenience.

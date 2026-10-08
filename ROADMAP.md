@@ -1,277 +1,250 @@
 # RCP Roadmap
 
-> RCP remains experimental. Completed milestones below mean the repository contains working design/reference/conformance evidence; they do not imply production certification, external platform adoption, or standards-body endorsement.
+> RCP remains experimental. Completed milestones mean the repository contains working design/reference/conformance evidence; they do **not** imply production certification, external adoption, independent security review, or standards-body endorsement.
 
-## Current transition
+## Current position
 
-RCP v0.1 proved that a rights-aware relationship-context exchange can be made executable, including permission-before-retrieval, provenance, epistemic classes, revocation/recomputation, identity isolation, and encrypted delivery.
+RCP has moved through two distinct generations:
 
-The next design phase deliberately **shrinks RCP Core**.
+```text
+v0.1
+broad executable interoperability experiment
+        ↓
+v0.2 draft
+smaller transport-independent relationship semantic core
+```
 
-RCP v0.2 should focus on transport-independent relationship semantics and delegate generic infrastructure concerns to established standards/bindings wherever possible.
+v0.1 is preserved as reproducible evidence. v0.2 is the active design direction.
 
-Active refactor: [Issue #23](https://github.com/papa-channy/RCP-Relationship-Context-Protocol/issues/23).
+The current v0.2 candidate has:
+
+- executable semantic invariants;
+- a minimal draft `ContextAssertion` wire model;
+- structural + relationship semantic conformance;
+- a real official-MCP Resource binding;
+- a real plain-HTTP binding;
+- identical semantic normalization across those bindings;
+- a concrete standards-reconciliation pass that removed duplicated/generic Core responsibilities.
+
+The next major evidence boundary is **unrelated implementation**, not more internal mock-provider features.
+
+---
 
 ## M0 — Public foundation ✅
 
 Completed:
 
-- [x] public README and project charter;
-- [x] architecture draft;
-- [x] threat/rights model;
-- [x] permission model;
-- [x] data-object model;
-- [x] provenance/derivation model;
-- [x] initial schemas and registries;
+- [x] public README and Charter;
+- [x] architecture/threat/rights/permission/data/provenance drafts;
+- [x] initial schemas/registries;
 - [x] public issue/RFC workspace.
 
-## M1 — Experimental Normative Core v0.1 ✅ as an internal baseline
+## M1 — Experimental Core v0.1 ✅ as an internal baseline
 
 Implemented and CI-tested:
 
-- [x] `IdentityClaim`;
-- [x] `ProviderCapability`;
-- [x] `PermissionRequest` / `PermissionDecision`;
-- [x] `ContextAssertion`;
-- [x] `SecureEnvelope`;
-- [x] `RevocationEvent`;
-- [x] MUST/SHOULD/MAY semantics;
-- [x] registries/reason codes;
-- [x] schema-positive and schema-negative fixtures;
-- [x] permission-before-retrieval semantics;
-- [x] derived-policy inheritance;
-- [x] revocation propagation/recomputation semantics;
-- [x] request → decision → envelope authorization binding;
-- [x] multi-party context projection boundaries;
+- [x] seven v0.1 wire objects;
+- [x] schema positive/negative fixtures;
+- [x] permission-before-retrieval;
+- [x] policy inheritance;
+- [x] revocation/recomputation;
+- [x] request/decision/envelope binding;
+- [x] identity/privacy/group boundaries;
 - [x] experimental JOSE profile;
-- [x] Node ↔ Python bidirectional crypto interoperability.
+- [x] Node ↔ Python crypto interoperability.
 
-**Interpretation:** v0.1 is preserved as experimental evidence, not the final RCP responsibility boundary.
+Interpretation: v0.1 is preserved evidence, not the final RCP responsibility boundary.
 
-External clean-room validation of the v0.1 Provider harness is no longer the immediate design priority while the semantic Core is being refactored.
-
-## M2 — Reference Ecosystem v0.1 ✅
-
-Completed executable scenarios:
-
-- [x] five separately stateful mock Providers;
-- [x] control-plane / relationship consumer reference service;
-- [x] provider capability discovery;
-- [x] provider-scoped identity resolution;
-- [x] minimum-data ProcessingPlan;
-- [x] provider-issued authorization decision;
-- [x] protected-state lazy read only after authorization;
-- [x] JOSE `SecureEnvelope` data path;
-- [x] provenance-preserving `ContextAssertion` normalization;
-- [x] persistent relationship context / materialized brief;
-- [x] source revocation + downstream recomputation;
-- [x] policy drift + stale authorization rejection;
-- [x] raw-content boundary scenarios;
-- [x] operator-blind payload relay;
-- [x] one-command canonical demo.
-
-The topology is now treated as a **non-normative experimental implementation**, not the required RCP architecture.
-
-## M3 — External implementation tooling v0.1 ✅
+## M2 — v0.1 Reference Ecosystem ✅
 
 Completed:
 
-- [x] clean-room Implementer Guide;
-- [x] normative-vs-reference boundary;
-- [x] non-normative external Provider HTTP harness profile;
-- [x] black-box Provider conformance harness;
-- [x] machine-readable report;
-- [x] CI self-test against a separate Provider process;
-- [x] independent implementation report template;
-- [x] security/privacy review checklist.
+- [x] five independently stateful mock Providers;
+- [x] Provider-scoped identity resolution;
+- [x] minimum-data planning;
+- [x] permission-before-protected-read;
+- [x] SecureEnvelope path;
+- [x] relationship context store/brief;
+- [x] revocation/recomputation;
+- [x] policy drift/stale decision rejection;
+- [x] raw-content boundary;
+- [x] operator-blind relay;
+- [x] one-command canonical demo.
 
-These assets remain useful, but they validate the v0.1 Provider profile rather than the emerging v0.2 semantic Core.
+The topology is non-normative reference software.
+
+## M3 — v0.1 External-validation tooling ✅
+
+Completed:
+
+- [x] clean-room implementer guide;
+- [x] external Provider HTTP harness;
+- [x] machine-readable report;
+- [x] independent implementation report template;
+- [x] security/privacy review checklist;
+- [x] CI black-box self-test.
+
+These assets validate v0.1 rather than the active v0.2 semantic model.
 
 ---
 
-# Active v0.2 roadmap
+# v0.2 scope-correction and proof sequence
 
-## M4.1 — Semantic Core boundary refactor ← current
+## M4.1 — Semantic Core boundary refactor ✅
 
-Goal: determine the smallest RCP-specific semantic contract that remains meaningful independent of transport/runtime.
+Completed through PR #24 / Issue #23 work:
 
-### Completed in first refactor pass
+- [x] reposition RCP as a transport-independent relationship information/lifecycle protocol;
+- [x] remove mandatory central-RCP-infrastructure assumptions from architecture;
+- [x] separate semantic Core from bindings/profiles;
+- [x] create standards-boundary guidance;
+- [x] draft semantic Core v0.2;
+- [x] define canonical semantic scenarios;
+- [x] preserve v0.1 instead of silently rewriting it.
 
-- [x] create standards-boundary document;
-- [x] draft transport-independent semantic Core v0.2;
-- [x] reposition README/Charter/Architecture around semantic Core + bindings;
-- [x] preserve v0.1 rather than silently rewriting its normative contract.
+Exit criterion achieved: Core relationship semantics can be explained independently of MCP, HTTP, A2A, relay topology, or an RCP-owned authorization service.
 
-### Required before freezing v0.2 concepts
+## M4.2 — Relationship semantic conformance ✅
 
-- [ ] reconcile each v0.1 responsibility against MCP/A2A/OAuth/AuthZEN/Shared Signals/PROV/ODRL/DPV/JOSE;
-- [ ] decide which proposed v0.2 concepts are first-class wire objects versus embedded structures;
-- [ ] define a minimal relationship-specific representation/capability vocabulary;
-- [ ] define cross-provider evidence relation semantics;
-- [ ] define temporal/current-state semantics;
-- [ ] define disputed/contested context behavior;
-- [ ] define relationship-scoped identity dependency semantics;
-- [ ] define the minimum policy dimensions that Core must understand versus externally reference.
+Completed through PR #26:
 
-### Exit criterion
+- [x] multi-party projection positive/negative cases;
+- [x] conflict vs supersession;
+- [x] partial-source invalidation;
+- [x] independently sufficient evidence support paths;
+- [x] policy-preserving derivation;
+- [x] epistemic preservation;
+- [x] child/source access separation;
+- [x] identity dependency changes;
+- [x] cross-provider composition;
+- [x] arrival-order neutrality;
+- [x] abstract binding equivalence.
 
-RCP Core can be explained without reference to MCP, HTTP, A2A, an RCP relay, or an RCP-owned authorization service, while still defining non-trivial relationship interoperability semantics.
+Result: the proposed semantic rules can be evaluated without one transport implementation.
 
-## M4.2 — Relationship semantic conformance
+## M4.3 — Minimal draft wire model ✅
 
-Turn the v0.2 design into executable semantic cases before freezing schemas.
+Completed through PR #28:
 
-Required canonical scenarios:
+- [x] one top-level candidate semantic object: `ContextAssertion`;
+- [x] embedded Actor/RelationshipScope/Evidence/Derivation/Lifecycle structures;
+- [x] `0.2-draft` version isolation;
+- [x] JSON Schema;
+- [x] cross-reference semantic validator;
+- [x] evidence `support_sets`;
+- [x] projection-basis validation;
+- [x] required-extension fail-closed behavior;
+- [x] synthetic MCP/HTTP framing equivalence.
 
-### Multi-party projection
+Embedded structures remain embedded unless real implementation evidence proves independent addressability is required.
 
-- [ ] `{A,B,C}` source interaction does not automatically become `{A,B}` relationship context;
-- [ ] explicit narrower evidence basis succeeds where justified.
+## M4.4 — Real binding-independence proof ✅
 
-### Conflicting evidence
+Completed through PR #30:
 
-- [ ] two Providers can express contradictory current assertions;
-- [ ] conflict does not silently collapse to one fact;
-- [ ] explicit supersession can establish a new current state.
+- [x] official MCP TypeScript SDK v2 Resource server;
+- [x] official MCP Client `readResource` path;
+- [x] plain Node HTTP server/client path;
+- [x] shared Provider-owned assertion fixture;
+- [x] same JSON Schema + semantic validator for both paths;
+- [x] identical canonical semantic output after binding framing is stripped;
+- [x] transport-only metadata excluded from semantic state.
 
-### Partial-source invalidation
+Result: internal executable evidence shows the tested RCP semantic object is not merely MCP-specific syntax.
 
-- [ ] derived context is re-evaluated when one source changes;
-- [ ] independent surviving support can preserve a current assertion with new/updated lineage;
-- [ ] insufficient surviving evidence invalidates the assertion.
+This is not external interoperability or production binding certification.
 
-### Policy-preserving derivation
+## M4.5 — Concrete standards reconciliation ✅ after merge of Issue #31 work
 
-- [ ] lower-fidelity projection does not automatically loosen source restrictions;
-- [ ] unsupported material policy fails closed;
-- [ ] any declassification/re-derivation rule is explicit and profile-defined.
+Scope:
 
-### Cross-provider composition
+- [x] field-level comparison with MCP, AuthZEN, Shared Signals/CAEP, PROV, ODRL/DPV, ActivityStreams, Solid SAI, AT Protocol Lexicon, and Eclipse Dataspace Protocol;
+- [x] explicit KEEP / PROFILE-MAP / BINDING-ONLY / REMOVE decisions;
+- [x] remove top-level generic `confidence` from Core;
+- [x] remove epistemic duplicates from `assertion_type`;
+- [x] shrink evidence channel taxonomy to abstract categories + namespaced extensions;
+- [x] make participant-projection checks channel-independent;
+- [x] remove generic transformation classification from base derivation structure;
+- [x] document PROV/AuthZEN/SSF/ODRL-DPV mapping boundaries.
 
-- [ ] Provider-specific views remain distinguishable;
-- [ ] combined state preserves disagreement/provenance/restrictions;
-- [ ] support/corroboration/supersession relations are deterministic where declared.
+Resulting originality boundary:
 
-### Epistemic preservation
+> RCP is a candidate transport-independent semantic/lifecycle contract for Provider-derived relationship context, preserving target/source participant scope, epistemic meaning, evidentiary sufficiency, material identity/policy dependencies, restriction inheritance, and downstream state transitions.
 
-- [ ] source statements/inferences do not become verified facts through transport or aggregation;
-- [ ] strategy is never presented as a fact about a counterparty.
+---
 
-### Exit criterion
+# Next evidence milestones
 
-The semantic scenarios can be evaluated without depending on one specific transport implementation.
+## M4.6 — Unrelated clean-room v0.2 implementation ← next external milestone
 
-## M4.3 — v0.2 wire model and schemas
-
-Only after semantic scenarios stabilize:
-
-- [ ] freeze candidate semantic structures;
-- [ ] define v0.2 versioning/extension rules;
-- [ ] add JSON Schemas or equivalent machine-readable definitions;
-- [ ] migrate relevant v0.1 fixtures;
-- [ ] explicitly deprecate or move generic v0.1 objects to profiles/bindings where decided;
-- [ ] keep compatibility/migration examples.
-
-Candidate semantic concepts under review:
-
-- `ActorReference`;
-- `RelationshipScope`;
-- `InteractionEvidence`;
-- `ContextAssertion`;
-- `EpistemicClass`;
-- `DerivationDependency`;
-- `ContextLifecycle`;
-- `PolicyReference`.
-
-## M4.4 — Binding independence proof
-
-Goal: demonstrate that RCP semantics are not merely one MCP/HTTP API convention.
+Do not count another author-written implementation as independent evidence.
 
 Required:
 
-- [ ] define minimal RCP-over-MCP binding;
-- [ ] define minimal RCP-over-HTTP binding or another independent transport;
-- [ ] send equivalent semantic objects through both;
-- [ ] evaluate both through the same semantic engine;
-- [ ] prove equivalent relationship state/lifecycle outcome;
-- [ ] ensure binding-specific metadata does not redefine semantic meaning.
-
-### Exit criterion
-
-At least two materially different bindings produce equivalent semantic outcomes for the canonical scenarios.
-
-If this cannot be demonstrated, reassess whether RCP should become a domain extension/profile rather than an independent semantic protocol.
-
-## M4.5 — External clean-room semantic implementation
-
-Resume independent implementation only after the v0.2 semantic surface is sufficiently stable.
-
-- [ ] recruit at least one unrelated implementer;
-- [ ] implement the semantic engine from `/spec` without importing reference semantic code;
-- [ ] run semantic conformance scenarios;
+- [ ] publish a bounded v0.2 clean-room implementer surface;
+- [ ] make the current semantic/wire suite consumable without reference code;
+- [ ] update external implementation report template for v0.2;
+- [ ] have at least one unrelated person/team implement the semantic target from `/spec` and conformance docs;
 - [ ] test at least one binding;
-- [ ] publish ambiguity/failure report;
-- [ ] classify findings as spec ambiguity, binding assumption, implementation defect, standards overlap, or security/privacy concern.
+- [ ] classify every failure as implementation defect, spec ambiguity, standards overlap, binding assumption, profile gap, or security/privacy concern;
+- [ ] resolve material ambiguities discovered by the clean-room implementation.
 
-Issue #19 remains useful as historical/external-validation infrastructure, but the target should be updated to the v0.2 semantic model before claiming independent RCP interoperability.
+A successful unrelated implementation would support only the claim that **at least one independent implementation interoperated for the tested v0.2 surface**.
 
 ## M5 — Independent security/privacy review
 
-Focus areas after v0.2 semantics stabilize:
+Focus:
 
-- [ ] participant-scope leakage and multi-party projection;
+- [ ] participant-scope leakage;
 - [ ] cross-tenant identity correlation;
 - [ ] epistemic laundering;
-- [ ] provenance/evidence dependency leakage;
+- [ ] evidence/provenance leakage;
 - [ ] derived-data laundering;
-- [ ] invalidation/recomputation failures;
-- [ ] policy inheritance/declassification mistakes;
+- [ ] support-set/invalidation errors;
+- [ ] restriction inheritance/declassification mistakes;
 - [ ] metadata leakage through bindings;
-- [ ] binding-specific auth/security assumptions;
-- [ ] provider-side AI derivation risks.
+- [ ] malicious Provider/Consumer behavior;
+- [ ] Provider-side AI derivation risk.
 
-Cryptographic/key-discovery review applies to specific security profiles, not to semantic Core as a whole.
+Cryptographic review applies to specific security profiles, not the semantic Core as a whole.
 
-## M6 — Standards mappings and production bindings
+## M6 — Executable standards profiles and production binding hardening
 
-After the semantic Core is validated:
+Build only profiles demonstrated to be required by implementation:
 
-- [ ] AuthZEN-compatible relationship authorization profile;
-- [ ] Shared-Signals-compatible invalidation/change profile;
-- [ ] W3C PROV mapping;
-- [ ] ODRL/DPV policy mapping where useful;
-- [ ] production-oriented JOSE/COSE security profile if needed;
-- [ ] MCP binding;
-- [ ] HTTP/A2A or provider-native binding;
-- [ ] discovery/version-negotiation guidance per binding.
+- [ ] RCP ↔ W3C PROV lineage mapping;
+- [ ] RCP ↔ AuthZEN authorization profile;
+- [ ] RCP ↔ Shared Signals event/profile mapping;
+- [ ] ODRL/DPV policy-reference examples/profile where useful;
+- [ ] production-oriented security profile using JOSE/COSE if required;
+- [ ] binding discovery/version-negotiation guidance;
+- [ ] subscriptions/change-delivery semantics per binding without moving them into Core.
 
-## M7 — First real provider implementation
+## M7 — First real non-RCP Provider implementation
 
-Choose a real system only after the semantic Core and at least one binding are coherent.
+Choose a real system only after the semantic target survives unrelated implementation/review.
 
-The implementation must test whether the Provider can:
+The pilot should test whether a Provider can:
 
-- keep raw/private evidence local;
-- expose a lower-fidelity RCP relationship projection;
-- preserve participant scope;
+- keep private/raw evidence local;
+- emit a lower-fidelity RCP relationship projection;
+- preserve source/target participant scope;
 - emit explicit epistemic classes;
-- identify material evidence dependencies;
-- enforce/refer to policy constraints;
-- process source invalidation/recomputation;
-- interoperate with a generic Consumer without provider-specific relationship semantics.
+- expose material evidence/identity/policy dependencies;
+- react to dependency changes;
+- interoperate with a generic Consumer without Provider-specific relationship semantics.
 
-No bridge should rely on bypassing closed-platform access controls.
+No bridge should bypass closed-platform access controls.
 
-## M8 — Broader interoperability/governance work
+## M8 — Broader interoperability/governance
 
-Only after independent semantic interoperability exists:
+Only after independent interoperability exists:
 
 - publish interoperability results;
-- expand RFC/change-control process;
-- define stable versioning/deprecation rules;
-- invite standards/security/privacy review;
-- evaluate neutral stewardship if justified.
+- expand RFC/change-control/versioning/deprecation processes;
+- invite standards/security/privacy critique;
+- evaluate neutral stewardship if actual multi-organization participation justifies it.
 
 ## Long-term success criterion
 
-RCP succeeds when independent systems can implement the same relationship-context semantics and preserve the same participant, epistemic, evidence, restriction, and lifecycle boundaries **without depending on the original project's infrastructure or one particular agent transport**.
+RCP succeeds when independent systems preserve the same participant, epistemic, evidence-sufficiency, restriction, and lifecycle semantics **without depending on the original project's infrastructure or one specific agent transport**.
