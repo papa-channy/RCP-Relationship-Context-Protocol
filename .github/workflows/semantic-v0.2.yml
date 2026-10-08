@@ -5,22 +5,28 @@ on:
     branches: [main]
     paths:
       - "conformance/v0_2/**"
+      - "conformance/external/v0_2/**"
       - "bindings/v0_2/**"
       - "spec/core-v0.2-draft.md"
       - "spec/wire-v0.2-draft.md"
       - "spec/schemas/v0.2-draft/**"
       - "docs/semantic-scenarios-v0.2.md"
       - "docs/v0.2-semantic-conformance-notes.md"
+      - "docs/IMPLEMENTER_GUIDE_V0_2.md"
+      - "docs/INDEPENDENT_IMPLEMENTATION_REPORT_V0_2_TEMPLATE.md"
       - ".github/workflows/semantic-v0.2.yml"
   pull_request:
     paths:
       - "conformance/v0_2/**"
+      - "conformance/external/v0_2/**"
       - "bindings/v0_2/**"
       - "spec/core-v0.2-draft.md"
       - "spec/wire-v0.2-draft.md"
       - "spec/schemas/v0.2-draft/**"
       - "docs/semantic-scenarios-v0.2.md"
       - "docs/v0.2-semantic-conformance-notes.md"
+      - "docs/IMPLEMENTER_GUIDE_V0_2.md"
+      - "docs/INDEPENDENT_IMPLEMENTATION_REPORT_V0_2_TEMPLATE.md"
       - ".github/workflows/semantic-v0.2.yml"
 
 permissions:
@@ -46,6 +52,23 @@ jobs:
 
       - name: Run RCP v0.2 draft wire conformance
         run: python conformance/v0_2/run_wire.py
+
+      - name: Assert external clean-room harness does not import reference oracle
+        run: |
+          if grep -E "conformance[./]v0_2[./](run|run_wire|normalize_wire)|import .*run_wire|from .*run_wire" conformance/external/v0_2/harness.py; then
+            echo "External v0.2 harness must remain black-box and must not import the reference semantic oracle."
+            exit 1
+          fi
+
+      - name: Self-test external v0.2 clean-room harness plumbing
+        run: |
+          python conformance/external/v0_2/harness.py \
+            --cmd "python conformance/external/v0_2/reference_adapter.py" \
+            --implementation-name rcp-reference-adapter \
+            --implementation-version 0.2-draft \
+            --language "Python 3.12" \
+            --rcp-revision "${GITHUB_SHA}" \
+            --report conformance/external/v0_2/out/self-test-report.json
 
       - name: Set up Node
         uses: actions/setup-node@v4
