@@ -1,0 +1,353 @@
+{
+  "suite": "rcp-v0.2-semantic-draft",
+  "status": "non-normative-design-conformance",
+  "multi_party_projection": [
+    {
+      "id": "projection-group-to-bilateral-without-basis",
+      "source_participants": ["A", "B", "C"],
+      "target_participants": ["A", "B"],
+      "explicit_projection_basis": false,
+      "expected_allowed": false
+    },
+    {
+      "id": "projection-group-to-bilateral-with-basis",
+      "source_participants": ["A", "B", "C"],
+      "target_participants": ["A", "B"],
+      "explicit_projection_basis": true,
+      "expected_allowed": true
+    },
+    {
+      "id": "projection-preserve-full-group",
+      "source_participants": ["A", "B", "C"],
+      "target_participants": ["A", "B", "C"],
+      "explicit_projection_basis": false,
+      "expected_allowed": true
+    },
+    {
+      "id": "projection-target-not-in-source",
+      "source_participants": ["A", "B"],
+      "target_participants": ["A", "D"],
+      "explicit_projection_basis": true,
+      "expected_allowed": false
+    }
+  ],
+  "evidence_relations": [
+    {
+      "id": "later-arrival-does-not-supersede",
+      "left": {"id": "A1", "received_at": "2026-10-01T10:00:00Z"},
+      "right": {"id": "B1", "received_at": "2026-10-01T11:00:00Z"},
+      "declared_relation": null,
+      "expected": {"relation": "independent_views", "left_current": true, "right_current": true}
+    },
+    {
+      "id": "explicit-conflict-preserves-both-views",
+      "left": {"id": "A1", "received_at": "2026-10-01T10:00:00Z"},
+      "right": {"id": "B1", "received_at": "2026-10-01T11:00:00Z"},
+      "declared_relation": "conflicts_with",
+      "expected": {"relation": "conflicts_with", "left_current": true, "right_current": true}
+    },
+    {
+      "id": "explicit-supersession-changes-currentness",
+      "left": {"id": "A1", "received_at": "2026-10-01T10:00:00Z"},
+      "right": {"id": "B1", "received_at": "2026-10-01T11:00:00Z"},
+      "declared_relation": "supersedes_left",
+      "expected": {"relation": "supersedes_left", "left_current": false, "right_current": true}
+    }
+  ],
+  "dependency_invalidation": [
+    {
+      "id": "independent-support-survives-one-source-loss",
+      "all_sources": ["A", "B"],
+      "support_sets": [["A"], ["B"]],
+      "removed_sources": ["A"],
+      "expected": {"current_support_exists": true, "action": "recompute", "historical_lineage_preserved": true}
+    },
+    {
+      "id": "joint-support-fails-when-one-source-lost",
+      "all_sources": ["A", "B"],
+      "support_sets": [["A", "B"]],
+      "removed_sources": ["A"],
+      "expected": {"current_support_exists": false, "action": "invalidate", "historical_lineage_preserved": true}
+    },
+    {
+      "id": "unrelated-source-loss-does-not-affect-assertion",
+      "all_sources": ["A", "B"],
+      "support_sets": [["A"], ["B"]],
+      "removed_sources": ["C"],
+      "expected": {"current_support_exists": true, "action": "none", "historical_lineage_preserved": true}
+    }
+  ],
+  "policy_projection": [
+    {
+      "id": "summary-does-not-loosen-external-processing-deny",
+      "parents": [
+        {
+          "allowed_purposes": ["meeting_preparation"],
+          "external_processing": "deny",
+          "training": "deny",
+          "retention_max_seconds": 86400
+        }
+      ],
+      "child": {
+        "allowed_purposes": ["meeting_preparation"],
+        "external_processing": "allow",
+        "training": "deny",
+        "retention_max_seconds": 86400
+      },
+      "declassification_basis": false,
+      "expected_valid": false
+    },
+    {
+      "id": "projection-may-preserve-or-tighten-policy",
+      "parents": [
+        {
+          "allowed_purposes": ["meeting_preparation", "relationship_assistance"],
+          "external_processing": "allow",
+          "training": "deny",
+          "retention_max_seconds": 86400
+        }
+      ],
+      "child": {
+        "allowed_purposes": ["meeting_preparation"],
+        "external_processing": "deny",
+        "training": "deny",
+        "retention_max_seconds": 3600
+      },
+      "declassification_basis": false,
+      "expected_valid": true
+    },
+    {
+      "id": "multiple-parent-purpose-intersection",
+      "parents": [
+        {
+          "allowed_purposes": ["meeting_preparation", "relationship_assistance"],
+          "external_processing": "allow",
+          "training": "allow",
+          "retention_max_seconds": 86400
+        },
+        {
+          "allowed_purposes": ["meeting_preparation"],
+          "external_processing": "allow",
+          "training": "deny",
+          "retention_max_seconds": 7200
+        }
+      ],
+      "child": {
+        "allowed_purposes": ["meeting_preparation"],
+        "external_processing": "allow",
+        "training": "deny",
+        "retention_max_seconds": 7200
+      },
+      "declassification_basis": false,
+      "expected_valid": true
+    }
+  ],
+  "epistemic_preservation": [
+    {
+      "id": "source-statement-cannot-silently-become-verified",
+      "source_classes": ["source_statement"],
+      "output_class": "verified_fact",
+      "verification_basis": false,
+      "direct_extraction_basis": false,
+      "expected_allowed": false
+    },
+    {
+      "id": "inference-confidence-does-not-create-verification",
+      "source_classes": ["source_statement", "system_inference"],
+      "output_class": "verified_fact",
+      "verification_basis": false,
+      "direct_extraction_basis": false,
+      "expected_allowed": false
+    },
+    {
+      "id": "explicit-verification-can-produce-verified-fact",
+      "source_classes": ["source_statement"],
+      "output_class": "verified_fact",
+      "verification_basis": true,
+      "direct_extraction_basis": false,
+      "expected_allowed": true
+    },
+    {
+      "id": "direct-extraction-can-produce-extracted-fact",
+      "source_classes": ["source_statement"],
+      "output_class": "extracted_fact",
+      "verification_basis": false,
+      "direct_extraction_basis": true,
+      "expected_allowed": true
+    }
+  ],
+  "source_access": [
+    {
+      "id": "child-readable-source-denied",
+      "child_access": "allow",
+      "source_access": "deny",
+      "source_state": "active",
+      "expected_source_access": false
+    },
+    {
+      "id": "child-readable-source-independently-allowed",
+      "child_access": "allow",
+      "source_access": "allow",
+      "source_state": "active",
+      "expected_source_access": true
+    },
+    {
+      "id": "revoked-source-remains-inaccessible",
+      "child_access": "allow",
+      "source_access": "allow",
+      "source_state": "revoked",
+      "expected_source_access": false
+    }
+  ],
+  "identity_dependency": [
+    {
+      "id": "conflicted-binding-requires-reevaluation",
+      "assertion_depends_on_binding": true,
+      "before_state": "user_confirmed",
+      "after_state": "conflicted",
+      "expected_reevaluation": true
+    },
+    {
+      "id": "unlink-requires-reevaluation",
+      "assertion_depends_on_binding": true,
+      "before_state": "user_confirmed",
+      "after_state": "unlinked",
+      "expected_reevaluation": true
+    },
+    {
+      "id": "unrelated-binding-change-does-not-affect-assertion",
+      "assertion_depends_on_binding": false,
+      "before_state": "user_confirmed",
+      "after_state": "conflicted",
+      "expected_reevaluation": false
+    },
+    {
+      "id": "unchanged-binding-does-not-require-reevaluation",
+      "assertion_depends_on_binding": true,
+      "before_state": "user_confirmed",
+      "after_state": "user_confirmed",
+      "expected_reevaluation": false
+    }
+  ],
+  "cross_provider_composition": [
+    {
+      "id": "composition-preserves-both-sources-and-lineage",
+      "sources": [
+        {"id": "A1", "epistemic_class": "user_observation"},
+        {"id": "B1", "epistemic_class": "extracted_fact"}
+      ],
+      "derived": {
+        "id": "C1",
+        "epistemic_class": "system_interpretation",
+        "dependency_refs": ["A1", "B1"],
+        "verification_basis": false
+      },
+      "sources_remain_addressable": true,
+      "expected_valid": true
+    },
+    {
+      "id": "composition-cannot-erase-one-source",
+      "sources": [
+        {"id": "A1", "epistemic_class": "user_observation"},
+        {"id": "B1", "epistemic_class": "extracted_fact"}
+      ],
+      "derived": {
+        "id": "C1",
+        "epistemic_class": "system_interpretation",
+        "dependency_refs": ["B1"],
+        "verification_basis": false
+      },
+      "sources_remain_addressable": true,
+      "expected_valid": false
+    },
+    {
+      "id": "composition-cannot-promote-to-verified-without-basis",
+      "sources": [
+        {"id": "A1", "epistemic_class": "user_observation"},
+        {"id": "B1", "epistemic_class": "extracted_fact"}
+      ],
+      "derived": {
+        "id": "C1",
+        "epistemic_class": "verified_fact",
+        "dependency_refs": ["A1", "B1"],
+        "verification_basis": false
+      },
+      "sources_remain_addressable": true,
+      "expected_valid": false
+    }
+  ],
+  "arrival_order": [
+    {
+      "id": "later-received-without-semantic-relation",
+      "left_received_at": "2026-10-01T10:00:00Z",
+      "right_received_at": "2026-10-01T11:00:00Z",
+      "explicit_supersedes": false,
+      "expected_left_superseded": false
+    },
+    {
+      "id": "explicit-supersession-allows-transition",
+      "left_received_at": "2026-10-01T10:00:00Z",
+      "right_received_at": "2026-10-01T11:00:00Z",
+      "explicit_supersedes": true,
+      "expected_left_superseded": true
+    }
+  ],
+  "binding_equivalence": [
+    {
+      "id": "same-semantics-different-binding-framing",
+      "left": {
+        "binding": "mcp",
+        "frame": {"tool": "relationship.context.read", "request_id": "mcp-1"},
+        "semantic": {
+          "assertion_id": "ctx-1",
+          "relationship_scope": {"participants": ["A", "B"], "scope_type": "bilateral"},
+          "epistemic_class": "extracted_fact",
+          "dependency_refs": ["evidence-1"],
+          "policy_refs": ["policy-1"],
+          "lifecycle": "active"
+        }
+      },
+      "right": {
+        "binding": "http",
+        "frame": {"method": "GET", "path": "/relationships/r1/context/ctx-1"},
+        "semantic": {
+          "assertion_id": "ctx-1",
+          "relationship_scope": {"participants": ["A", "B"], "scope_type": "bilateral"},
+          "epistemic_class": "extracted_fact",
+          "dependency_refs": ["evidence-1"],
+          "policy_refs": ["policy-1"],
+          "lifecycle": "active"
+        }
+      },
+      "expected_equivalent": true
+    },
+    {
+      "id": "semantic-difference-is-not-hidden-by-binding",
+      "left": {
+        "binding": "mcp",
+        "frame": {"tool": "relationship.context.read"},
+        "semantic": {
+          "assertion_id": "ctx-1",
+          "relationship_scope": {"participants": ["A", "B"], "scope_type": "bilateral"},
+          "epistemic_class": "source_statement",
+          "dependency_refs": ["evidence-1"],
+          "policy_refs": ["policy-1"],
+          "lifecycle": "active"
+        }
+      },
+      "right": {
+        "binding": "http",
+        "frame": {"method": "GET", "path": "/relationships/r1/context/ctx-1"},
+        "semantic": {
+          "assertion_id": "ctx-1",
+          "relationship_scope": {"participants": ["A", "B"], "scope_type": "bilateral"},
+          "epistemic_class": "verified_fact",
+          "dependency_refs": ["evidence-1"],
+          "policy_refs": ["policy-1"],
+          "lifecycle": "active"
+        }
+      },
+      "expected_equivalent": false
+    }
+  ]
+}
