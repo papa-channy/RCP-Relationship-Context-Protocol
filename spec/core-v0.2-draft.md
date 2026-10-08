@@ -1,175 +1,226 @@
 # RCP Semantic Core v0.2 — Design Draft
 
-> **Status: Non-normative design draft**
+> **Status: non-normative design draft**
 >
-> This document proposes the next RCP Core direction. It does not replace the experimental normative v0.1 contract yet. RCP v0.1 remains reproducible for existing schemas, reference implementations, and conformance evidence until v0.2 wire objects and tests are explicitly adopted.
+> This document describes the active RCP v0.2 semantic-core direction after executable semantic conformance, a candidate wire model, real MCP/HTTP binding-equivalence testing, and a concrete standards-reconciliation pass. It does not replace the experimental v0.1 contract yet.
 
 ## 1. Design thesis
 
 RCP should define a **transport-independent information and lifecycle model for relationship context**.
 
-The Core should remain meaningful whether an implementation carries RCP objects through MCP, A2A, plain HTTP, a platform-native API, or another interoperable binding.
+The Core must remain meaningful whether the same assertion is carried over MCP, HTTP, A2A, a Provider-native API, or another binding.
 
-RCP should not own generic infrastructure when mature standards already exist for that concern.
-
-The v0.2 design target is therefore:
+The current design target is:
 
 > **portable, policy-bearing, provenance-bearing, stateful relationship context**
 
-rather than a universal agent transport, authorization engine, cryptographic stack, or social network protocol.
+RCP is not intended to become a universal agent transport, authorization protocol, provenance ontology, policy language, identity system, cryptographic stack, or social-network protocol.
 
-## 2. Core problem
+## 2. Why relationship context is a separate semantic problem
 
-Relationship context differs from ordinary documents, tool responses, or social-graph edges in several ways:
+Relationship context differs from ordinary documents, tool responses, and social-graph edges because it commonly has all of the following properties:
 
-1. **multi-party scope** — context often concerns two or more people and organizations rather than a single owner;
-2. **epistemic meaning** — a source statement, extracted fact, observation, interpretation, inference, and recommendation are not interchangeable;
-3. **distributed evidence** — different providers may hold independent, supporting, conflicting, or superseding evidence about the same relationship;
-4. **derived state** — commitments, open loops, relationship state, and preparation context are often derived from underlying interactions;
-5. **policy-bearing derivation** — summarization or inference does not automatically erase source restrictions;
-6. **lifecycle coupling** — correction, revocation, identity changes, or policy changes can require downstream invalidation or recomputation;
-7. **provider-local truth** — providers may expose a safe projection without exporting raw evidence;
-8. **cross-provider composition** — consumers need predictable rules for combining independently produced relationship context.
+1. **multi-party scope** — evidence may involve different participant sets from the relationship context derived from it;
+2. **epistemic meaning** — statement, extraction, verification, observation, interpretation, inference, and strategy are not interchangeable;
+3. **distributed evidence** — different Providers may independently support, contradict, refine, or supersede context;
+4. **derived state** — commitments, open loops, preferences, and relationship state often arise from underlying interactions;
+5. **policy-bearing derivation** — summarization, extraction, aggregation, or inference does not automatically erase restrictions;
+6. **lifecycle coupling** — source correction/removal, identity changes, authorization changes, or policy changes may require downstream re-evaluation;
+7. **provider-local evidence** — raw evidence may remain private while a Provider emits an authorized projection;
+8. **cross-provider composition** — Consumers need deterministic rules for preserving disagreement, support, lineage, and restrictions.
 
-RCP exists only if these semantics require interoperable meaning beyond generic transport/runtime protocols.
+RCP exists only if these semantics need interoperable agreement beyond generic transport/runtime standards.
 
 ## 3. Non-goals
 
-The v0.2 semantic Core should not define:
+RCP v0.2 Core should not define:
 
+- a mandatory RCP-operated gateway, relay, cloud, registry, or database;
 - a universal network transport;
-- a mandatory RCP-operated gateway, relay, registry, database, or cloud service;
-- a generic AI tool invocation protocol;
-- a generic agent-to-agent task protocol;
-- a universal authentication/login system;
-- a generic authorization engine;
+- generic AI tool/resource invocation;
+- agent-to-agent task lifecycle;
+- authentication/login/token delegation;
+- generic authorization request/decision mechanics;
 - a universal provenance ontology;
-- a universal policy language;
+- a universal policy/privacy vocabulary;
+- generic event/signal transport;
 - custom cryptographic primitives;
-- a global person identifier or global private social graph;
-- a universal taxonomy such as `best_friend`, `trusted_contact`, or a relationship score.
+- a global human identity graph;
+- a universal social relationship predicate or closeness score;
+- a universal evidence-channel taxonomy;
+- a universal model-confidence metric;
+- a new schema-definition language.
 
-Bindings and profiles may reuse MCP, A2A, HTTP, OAuth/OIDC, AuthZEN, Shared Signals, W3C PROV, ODRL/DPV, JOSE/COSE, or other standards.
+Bindings/profiles should reuse mature standards where applicable, including MCP, A2A, HTTP, OAuth/OIDC, AuthZEN, Shared Signals, W3C PROV, ODRL, DPV, JOSE/COSE, and Provider-native mechanisms.
 
-## 4. Candidate semantic concepts
+Detailed responsibility boundaries are documented in:
 
-The following are candidate concepts for v0.2. They are not yet frozen as seven or eight independent wire-object schemas.
+- [`../docs/standards-boundary.md`](../docs/standards-boundary.md)
+- [`../docs/standards-reconciliation-v0.2.md`](../docs/standards-reconciliation-v0.2.md)
+
+## 4. Current candidate semantic model
+
+The current wire experiment uses one top-level `ContextAssertion` with embedded semantic structures. These are concepts, not commitments to independent top-level wire objects.
 
 ### 4.1 `ActorReference`
 
 A scoped reference to a person, organization, service, agent, or other actor relevant to relationship context.
 
-Required semantic properties:
+Required meaning:
 
 - identifier meaning is scoped;
-- string equality does not imply global identity equality;
-- actor references may be provider-local;
-- identity evidence/bindings may be material dependencies;
-- uncertain identity evidence cannot silently merge sensitive relationship histories.
+- equal strings in different scopes are not automatically the same actor;
+- Provider-local identifiers are allowed;
+- identity bindings may be material dependencies;
+- uncertain identity evidence cannot silently merge sensitive histories.
 
-RCP should not define a universal person-identity system.
+RCP does not define universal identity verification or federation.
 
 ### 4.2 `RelationshipScope`
 
-Defines the relationship or participant set to which context applies.
+Defines the participant/trust scope to which a context assertion applies.
 
-Candidate fields/concepts:
+Candidate semantics include:
 
-- `relationship_ref` — optional stable local reference;
-- `participants` — actors the resulting context concerns;
-- `source_participants` — actors involved in the source interaction/evidence;
-- `scope_type` — bilateral, group, organization-mediated, provider-defined extension;
-- `tenant_scope` / `trust_domain` — identity/context isolation boundary;
-- `identity_dependency_refs` — bindings required to interpret the scope.
+- optional local `relationship_ref`;
+- target `participants`;
+- `scope_type` such as bilateral or group;
+- `trust_domain` / tenant isolation boundary;
+- material `identity_dependency_refs`.
 
-#### Core invariant: no silent participant collapse
+`RelationshipScope` is **not** a social edge predicate. ActivityStreams or domain vocabularies may describe `friendOf`, `follows`, membership, etc.; RCP does not duplicate that taxonomy.
 
-Evidence involving `{A,B,C}` MUST NOT automatically become context about `{A,B}` merely because A and B are both present.
+#### Core invariant — no silent participant collapse
 
-A narrower projection requires an explicit basis showing why the evidence supports that narrower relationship scope.
+Evidence involving `{A,B,C}` must not silently become context about `{A,B}`.
 
-### 4.3 `InteractionEvidence`
+Any change from declared source participants to target relationship participants requires an explicit semantic projection basis.
 
-Represents evidence from an interaction without requiring raw content export.
+### 4.3 `EvidenceReference`
 
-It may reference or describe:
+Represents relationship-relevant evidence without requiring raw evidence export.
 
-- message/thread interaction;
-- meeting/call;
-- calendar/event participation;
-- CRM/customer interaction;
-- social interaction;
-- provider-generated event;
-- user-authored evidence;
-- another namespaced source type.
+The base evidence categories are intentionally abstract:
 
-The evidence representation may be:
+- `interaction`;
+- `provider_projection`;
+- `user_note`;
+- `assertion`;
+- `unknown`;
+- namespaced extension types.
 
-- opaque reference;
-- type-only metadata;
-- interaction metadata;
-- bounded source statement;
-- provider-generated projection.
+Channel-specific concepts such as message, Slack DM, call, meeting transcript, CRM event, or calendar event belong to Provider/domain mappings or namespaced extensions.
 
-RCP must allow a provider to keep raw evidence private while emitting interoperable derived context.
+Evidence may expose only:
+
+- an opaque reference;
+- type-only information;
+- metadata;
+- a bounded source statement;
+- a Provider-generated projection.
+
+Each evidence reference declares `source_participants` separately from the target relationship scope.
 
 ### 4.4 `ContextAssertion`
 
-`ContextAssertion` remains the central semantic unit.
+`ContextAssertion` is the central semantic unit.
 
-An assertion says one bounded thing about a relationship scope, subject, event, commitment, preference, state, or strategy and carries enough metadata to interpret its epistemic and lifecycle meaning.
+An assertion says one bounded thing about a relationship scope and carries sufficient information to interpret its epistemic class, lineage/dependencies, restrictions, cross-provider relations, and lifecycle state.
 
-Candidate assertion families include:
+Base assertion subject categories are intentionally limited to concepts such as:
 
-- source statement;
-- fact/extracted fact;
-- observation;
-- commitment/open loop;
+- commitment;
+- open loop;
 - preference;
-- shared topic/state;
-- interpretation;
-- inference;
-- strategy/recommendation;
-- event/interaction summary.
+- event;
+- relationship state;
+- shared topic;
+- constraint;
+- other / namespaced extensions.
 
-RCP should avoid a universal ontology of social closeness or relationship scoring.
+Epistemic categories are not duplicated in `assertion_type`.
 
 ### 4.5 `EpistemicClass`
 
-At minimum, implementations need a shared distinction between:
+The current shared classes are:
 
 - `source_statement` — a source stated something; truth is not independently asserted;
-- `verified_fact` — independently verified under a documented policy;
+- `verified_fact` — verification occurred under an explicit basis/policy;
 - `extracted_fact` — directly extracted without independent verification;
 - `user_observation` — user-authored observation;
 - `system_interpretation` — system-generated interpretation beyond direct extraction;
 - `system_inference` — probabilistic/inferential conclusion;
-- `strategy` — recommendation or proposed action, not a fact about a counterparty;
-- `unknown` — epistemic status cannot be determined.
+- `strategy` — recommendation/proposed action rather than fact about a counterparty;
+- `unknown` — epistemic class cannot safely be determined.
 
-#### Core invariant: no epistemic promotion by convenience
+#### Core invariant — no epistemic promotion
 
-Transport, summarization, merging, or repeated observation MUST NOT silently promote weaker epistemic classes to `verified_fact`.
+Transport, repetition, summarization, aggregation, merging, or model confidence must not silently promote a weaker epistemic class to `verified_fact`.
 
-### 4.6 `DerivationDependency`
+`verified_fact` requires an explicit basis that resolves into declared lineage.
 
-Defines which evidence or relationship-context objects materially support a derived assertion.
+### 4.6 Confidence is extension/profile metadata
 
-A dependency should be able to represent:
+A naked numeric confidence score is not Core because values are not interoperable without a defined scoring/calibration profile.
 
-- source/evidence reference;
-- whether the source is essential or independently replaceable;
-- derivation/transformation class;
-- source version/time boundary;
-- provenance visibility;
-- inherited policy references;
-- evidence role such as supporting, conflicting, superseding, or corroborating.
+Core only preserves:
 
-RCP may map these concepts to W3C PROV or another provenance representation. RCP's Core concern is not inventing provenance vocabulary; it is defining the lifecycle consequences of relationship-context dependencies.
+```text
+confidence != verification
+```
 
-### 4.7 `ContextLifecycle`
+Providers may expose confidence through a namespaced extension whose semantics are explicit.
 
-Candidate lifecycle states include:
+### 4.7 `DerivationDependency`
+
+Defines material dependencies that support or constrain a derived assertion.
+
+Generic lineage should map to W3C PROV where practical. RCP-specific dependency meaning includes:
+
+- dependency type: evidence, assertion, identity binding, or policy;
+- evidentiary role such as support/corroboration/refinement;
+- whether the dependency is material to current validity;
+- independently sufficient evidence support paths.
+
+The earlier base `transformation` field was removed during M4.5. Generic derivation/transformation activity belongs in PROV/profile metadata unless future interoperability evidence shows a relationship-specific transformation semantic is required.
+
+### 4.8 `support_sets`
+
+A flat provenance graph does not state which subsets of evidence are independently sufficient for a relationship assertion to remain supported.
+
+RCP therefore currently models alternative sufficient support sets.
+
+```json
+{"support_sets": [["A"], ["B"]]}
+```
+
+means A or B independently supports the assertion.
+
+```json
+{"support_sets": [["A", "B"]]}
+```
+
+means A and B are jointly required.
+
+This is a candidate RCP-specific semantic because it directly determines downstream validity/recomputation after source change.
+
+### 4.9 `AssertionRelation`
+
+Current cross-assertion relations include:
+
+- `supports`;
+- `corroborates`;
+- `conflicts_with`;
+- `supersedes`;
+- `refines`.
+
+Generic provenance/version vocabularies may map some relations, but RCP requires deterministic relationship-context meaning where conflict/replacement/support affects current state.
+
+Arrival order alone is never semantic supersession.
+
+### 4.10 `ContextLifecycle`
+
+Current candidate assertion states are:
 
 - `active`;
 - `superseded`;
@@ -177,267 +228,221 @@ Candidate lifecycle states include:
 - `expired`;
 - `invalidated`;
 - `revoked`;
-- `historical` or equivalent profile-defined archival state.
+- `historical`.
 
-The Core needs deterministic transition semantics rather than a universal event-delivery protocol.
+`recompute` / `re-evaluate` are processing operations, not public lifecycle states.
 
-### 4.8 `PolicyReference`
+A material dependency change triggers evaluation; the resulting assertion state may remain active under new lineage or transition to a more restrictive/currently non-active state.
 
-RCP should carry references or normalized constraints sufficient to preserve relationship-specific restrictions without becoming a universal policy language.
+### 4.11 `PolicyReference`
 
-Examples of material dimensions:
+RCP does not define a universal policy language.
 
-- allowed purpose;
-- destination/recipient class;
-- processing-location restriction;
-- retention maximum;
-- disclosure restriction;
-- derivation restriction;
-- training prohibition;
-- confidentiality/sensitivity classification;
-- provider/organization policy dependency.
+The semantic object carries references to material policy dependencies. Profiles may map them to:
 
-A profile may map these dimensions to ODRL, DPV, AuthZEN context, provider-native policy, or another policy system.
+- ODRL Policies;
+- DPV purpose/processing/entity/location/legal-basis descriptions;
+- AuthZEN context or authorization-system references;
+- Provider-native policy;
+- another explicit policy system.
 
-## 5. Core invariants
+RCP Core defines only the relationship-specific inheritance/consequence rules.
 
-The following invariants are strong candidates for normative v0.2 behavior.
+## 5. Candidate Core invariants
+
+The following have executable coverage and remain the strongest candidates for eventual normative v0.2 behavior.
 
 ### 5.1 No rights expansion
 
-RCP MUST NOT create rights that do not otherwise exist.
+RCP must not create rights that do not otherwise exist.
 
 ### 5.2 No silent participant collapse
 
-Multi-party evidence MUST NOT be projected into a narrower relationship scope without an explicit evidence basis.
+Source evidence participant scope cannot be changed into another relationship scope without an explicit basis.
 
 ### 5.3 No epistemic promotion
 
-A representation change MUST NOT silently transform a statement, observation, interpretation, or inference into a verified fact.
+Representation change or confidence cannot silently convert statement/observation/interpretation/inference into verified fact.
 
-### 5.4 Provenance/dependency continuity
+### 5.4 Material lineage continuity
 
-Persistent derived relationship context MUST preserve material evidence dependencies or an explicit statement that the provenance is opaque/unavailable.
+Persistent derived relationship context retains material evidence/identity/policy dependencies or explicitly signals opaque/unavailable lineage.
 
 ### 5.5 Child access does not grant source access
 
-Receiving an allowed derived assertion MUST NOT imply the right to inspect its underlying evidence.
+Permission to consume a derived assertion does not imply permission to retrieve underlying evidence.
 
 ### 5.6 Transformation does not erase restrictions
 
-Summarization, embedding, extraction, classification, aggregation, or inference MUST NOT automatically loosen inherited policy constraints.
+Summarization, extraction, classification, aggregation, embedding, or inference does not by itself loosen source restrictions.
 
-### 5.7 Restriction inheritance is monotonic by default
+### 5.7 Restriction inheritance is conservative by default
 
-Where multiple essential sources constrain independent dimensions, allowed sets intersect and prohibitions accumulate unless a profile-defined declassification/re-derivation rule explicitly permits otherwise.
+Material restrictions remain in force according to the applicable policy profile unless a profile-defined re-derivation/declassification rule explicitly establishes a permitted loosening.
 
 ### 5.8 Dependency changes have downstream consequences
 
-When a material source, identity binding, authorization basis, policy dependency, or source validity changes, dependent relationship context MUST be re-evaluated.
+Changes to material evidence, identity bindings, authorization basis, policy dependencies, or source validity require dependent relationship context to be re-evaluated.
 
 ### 5.9 Historical lineage is not rewritten
 
-Recomputing an assertion without a removed source MUST NOT alter history to imply that source was never used.
+Recomputation after source removal does not alter history to imply that the removed source was never used.
 
-### 5.10 Independent support may preserve an assertion
+### 5.10 Independent support may preserve current context
 
-A derived assertion MAY remain active if remaining valid evidence independently supports it and current policy permits continued use. The implementation must be able to identify that independent support.
+A derived assertion may remain/recompute as current when a surviving valid support set is independently sufficient and current policy still permits the use.
 
 ### 5.11 Unknown material semantics fail closed
 
-A consumer that cannot interpret a material relationship scope, policy dependency, lifecycle state, or required extension MUST NOT silently treat it as a more permissive known value.
+Unknown relationship scope, required semantic extensions, or other material semantics are not interpreted as a more permissive known value.
 
 ### 5.12 No central RCP infrastructure dependency
 
-A conforming Provider and Consumer MUST be able to exchange RCP semantic objects without requiring infrastructure operated by the RCP maintainers.
+A conforming semantic exchange must not require infrastructure operated by the RCP maintainers.
 
-## 6. Cross-provider composition model
+### 5.13 Transport framing is not semantic state
 
-A consumer that composes relationship context from multiple Providers must preserve source separation before producing a derived combined state.
+MCP metadata, HTTP paths/headers/status, A2A task framing, or equivalent binding details must not change RCP relationship meaning unless explicitly represented in the RCP semantic object/profile.
 
-Candidate evidence relations:
+## 6. Existing-standard mappings
 
-- `supports` — reinforces another assertion without making it identical;
-- `corroborates` — independently supports substantially the same claim;
-- `conflicts_with` — cannot simultaneously be treated as current truth under the same scope/time;
-- `supersedes` — explicitly replaces an earlier assertion;
-- `refines` — adds narrower/more precise context;
-- `derived_from` — was produced using the referenced evidence;
-- `independent_of` — establishes that one support path does not depend on another.
+### 6.1 MCP / HTTP / A2A
 
-The exact registry is open for design, but two Providers should not require an LLM prompt to infer whether their assertions are supporting, conflicting, or superseding when that relationship is material to deterministic behavior.
+Bindings own discovery, connection, request/response framing, subscriptions/streaming, transport errors, retry/idempotency, and runtime capability mechanics.
 
-## 7. Canonical semantic scenarios
+RCP semantics sit inside the binding payload.
 
-v0.2 should not be accepted without executable or machine-checkable cases for at least the following scenarios.
+The repository has already demonstrated equivalent RCP semantic state through a real official MCP Resource client/server path and a plain HTTP path.
 
-### Scenario A — Multi-party projection
+### 6.2 AuthZEN
+
+AuthZEN Authorization API 1.0 should own generic authorization evaluation:
 
 ```text
-A, B, C participate in a group interaction
-C makes a sensitive statement
-        ↓
-Can that statement become A-B relationship context?
+Subject + Resource + Action + Context -> Decision
 ```
 
-Expected direction: **not by default**. An explicit narrower evidence basis is required.
+RCP should define a mapping/profile for relationship resources/actions/context rather than recreate `PermissionRequest` / `PermissionDecision` in Core.
 
-### Scenario B — Conflicting provider evidence
+### 6.3 Shared Signals
 
-```text
-Provider 1: "Project review is Nov 12"
-Provider 2: "Project review moved to Nov 15"
-```
+Shared Signals should own generic signal delivery where applicable.
 
-The model must represent conflict/supersession without flattening both into current facts.
+RCP owns what a source/policy/identity/grant change means for dependent relationship assertions. If no existing CAEP event matches a relationship-specific change, an RCP SSF event profile is preferable to inventing a new event transport.
 
-### Scenario C — Partial source invalidation
+### 6.4 W3C PROV
 
-```text
-Source A ----\
-              -> derived commitment
-Source B ----/
+PROV should represent generic Entity/Agent/Activity/Derivation lineage.
 
-Source A revoked/corrected
-```
+RCP retains participant projection, dependency materiality, support sufficiency, epistemic meaning, and relationship lifecycle consequences.
 
-The derived assertion must be re-evaluated. If B independently supports it, a new/current lineage may remain; otherwise the assertion must be invalidated/restricted/recomputed.
+### 6.5 ODRL / DPV
 
-### Scenario D — Policy-preserving projection
+ODRL/DPV should provide policy/privacy terminology where applicable. RCP retains conservative restriction propagation through relationship derivation.
 
-```text
-raw evidence: external_processing = deny
-        ↓
-provider-side summary / assertion
-```
+### 6.6 ActivityStreams
 
-The projection does not automatically become externally processable merely because it contains less information. Any loosening requires an explicit profile-defined basis.
+ActivityStreams already represents social activities and typed relationship edges. RCP should not duplicate them.
 
-### Scenario E — Cross-provider composition
+`RelationshipScope` is an assertion-scope primitive, not a replacement social graph ontology.
 
-Two Providers independently describe the same relationship state with different fidelity and provenance. A Consumer must be able to preserve provider-specific views and derive a combined view without erasing disagreement, provenance, or restrictions.
+### 6.7 Solid Application Interoperability
 
-## 8. Binding model
+Solid SAI can solve data registration/access-needs/grants in Solid deployments. RCP does not duplicate that access architecture and can remain useful when raw evidence stays inside independent Providers.
 
-RCP Core should be transport-neutral.
+### 6.8 AT Protocol Lexicon
 
-Possible bindings include:
+RCP does not need a custom schema language. JSON Schema is the current serialization definition; semantics are separately executable.
 
-- **RCP over MCP** — MCP resources/tools/subscriptions carry RCP semantic objects;
-- **RCP over HTTP** — REST/streaming endpoints carry the same objects;
-- **RCP over A2A** — A2A tasks/messages convey RCP objects;
-- **platform-native binding** — a provider maps RCP semantics into an existing official API.
+### 6.9 Eclipse Dataspace Protocol
 
-Bindings may define:
+Dataspace Protocol is an architectural precedent for autonomous participants, domain protocol semantics, reuse of external standards, and separate bindings. It does not define relationship-context semantics.
 
-- discovery;
-- endpoint shape;
-- request/response framing;
-- streaming/subscription mechanics;
-- authentication integration;
-- transport-level errors;
-- retries/idempotency;
-- security envelopes.
+## 7. Cross-provider composition
 
-Bindings MUST NOT redefine Core semantic meaning.
+A Consumer composing context from multiple Providers must preserve provider/source separation before creating a new derived combined assertion.
 
-## 9. v0.1 migration map
+Composition itself creates new lineage; it does not overwrite the input assertions.
 
-v0.1 remains an experimental baseline and should not be deleted in place.
+A combined assertion must preserve:
 
-### Retain and strengthen
+- target/source participant scope;
+- epistemic constraints;
+- material evidence dependencies;
+- material policy dependencies;
+- conflicts/disputes;
+- sufficient-support semantics;
+- historical lineage.
 
-- `ContextAssertion` semantics;
-- epistemic classes;
-- relationship/subject scoping;
-- provenance/access separation;
-- policy inheritance;
-- multi-party projection boundary;
-- dependency invalidation/recomputation.
+## 8. Binding-independence evidence
 
-### Narrow or move to profiles/bindings
+M4.4 implemented the same Provider-owned assertion through:
 
-#### `IdentityClaim`
+1. official MCP TypeScript SDK v2 Resource server/client over stdio;
+2. plain HTTP server/client.
 
-Keep only identity evidence required to interpret relationship scope. Generic identity verification/federation belongs elsewhere.
+Both extracted objects pass the same RCP schema/semantic validator and normalize to identical canonical relationship state.
 
-#### `ProviderCapability`
+This is internal executable evidence that the tested semantic object is not merely MCP-specific syntax. It is not unrelated external implementation evidence.
 
-Move generic capability discovery to binding profiles. Retain only relationship-specific representation semantics that a Consumer must understand consistently.
+## 9. v0.1 migration direction
 
-#### `PermissionRequest` / `PermissionDecision`
+v0.1 remains a reproducible experimental baseline.
 
-Treat v0.1 as an executable authorization experiment. v0.2 should define an AuthZEN-compatible or equivalent mapping instead of owning a universal authorization request/decision protocol.
+| v0.1 concept | v0.2 direction |
+| --- | --- |
+| `IdentityClaim` | narrow to relationship-scoped identity dependency/evidence profiles |
+| `ProviderCapability` | generic discovery to bindings; keep only relationship representation semantics if needed |
+| `PermissionRequest` | replace with AuthZEN-compatible profile/mapping |
+| `PermissionDecision` | replace with AuthZEN-compatible profile/mapping |
+| `ContextAssertion` | retain/strengthen as central RCP semantic object |
+| `SecureEnvelope` | move to JOSE/COSE/security binding profile |
+| `RevocationEvent` | move signal delivery to Shared-Signals-compatible profile; retain downstream lifecycle consequences in RCP |
 
-#### `SecureEnvelope`
+No v0.1 artifact is silently reinterpreted as v0.2.
 
-Treat the current JOSE envelope as an experimental security profile. Encryption/signature primitives and key distribution are not semantic Core responsibilities.
+## 10. Current executable status
 
-#### `RevocationEvent`
+Implemented internally:
 
-Move generic signal transport to Shared-Signals-compatible or other event profiles. Keep the downstream relationship-context consequence model in Core.
+- abstract v0.2 semantic conformance;
+- candidate v0.2 `ContextAssertion` JSON Schema;
+- structural + cross-reference wire conformance;
+- support-set semantics;
+- participant-projection checks;
+- required-extension fail-closed behavior;
+- real MCP Resource binding;
+- real plain HTTP binding;
+- identical semantic normalization across those two bindings;
+- v0.1 regression compatibility.
 
-## 10. Server and client interpretation
+Not yet demonstrated:
 
-A future **RCP Server** is an implementation role, not infrastructure operated by the RCP project.
+- unrelated clean-room v0.2 implementation;
+- external security/privacy review;
+- real production Provider integration;
+- complete PROV/AuthZEN/SSF/ODRL/DPV executable profiles;
+- normative v0.2 stability.
 
-A Provider may implement an RCP Server:
+## 11. Open design questions
 
-- inside its monolith;
-- as a microservice;
-- as a sidecar;
-- as an MCP server exposing RCP resources;
-- as an HTTP service;
-- as a managed service operated on the Provider's behalf.
+- Can a PROV profile carry generic dependency records without duplicating them in the RCP serialization while preserving `material` and `support_sets`?
+- Is disjunctive-normal `support_sets` expressive enough for real Providers?
+- Does `projection_basis_ref` need a common vocabulary/profile?
+- Which base `assertion_type` values survive real Provider implementation?
+- Should opaque Provider assertions require a Provider-attestation/profile reference?
+- Which policy constraints, if any, must be normalized inline rather than only referenced?
+- Are any currently embedded structures independently addressable enough to justify promotion to top-level wire objects?
+- How should temporal validity and disputes be represented without building a generic temporal or truth-maintenance system?
 
-The Provider retains control over its raw data, derivation method, policy authority, and exposed fidelity.
+## 12. Rule for future Core additions
 
-An **RCP Client/Consumer** may be:
+Do not add a Core field/object unless all of the following are true:
 
-- a personal AI;
-- an enterprise agent;
-- a CRM;
-- another communication/social Provider;
-- a local personal application;
-- another authorized software system.
+1. an established standard does not already own the generic primitive;
+2. the concept changes relationship-context interpretation or lifecycle;
+3. its meaning survives transport/runtime changes;
+4. independent Providers need deterministic agreement on it;
+5. it produces an executable interoperability invariant.
 
-AI may be used internally to derive context, but AI is not required for protocol conformance.
-
-## 11. Transport-independence acceptance test
-
-A v0.2 semantic object should pass the following conceptual test:
-
-1. Provider A emits the object through an MCP binding.
-2. Provider B emits an equivalent object through an HTTP binding.
-3. The Consumer validates both through the same semantic engine.
-4. Equivalent evidence/policy inputs produce equivalent relationship lifecycle state.
-5. Transport-specific metadata does not alter the semantic interpretation.
-
-If this cannot be demonstrated, RCP may be too tightly coupled to its transport and should be reconsidered as an extension/profile rather than an independent semantic protocol.
-
-## 12. Open design questions
-
-- Should `RelationshipScope` be a first-class wire object or embedded structure?
-- How much of `InteractionEvidence` should be standardized versus opaque provider references?
-- Which assertion families deserve a Core registry versus namespaced extensions?
-- What minimum evidence-relation vocabulary is required for deterministic cross-provider composition?
-- Can W3C PROV express all required dependency structures without RCP-specific duplication?
-- Which policy dimensions must be normalized in Core versus referenced externally?
-- What explicit declassification/re-derivation proof, if any, can loosen inherited restrictions?
-- How should temporal validity and relationship state transitions be represented without building a generic temporal database protocol?
-- How should disputed context be carried when participants or Providers disagree?
-- What is the smallest RCP-over-MCP binding that proves RCP semantics remain independent from MCP?
-
-## 13. Adoption rule for this draft
-
-Do not freeze v0.2 wire schemas merely because the concepts appear coherent.
-
-Before v0.2 becomes normative, the project should:
-
-1. reconcile each concept against existing standards;
-2. encode the canonical semantic scenarios as conformance cases;
-3. prove at least two transport bindings can carry equivalent semantic objects;
-4. update schemas only after the semantic surface is stable enough to test;
-5. obtain an unrelated implementation or adversarial review of the v0.2 model.
-
-The goal is not to maximize the number of RCP-defined primitives. The goal is to define the **smallest semantic contract that independent systems need in order to exchange relationship context without losing scope, epistemic meaning, provenance, restrictions, or lifecycle behavior.**
+The goal is the **smallest semantic contract** independent systems need to exchange relationship context without losing participant scope, epistemic meaning, evidence sufficiency, restrictions, or lifecycle behavior.
