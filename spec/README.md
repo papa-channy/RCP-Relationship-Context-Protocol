@@ -8,9 +8,9 @@ Current project status: **experimental draft, not a stable standard**.
 
 ### v0.1 — preserved experimental baseline
 
-[`core-v0.1.md`](./core-v0.1.md) remains the current normative experimental contract for the existing schemas, conformance suite, reference ecosystem, and external Provider harness.
+[`core-v0.1.md`](./core-v0.1.md) remains the normative experimental contract for the existing v0.1 schemas, conformance suite, reference ecosystem, and external Provider harness.
 
-It defines seven wire objects:
+Its seven wire objects remain unchanged:
 
 1. `IdentityClaim`
 2. `ProviderCapability`
@@ -20,39 +20,39 @@ It defines seven wire objects:
 6. `SecureEnvelope`
 7. `RevocationEvent`
 
-The v0.1 work is intentionally retained because it provides reproducible evidence for:
-
-- fail-closed authorization behavior;
-- permission-before-retrieval;
-- identity isolation;
-- multi-party projection boundaries;
-- epistemic classes;
-- provenance/access separation;
-- derived-policy inheritance;
-- revocation/recomputation;
-- encrypted `SecureEnvelope` interoperability;
-- Node ↔ Python JOSE interoperability.
+The v0.1 work is retained as reproducible evidence for permission-before-retrieval, identity/privacy boundaries, policy inheritance, revocation/recomputation, JOSE execution, and cross-language interoperability.
 
 Do not silently reinterpret v0.1 objects as v0.2 objects.
 
 ### v0.2 — active semantic-core design
 
-[`core-v0.2-draft.md`](./core-v0.2-draft.md) is the active **non-normative design draft**.
+[`core-v0.2-draft.md`](./core-v0.2-draft.md) defines the current **non-normative semantic direction**.
 
-It proposes that RCP Core become a transport-independent relationship information/lifecycle model centered on concepts such as:
+[`wire-v0.2-draft.md`](./wire-v0.2-draft.md) defines the current **non-normative candidate wire representation** produced after the M4.2 semantic-conformance pass.
 
-- `ActorReference`;
-- `RelationshipScope`;
-- `InteractionEvidence`;
-- `ContextAssertion`;
-- `EpistemicClass`;
-- `DerivationDependency`;
-- `ContextLifecycle`;
-- `PolicyReference`.
+The current candidate intentionally begins with one top-level semantic object:
 
-The draft intentionally re-evaluates generic v0.1 infrastructure concerns such as capability discovery, authorization requests/decisions, transport envelopes, and revocation signal delivery.
+```text
+ContextAssertion
+```
 
-See [`../docs/standards-boundary.md`](../docs/standards-boundary.md) for the responsibility split.
+and embeds the semantic structures needed to interpret it:
+
+- scoped actor references;
+- relationship scope;
+- evidence references and source participants;
+- epistemic class;
+- derivation dependencies and independently sufficient support sets;
+- assertion relations such as conflict/supersession;
+- lifecycle state;
+- policy references;
+- required semantic extensions.
+
+The candidate schema is:
+
+[`schemas/v0.2-draft/context-assertion.schema.json`](./schemas/v0.2-draft/context-assertion.schema.json)
+
+Its wire version is intentionally `"0.2-draft"` so it cannot be confused with the v0.1 contract or a future stable v0.2 release.
 
 ## v0.2 Core rule
 
@@ -64,38 +64,42 @@ Conceptual test:
 
 If not, the feature probably belongs in a binding/profile rather than Core.
 
-## Existing v0.1 profiles
+## v0.2 schema policy
 
-The following remain normative only for the v0.1 experimental contract unless explicitly migrated:
+The existence of a draft JSON Schema does **not** freeze v0.2.
 
-- [`profiles/secure-envelope-binding-v0.1.md`](./profiles/secure-envelope-binding-v0.1.md)
-- [`profiles/crypto-jose-v0.1.md`](./profiles/crypto-jose-v0.1.md)
-- [`profiles/context-selection-boundaries-v0.1.md`](./profiles/context-selection-boundaries-v0.1.md)
+The project deliberately separates:
 
-These profiles are valuable implementation evidence but should not be assumed to represent the final v0.2 Core boundary.
+```text
+JSON Schema structure
+        +
+RCP semantic cross-reference/invariant validation
+```
 
-## Existing registries
+JSON Schema validates shape and local constraints. The v0.2 semantic/wire conformance suite validates graph-like rules such as:
 
-Current v0.1 registries:
+- no silent participant-scope collapse;
+- verification bases resolve to declared lineage;
+- support sets reference real material dependencies;
+- identity bindings that affect scope remain material dependencies;
+- material policy dependencies remain attached;
+- self-conflict/supersession relations are rejected;
+- unsupported required extensions fail closed;
+- transport wrappers do not alter semantic state.
 
-- [`registries/capabilities.md`](./registries/capabilities.md)
-- [`registries/reason-codes.md`](./registries/reason-codes.md)
-- [`registries/assertion-types.md`](./registries/assertion-types.md)
-- [`registries/purposes.md`](./registries/purposes.md)
-- [`registries/processing-locations.md`](./registries/processing-locations.md)
+This keeps relationship semantics independent from one serialization technology.
 
-Each registry will be classified during the v0.2 refactor as one of:
+## Existing v0.1 profiles and registries
 
-1. relationship semantic Core;
-2. reusable RCP profile;
-3. transport/binding concern;
-4. better delegated to an external standard.
+The existing files under [`profiles/`](./profiles/) and [`registries/`](./registries/) remain part of the v0.1 experimental contract unless explicitly migrated.
 
-No registry should be carried into v0.2 merely for compatibility with the current reference implementation.
+They must not be carried into v0.2 merely because the reference implementation already uses them.
+
+See [`../docs/standards-boundary.md`](../docs/standards-boundary.md) for the current responsibility split between RCP Core, reusable profiles, transport bindings, and external standards.
 
 ## Existing v0.1 schemas
 
-The machine-readable schemas under [`schemas/`](./schemas/) remain the syntax contract for v0.1:
+The root files under [`schemas/`](./schemas/) remain the machine-readable syntax contract for v0.1:
 
 - `identity-claim.schema.json`
 - `provider-capability.schema.json`
@@ -107,75 +111,62 @@ The machine-readable schemas under [`schemas/`](./schemas/) remain the syntax co
 
 All v0.1 wire objects carry `rcp_version: "0.1"`.
 
-**No v0.2 wire schemas are frozen yet.**
+The draft v0.2 schema lives only under `schemas/v0.2-draft/`.
 
-The project will define v0.2 schemas only after relationship-specific semantic scenarios stabilize.
+## v0.2 executable validation
 
-## Required v0.2 semantic scenarios
+The current v0.2 conformance work lives under [`../conformance/v0_2/`](../conformance/v0_2/).
 
-Before v0.2 becomes normative, conformance work should cover at least:
+It contains two layers:
 
-1. **multi-party projection** — `{A,B,C}` evidence does not silently become `{A,B}` context;
-2. **conflicting evidence** — independent Providers can express conflict/supersession without flattening both into current fact;
-3. **partial-source invalidation** — dependent context is re-evaluated and may survive only with independent valid support;
-4. **policy-preserving derivation** — lower-fidelity transformation does not automatically loosen restrictions;
-5. **cross-provider composition** — combined state preserves provider/evidence separation, disagreement, and restrictions;
-6. **epistemic preservation** — source statements, observations, interpretations, inferences, and strategies do not silently become verified facts.
+1. abstract semantic scenarios that do not assume a wire schema;
+2. draft wire cases that validate the candidate `ContextAssertion` representation and cross-reference invariants.
+
+Representative scenarios include:
+
+- `{A,B,C}` evidence must not silently become `{A,B}` context;
+- conflicting provider assertions remain explicit rather than being flattened by arrival order;
+- partial source invalidation distinguishes independent support from jointly required evidence;
+- transformation does not silently loosen policy restrictions;
+- source statements/inferences do not silently become verified facts;
+- identity changes are semantic lineage events when material;
+- equivalent MCP-like and HTTP-like wrappers normalize to the same RCP semantic state.
 
 ## Binding strategy
 
-RCP v0.2 should be capable of multiple bindings.
-
-Candidate bindings/profiles include:
+RCP v0.2 is intended to support multiple bindings, including:
 
 - RCP over MCP;
 - RCP over HTTP;
 - RCP over A2A;
-- provider-native API mapping;
-- AuthZEN-compatible relationship authorization profile;
-- Shared-Signals-compatible invalidation/change profile;
-- W3C PROV mapping;
-- ODRL/DPV policy mapping;
-- JOSE/COSE security profile.
+- Provider-native API mappings.
 
-A binding may define transport framing, discovery, subscriptions, authentication integration, retries, and security mechanics. It must not redefine RCP semantic meaning.
+Bindings may define discovery, framing, authentication integration, subscriptions, retries, transport errors, and security mechanics.
 
-## Normative vs non-normative project material
+Bindings must not redefine Core relationship meaning.
 
-### v0.1 implementers
+Generic authorization, revocation-signal delivery, provenance vocabularies, policy languages, and cryptographic primitives should reuse or profile mature standards where possible, including AuthZEN, Shared Signals, W3C PROV, ODRL/DPV, and JOSE/COSE.
 
-A clean-room v0.1 implementer can still work from:
+## Implementer status
 
-1. [`core-v0.1.md`](./core-v0.1.md);
-2. applicable v0.1 profiles/registries/schemas;
-3. [`../docs/IMPLEMENTER_GUIDE.md`](../docs/IMPLEMENTER_GUIDE.md).
+### v0.1
 
-The existing black-box Provider harness remains a v0.1 validation tool.
+The v0.1 clean-room implementer surface remains available through the existing spec, schemas, profiles, registries, and [`../docs/IMPLEMENTER_GUIDE.md`](../docs/IMPLEMENTER_GUIDE.md).
 
-### v0.2 implementers
+### v0.2
 
-There is not yet a stable v0.2 clean-room implementation target.
+There is still **no stable v0.2 clean-room implementation target**.
 
-The project should first finish semantic reconciliation and conformance scenarios, then publish machine-readable v0.2 definitions and a new implementation target.
+The current wire model is an executable candidate. It must survive schema/semantic convergence, multi-binding implementation, and independent review before becoming a normative target.
 
 ## Reference ecosystem status
 
-`/reference-ecosystem` demonstrates v0.1 behavior. Its:
-
-- service topology;
-- control-plane process;
-- HTTP routes;
-- relay;
-- demo ports;
-- storage choices;
-- package/module structure
-
-are not v0.2 Core requirements.
+`/reference-ecosystem` demonstrates v0.1 behavior. Its process topology, control-plane service, HTTP routes, relay, storage model, and package structure are not v0.2 Core requirements.
 
 ## Status warning
 
-RCP v0.2 is explicitly under scope reduction.
+RCP v0.2 remains under scope reduction.
 
-The project should prefer deleting or delegating a generic protocol responsibility over preserving it merely because the v0.1 reference implementation already contains it.
+The project should prefer deleting or delegating generic protocol responsibilities over preserving them for compatibility with v0.1 implementation choices.
 
-Before any v0.2 stable claim, the semantic model, schemas, examples, bindings, and conformance cases must converge and receive independent implementation/security/privacy review.
+Before any stable v0.2 claim, the semantic model, candidate wire representation, bindings, and conformance behavior must converge and receive unrelated implementation plus independent security/privacy review.
