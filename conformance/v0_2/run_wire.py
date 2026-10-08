@@ -6,7 +6,8 @@ This runner intentionally separates:
 1. JSON Schema structure; and
 2. relationship-specific cross-reference / fail-closed semantics.
 
-It is not a transport, authorization, policy, or cryptographic engine.
+It is not a transport, authorization, policy, provenance-ontology, or
+cryptographic engine.
 """
 
 from __future__ import annotations
@@ -22,15 +23,6 @@ ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = ROOT / "spec" / "schemas" / "v0.2-draft" / "context-assertion.schema.json"
 CASES_PATH = ROOT / "conformance" / "v0_2" / "wire-cases.json"
 
-DIRECT_INTERACTION_TYPES = {
-    "message",
-    "thread",
-    "call",
-    "meeting",
-    "calendar_event",
-    "social_interaction",
-    "crm_interaction",
-}
 SUPPORT_ROLES = {"supports", "corroborates", "derived_from"}
 
 
@@ -64,9 +56,10 @@ def semantic_errors(instance: dict, supported_extensions: set[str]) -> list[str]
     if len(evidence_refs) != len(evidence_items):
         errors.append("evidence_ref values must be unique within one assertion")
 
+    # Participant projection is a relationship semantic rule, not a channel rule.
+    # Any evidence item whose declared source-participant set differs from the
+    # assertion target scope requires an explicit basis for that projection.
     for evidence in evidence_items:
-        if evidence["evidence_type"] not in DIRECT_INTERACTION_TYPES:
-            continue
         source_participants = {actor_key(actor) for actor in evidence["source_participants"]}
         if source_participants != target_participants and not evidence.get("projection_basis_ref"):
             errors.append(
@@ -180,7 +173,6 @@ def normalize_assertion(instance: dict) -> dict:
         },
         "epistemic_class": instance["epistemic_class"],
         "statement": instance["statement"],
-        "confidence": instance.get("confidence"),
         "verification_basis_refs": sorted(instance.get("verification_basis_refs", [])),
         "policy_refs": sorted(instance.get("policy_refs", [])),
         "lifecycle": deepcopy(instance["lifecycle"]),
@@ -198,11 +190,13 @@ def normalize_assertion(instance: dict) -> dict:
                 {
                     "evidence_ref": evidence["evidence_ref"],
                     "evidence_type": evidence["evidence_type"],
+                    "provider_ref": evidence.get("provider_ref"),
                     "representation": evidence["representation"],
                     "source_participants": sorted(
                         [list(actor_key(actor)) for actor in evidence["source_participants"]]
                     ),
                     "projection_basis_ref": evidence.get("projection_basis_ref"),
+                    "occurred_at": evidence.get("occurred_at"),
                     "policy_refs": sorted(evidence.get("policy_refs", [])),
                 }
                 for evidence in provenance["evidence"]
@@ -213,7 +207,6 @@ def normalize_assertion(instance: dict) -> dict:
     if provenance.get("derivation"):
         derivation = provenance["derivation"]
         normalized_provenance["derivation"] = {
-            "transformation": derivation.get("transformation"),
             "dependencies": sorted(
                 derivation["dependencies"], key=lambda item: item["dependency_ref"]
             ),
