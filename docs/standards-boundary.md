@@ -7,7 +7,7 @@ RCP should be as small as possible while still defining semantics that independe
 
 > **If an established standard can carry, authorize, describe, signal, or secure a generic concern without losing relationship-specific meaning, RCP should bind to or profile that standard rather than reimplement it.**
 
-The detailed field-level reconciliation is in [`standards-mapping-v0.2.md`](./standards-mapping-v0.2.md).
+The detailed field-level reconciliation is in [`standards-reconciliation-v0.2.md`](./standards-reconciliation-v0.2.md).
 
 ## 1. Current layering model
 
