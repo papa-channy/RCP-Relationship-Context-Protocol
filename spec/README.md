@@ -91,7 +91,7 @@ The v0.2 draft has completed a first field-level reconciliation against MCP, Aut
 See:
 
 - [`../docs/standards-boundary.md`](../docs/standards-boundary.md)
-- [`../docs/standards-mapping-v0.2.md`](../docs/standards-mapping-v0.2.md)
+- [`../docs/standards-reconciliation-v0.2.md`](../docs/standards-reconciliation-v0.2.md)
 
 The reconciliation removed several accidental Core claims:
 
