@@ -15,6 +15,7 @@ evaluation/
 ├── README.md            # 이 문서: 운영 규칙
 ├── CRITERIA.md          # 평가 기준과 채점 척도 (기준이 바뀌면 버전을 올린다)
 ├── DECISIONS.md         # 기준 변경 이력과 결정 근거
+├── PIPELINE.md          # 에이전트 평가 파이프라인 설계
 ├── baseline/            # 평가 대상 스냅샷: 커밋, CI/테스트 실행 결과, 수치
 ├── reports/
 │   ├── self/            # 자체 평가 (프로젝트 작성자 관점)

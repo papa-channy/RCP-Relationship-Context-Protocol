@@ -1,0 +1,172 @@
+
+### pip-conf | rc=0 | 4s
+$ pip install -q -r conformance/requirements.txt
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+
+### v01-schema-semantic | rc=0 | 0s
+$ python conformance/run.py
+RCP conformance bootstrap: PASS
+
+### v01-boundary | rc=0 | 0s
+$ python conformance/boundary_checks.py
+RCP content/group boundary conformance: PASS
+
+### pip-probe | rc=0 | 3s
+$ pip install -q -r implementations/python-probe/requirements.txt
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+
+### npm-crypto | rc=0 | 0s
+$ npm install --silent --prefix conformance/crypto
+
+
+### v01-jose | rc=0 | 1s
+$ npm test --prefix conformance/crypto
+
+> test
+> node crypto-profile.test.mjs
+
+RCP JOSE crypto profile: PASS
+
+### node-to-python | rc=0 | 0s
+$ node conformance/crypto/interop-node-producer.mjs /tmp/rcp-interop/node-vector.json && PYTHONPATH=implementations/python-probe python implementations/python-probe/consume_vector.py /tmp/rcp-interop/node-vector.json
+Node RCP interop vector produced
+Python consumed node-jose-canonicalize RCP vector: PASS
+
+### python-to-node | rc=0 | 0s
+$ PYTHONPATH=implementations/python-probe python implementations/python-probe/produce_vector.py /tmp/rcp-interop/python-vector.json && node conformance/crypto/interop-node-consumer.mjs /tmp/rcp-interop/python-vector.json
+Python RCP interop vector produced
+Node consumed python-jwcrypto-rfc8785 RCP vector: PASS
+
+### npm-external | rc=0 | 1s
+$ npm install --silent --prefix conformance/external
+
+
+### npm-refeco | rc=0 | 0s
+$ npm install --silent --prefix reference-ecosystem
+
+
+### v01-harness-guard | rc=0 | 0s
+$ ! grep -n reference-ecosystem conformance/external/provider-harness.mjs
+
+
+### v01-external-selftest | rc=0 | 3s
+$ npm run self-test --prefix conformance/external
+
+> self-test
+> node self-test.mjs
+
+RCP external Provider harness self-test: PASS
+Report: /var/folders/j0/s79yn2wj64j857ml0mr7__hr0000gn/T/rcp-external-harness-hb9RCE/provider-report.json
+
+### refeco-smoke | rc=0 | 0s
+$ npm run smoke --prefix reference-ecosystem
+
+> rcp-reference-ecosystem@0.0.1 smoke
+> node tests/topology-smoke.mjs
+
+RCP reference ecosystem topology smoke: PASS
+
+### refeco-test:permission | rc=0 | 1s
+$ npm run test:permission --prefix reference-ecosystem
+
+> rcp-reference-ecosystem@0.0.1 test:permission
+> node tests/permission-before-retrieval.mjs
+
+RCP permission + SecureEnvelope + provenance integration: PASS
+
+### refeco-test:revocation | rc=0 | 0s
+$ npm run test:revocation --prefix reference-ecosystem
+
+> rcp-reference-ecosystem@0.0.1 test:revocation
+> node tests/revocation-recompute.mjs
+
+RCP source revocation and relationship brief recomputation: PASS
+
+### refeco-test:policy | rc=0 | 1s
+$ npm run test:policy --prefix reference-ecosystem
+
+> rcp-reference-ecosystem@0.0.1 test:policy
+> node tests/enterprise-policy-drift.mjs
+
+RCP enterprise policy drift and staleness: PASS
+
+### refeco-test:relay | rc=0 | 1s
+$ npm run test:relay --prefix reference-ecosystem
+
+> rcp-reference-ecosystem@0.0.1 test:relay
+> node tests/operator-blind-relay.mjs
+
+RCP operator-blind relay data path: PASS
+
+### refeco-test:identity | rc=0 | 0s
+$ npm run test:identity --prefix reference-ecosystem
+
+> rcp-reference-ecosystem@0.0.1 test:identity
+> node tests/identity-resolution.mjs
+
+RCP tenant-scoped identity resolution: PASS
+
+### refeco-demo | rc=0 | 0s
+$ npm run demo --prefix reference-ecosystem
+Context
+-------
+- [commitment] A and B agreed to revisit Project X in November.
+- [status] B is preparing for a Japan trip.
+- [event] Interaction meeting-project-x occurred at 2026-09-28T02:00:00Z.
+- [event] Project X was discussed in a video meeting.
+
+Provider identity bindings
+--------------------------
+- demo:enterprise -> work_email (user_confirmed)
+- demo:mail -> email (user_confirmed)
+- demo:meeting -> meeting_account (user_confirmed)
+- demo:messenger -> messenger_id (user_confirmed)
+- demo:phone -> phone (user_confirmed)
+
+Execution summary
+-----------------
+- Envelopes verified/decrypted: 4
+- ContextAssertions activated: 4
+- Relay-routed envelopes: 4
+- Stale providers: 0
+
+Machine trace: out/canonical-trace.json
+Human brief: out/canonical-brief.txt
+RCP canonical identity-resolved reference demo: PASS
+
+### v02-semantic | rc=0 | 0s
+$ python conformance/v0_2/run.py
+RCP v0.2 draft semantic conformance: PASS (31 cases)
+
+### v02-wire | rc=0 | 1s
+$ python conformance/v0_2/run_wire.py
+RCP v0.2 draft wire conformance: PASS (20 schema/semantic cases, 1 binding-equivalence case)
+
+### v02-harness-guard | rc=0 | 0s
+$ ! grep -E 'conformance[./]v0_2[./](run|run_wire|normalize_wire)|import .*run_wire|from .*run_wire' conformance/external/v0_2/harness.py
+
+
+### v02-harness-selftest | rc=0 | 1s
+$ python conformance/external/v0_2/harness.py --cmd 'python conformance/external/v0_2/reference_adapter.py' --implementation-name rcp-reference-adapter --implementation-version 0.2-draft --language 'Python 3.11' --rcp-revision 68026af --report conformance/external/v0_2/out/self-test-report.json
+RCP v0.2 external clean-room harness: PASS (15/15 cases)
+report: conformance/external/v0_2/out/self-test-report.json
+
+### npm-bindings | rc=0 | 1s
+$ npm install --silent --prefix bindings/v0_2
+
+
+### v02-binding-equivalence | rc=0 | 1s
+$ npm test --prefix bindings/v0_2
+
+> test
+> node test-equivalence.mjs
+
+RCP v0.2 real binding equivalence: PASS
+- MCP resource: rcp://relationship/a-b/assertions/binding-equivalent
+- HTTP path: /rcp/relationships/a-b/assertions/binding-equivalent
+- Both outputs passed the same JSON Schema + RCP semantic validator
+- Both outputs normalized to identical canonical relationship state
