@@ -7,7 +7,7 @@
 | 작성 | Claude Code (Opus 5.5), 자체 평가와 에이전트 평가를 종합 |
 | 기준 | CRITERIA v1.1 |
 | 입력 | 자체 평가 1건, 에이전트 보고서 4건, 교차 검증 4건, 클린룸 실행 2회 |
-| 에이전트 종합 원문 | `2026-10-10_agent-synthesis.md` |
+| 에이전트 종합 원문 | `../reports/agents/2026-10-10_opus-synthesis_full.md` |
 
 ## 1. 결론
 
