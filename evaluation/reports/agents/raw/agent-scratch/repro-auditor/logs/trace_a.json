@@ -1,0 +1,1138 @@
+{
+  "type": "rcp.reference_demo_trace",
+  "rcp_version": "0.1",
+  "scenario": "canonical-meeting-preparation",
+  "generated_at": "2026-10-10T07:59:09.281Z",
+  "identity_resolution": {
+    "type": "rcp.identity_resolution",
+    "rcp_version": "0.1",
+    "resolution_id": "identity-resolution:bbca1a52-3242-4a2f-bef5-709e45c7a8b3",
+    "tenant": "user:a",
+    "person_id": "person:b",
+    "status": "resolved",
+    "claims": [
+      {
+        "type": "rcp.identity_claim",
+        "rcp_version": "0.1",
+        "claim_id": "identity-claim:a588aa39-540e-49a4-b898-b05e8d329d44",
+        "provider": "demo:mail",
+        "identity_type": "email",
+        "identifier": "b@example.test",
+        "verification_state": "user_confirmed",
+        "subject_hint": "user:a:person:b",
+        "evidence_refs": [
+          "user-seed:user:a:demo:mail"
+        ],
+        "issued_at": "2026-10-10T07:59:09.191Z"
+      },
+      {
+        "type": "rcp.identity_claim",
+        "rcp_version": "0.1",
+        "claim_id": "identity-claim:59cb0847-89da-489f-abdb-bacb077ec67a",
+        "provider": "demo:messenger",
+        "identity_type": "messenger_id",
+        "identifier": "user_59127",
+        "verification_state": "user_confirmed",
+        "subject_hint": "user:a:person:b",
+        "evidence_refs": [
+          "user-seed:user:a:demo:messenger"
+        ],
+        "issued_at": "2026-10-10T07:59:09.191Z"
+      },
+      {
+        "type": "rcp.identity_claim",
+        "rcp_version": "0.1",
+        "claim_id": "identity-claim:23b4ab9e-6707-466b-b678-d4b1d4621ccb",
+        "provider": "demo:enterprise",
+        "identity_type": "work_email",
+        "identifier": "b@company.example",
+        "verification_state": "user_confirmed",
+        "subject_hint": "user:a:person:b",
+        "evidence_refs": [
+          "user-seed:user:a:demo:enterprise"
+        ],
+        "issued_at": "2026-10-10T07:59:09.191Z"
+      },
+      {
+        "type": "rcp.identity_claim",
+        "rcp_version": "0.1",
+        "claim_id": "identity-claim:ffbbcace-cb75-445c-af0c-065ce7caf883",
+        "provider": "demo:phone",
+        "identity_type": "phone",
+        "identifier": "+82-10-0000-0000",
+        "verification_state": "user_confirmed",
+        "subject_hint": "user:a:person:b",
+        "evidence_refs": [
+          "user-seed:user:a:demo:phone"
+        ],
+        "issued_at": "2026-10-10T07:59:09.191Z"
+      },
+      {
+        "type": "rcp.identity_claim",
+        "rcp_version": "0.1",
+        "claim_id": "identity-claim:21bb3548-f065-4d93-b4ee-85a5c19ab3cb",
+        "provider": "demo:meeting",
+        "identity_type": "meeting_account",
+        "identifier": "b-meeting-7",
+        "verification_state": "user_confirmed",
+        "subject_hint": "user:a:person:b",
+        "evidence_refs": [
+          "user-seed:user:a:demo:meeting"
+        ],
+        "issued_at": "2026-10-10T07:59:09.191Z"
+      }
+    ],
+    "bindings": {
+      "demo:mail": {
+        "provider": "demo:mail",
+        "provider_subject": "provider-local:b-mail",
+        "claim_id": "identity-claim:a588aa39-540e-49a4-b898-b05e8d329d44",
+        "verification_state": "user_confirmed"
+      },
+      "demo:messenger": {
+        "provider": "demo:messenger",
+        "provider_subject": "provider-local:b-messenger",
+        "claim_id": "identity-claim:59cb0847-89da-489f-abdb-bacb077ec67a",
+        "verification_state": "user_confirmed"
+      },
+      "demo:enterprise": {
+        "provider": "demo:enterprise",
+        "provider_subject": "provider-local:b-enterprise",
+        "claim_id": "identity-claim:23b4ab9e-6707-466b-b678-d4b1d4621ccb",
+        "verification_state": "user_confirmed"
+      },
+      "demo:phone": {
+        "provider": "demo:phone",
+        "provider_subject": "provider-local:b-phone",
+        "claim_id": "identity-claim:ffbbcace-cb75-445c-af0c-065ce7caf883",
+        "verification_state": "user_confirmed"
+      },
+      "demo:meeting": {
+        "provider": "demo:meeting",
+        "provider_subject": "provider-local:b-meeting",
+        "claim_id": "identity-claim:21bb3548-f065-4d93-b4ee-85a5c19ab3cb",
+        "verification_state": "user_confirmed"
+      }
+    },
+    "pending": [],
+    "created_at": "2026-10-10T07:59:09.191Z"
+  },
+  "processing_plan": {
+    "type": "rcp.processing_plan",
+    "rcp_version": "0.1",
+    "plan_id": "plan:c1bcf456-cc27-4ec0-858e-28b82afe7c5d",
+    "goal": "prepare_next_interaction",
+    "tenant": "user:a",
+    "subject": "person:b",
+    "created_at": "2026-10-10T07:59:09.198Z",
+    "steps": [
+      {
+        "provider": "demo:mail",
+        "base_url": "http://127.0.0.1:45601",
+        "status": "planned",
+        "representation": "provider_context",
+        "provider_subject": "provider-local:b-mail",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:ae08a735-ec9d-4055-8542-5e2e43be6f45",
+          "requester": "user:a",
+          "executor": "demo:mail",
+          "action": "access",
+          "resource": "demo:mail:provider_context:provider-local:b-mail",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "device",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "allow"
+        },
+        "identity_claim_ref": "identity-claim:a588aa39-540e-49a4-b898-b05e8d329d44",
+        "identity_verification_state": "user_confirmed"
+      },
+      {
+        "provider": "demo:messenger",
+        "base_url": "http://127.0.0.1:45602",
+        "status": "planned",
+        "representation": "provider_context",
+        "provider_subject": "provider-local:b-messenger",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:98ff8e55-69e5-45b6-b487-f1e55c7ea339",
+          "requester": "user:a",
+          "executor": "demo:messenger",
+          "action": "access",
+          "resource": "demo:messenger:provider_context:provider-local:b-messenger",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "provider",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:59cb0847-89da-489f-abdb-bacb077ec67a",
+        "identity_verification_state": "user_confirmed"
+      },
+      {
+        "provider": "demo:enterprise",
+        "base_url": "http://127.0.0.1:45603",
+        "status": "planned",
+        "representation": "interaction_metadata",
+        "provider_subject": "provider-local:b-enterprise",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:bab65c2e-0753-4c2d-a140-ab47ae70d452",
+          "requester": "user:a",
+          "executor": "demo:enterprise",
+          "action": "access",
+          "resource": "demo:enterprise:interaction_metadata:provider-local:b-enterprise",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "provider",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:23b4ab9e-6707-466b-b678-d4b1d4621ccb",
+        "identity_verification_state": "user_confirmed"
+      },
+      {
+        "provider": "demo:phone",
+        "base_url": "http://127.0.0.1:45604",
+        "status": "planned",
+        "representation": "interaction_metadata",
+        "provider_subject": "provider-local:b-phone",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:718291a7-a984-4fd8-a946-077206bbccab",
+          "requester": "user:a",
+          "executor": "demo:phone",
+          "action": "access",
+          "resource": "demo:phone:interaction_metadata:provider-local:b-phone",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "device",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:ffbbcace-cb75-445c-af0c-065ce7caf883",
+        "identity_verification_state": "user_confirmed"
+      },
+      {
+        "provider": "demo:meeting",
+        "base_url": "http://127.0.0.1:45605",
+        "status": "planned",
+        "representation": "provider_context",
+        "provider_subject": "provider-local:b-meeting",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:d935e915-8e7a-449c-804f-13459dd449e3",
+          "requester": "user:a",
+          "executor": "demo:meeting",
+          "action": "access",
+          "resource": "demo:meeting:provider_context:provider-local:b-meeting",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "provider",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:21bb3548-f065-4d93-b4ee-85a5c19ab3cb",
+        "identity_verification_state": "user_confirmed"
+      }
+    ],
+    "trace": [
+      {
+        "event": "plan.created",
+        "at": "2026-10-10T07:59:09.198Z",
+        "protected_data_retrieved": false,
+        "identity_resolution_applied": true
+      }
+    ],
+    "identity_resolution_id": "identity-resolution:bbca1a52-3242-4a2f-bef5-709e45c7a8b3"
+  },
+  "evaluated_plan": {
+    "type": "rcp.processing_plan",
+    "rcp_version": "0.1",
+    "plan_id": "plan:c1bcf456-cc27-4ec0-858e-28b82afe7c5d",
+    "goal": "prepare_next_interaction",
+    "tenant": "user:a",
+    "subject": "person:b",
+    "created_at": "2026-10-10T07:59:09.198Z",
+    "steps": [
+      {
+        "provider": "demo:mail",
+        "base_url": "http://127.0.0.1:45601",
+        "status": "executable",
+        "representation": "provider_context",
+        "provider_subject": "provider-local:b-mail",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:ae08a735-ec9d-4055-8542-5e2e43be6f45",
+          "requester": "user:a",
+          "executor": "demo:mail",
+          "action": "access",
+          "resource": "demo:mail:provider_context:provider-local:b-mail",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "device",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "allow"
+        },
+        "identity_claim_ref": "identity-claim:a588aa39-540e-49a4-b898-b05e8d329d44",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:a4a399d0-2b72-4e82-a8ba-7f4151867187",
+          "request_id": "request:ae08a735-ec9d-4055-8542-5e2e43be6f45",
+          "evaluated_at": "2026-10-10T07:59:09.202Z",
+          "decision": "allow",
+          "expires_at": "2026-10-10T08:04:09.202Z",
+          "policy_versions": [
+            "capability:1"
+          ]
+        }
+      },
+      {
+        "provider": "demo:messenger",
+        "base_url": "http://127.0.0.1:45602",
+        "status": "executable",
+        "representation": "provider_context",
+        "provider_subject": "provider-local:b-messenger",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:98ff8e55-69e5-45b6-b487-f1e55c7ea339",
+          "requester": "user:a",
+          "executor": "demo:messenger",
+          "action": "access",
+          "resource": "demo:messenger:provider_context:provider-local:b-messenger",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "provider",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:59cb0847-89da-489f-abdb-bacb077ec67a",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:af15eecf-1bf0-4280-98d7-f27e3a5f2a4e",
+          "request_id": "request:98ff8e55-69e5-45b6-b487-f1e55c7ea339",
+          "evaluated_at": "2026-10-10T07:59:09.203Z",
+          "decision": "allow",
+          "expires_at": "2026-10-10T08:04:09.203Z",
+          "policy_versions": [
+            "capability:1"
+          ]
+        }
+      },
+      {
+        "provider": "demo:enterprise",
+        "base_url": "http://127.0.0.1:45603",
+        "status": "executable",
+        "representation": "interaction_metadata",
+        "provider_subject": "provider-local:b-enterprise",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:bab65c2e-0753-4c2d-a140-ab47ae70d452",
+          "requester": "user:a",
+          "executor": "demo:enterprise",
+          "action": "access",
+          "resource": "demo:enterprise:interaction_metadata:provider-local:b-enterprise",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "provider",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:23b4ab9e-6707-466b-b678-d4b1d4621ccb",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:2ae77b91-4249-4036-8b2b-2705300e3083",
+          "request_id": "request:bab65c2e-0753-4c2d-a140-ab47ae70d452",
+          "evaluated_at": "2026-10-10T07:59:09.203Z",
+          "decision": "allow",
+          "expires_at": "2026-10-10T08:04:09.203Z",
+          "policy_versions": [
+            "capability:1"
+          ]
+        }
+      },
+      {
+        "provider": "demo:phone",
+        "base_url": "http://127.0.0.1:45604",
+        "status": "blocked",
+        "representation": "interaction_metadata",
+        "provider_subject": "provider-local:b-phone",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:718291a7-a984-4fd8-a946-077206bbccab",
+          "requester": "user:a",
+          "executor": "demo:phone",
+          "action": "access",
+          "resource": "demo:phone:interaction_metadata:provider-local:b-phone",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "device",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:ffbbcace-cb75-445c-af0c-065ce7caf883",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:7692b180-f206-4d8c-a126-3bc9fcb4aa31",
+          "request_id": "request:718291a7-a984-4fd8-a946-077206bbccab",
+          "evaluated_at": "2026-10-10T07:59:09.204Z",
+          "decision": "conditional",
+          "required_conditions": [
+            "satisfy:demo:phone:policy:metadata-only-v1"
+          ],
+          "expires_at": "2026-10-10T08:04:09.204Z",
+          "policy_versions": [
+            "capability:1",
+            "demo:phone:policy:metadata-only-v1"
+          ]
+        }
+      },
+      {
+        "provider": "demo:meeting",
+        "base_url": "http://127.0.0.1:45605",
+        "status": "executable",
+        "representation": "provider_context",
+        "provider_subject": "provider-local:b-meeting",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:d935e915-8e7a-449c-804f-13459dd449e3",
+          "requester": "user:a",
+          "executor": "demo:meeting",
+          "action": "access",
+          "resource": "demo:meeting:provider_context:provider-local:b-meeting",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "provider",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:21bb3548-f065-4d93-b4ee-85a5c19ab3cb",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:0e9e2f60-105b-4c14-8f34-cb250debfe38",
+          "request_id": "request:d935e915-8e7a-449c-804f-13459dd449e3",
+          "evaluated_at": "2026-10-10T07:59:09.204Z",
+          "decision": "allow",
+          "expires_at": "2026-10-10T08:04:09.204Z",
+          "policy_versions": [
+            "capability:1"
+          ]
+        }
+      }
+    ],
+    "trace": [
+      {
+        "event": "plan.created",
+        "at": "2026-10-10T07:59:09.198Z",
+        "protected_data_retrieved": false,
+        "identity_resolution_applied": true
+      },
+      {
+        "event": "plan.permissions_evaluated",
+        "at": "2026-10-10T07:59:09.200Z",
+        "protected_data_retrieved": false
+      }
+    ],
+    "identity_resolution_id": "identity-resolution:bbca1a52-3242-4a2f-bef5-709e45c7a8b3",
+    "evaluated_at": "2026-10-10T07:59:09.200Z"
+  },
+  "execution": {
+    "type": "rcp.processing_plan",
+    "rcp_version": "0.1",
+    "plan_id": "plan:c1bcf456-cc27-4ec0-858e-28b82afe7c5d",
+    "goal": "prepare_next_interaction",
+    "tenant": "user:a",
+    "subject": "person:b",
+    "created_at": "2026-10-10T07:59:09.198Z",
+    "steps": [
+      {
+        "provider": "demo:mail",
+        "base_url": "http://127.0.0.1:45601",
+        "status": "executable",
+        "representation": "provider_context",
+        "provider_subject": "provider-local:b-mail",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:ae08a735-ec9d-4055-8542-5e2e43be6f45",
+          "requester": "user:a",
+          "executor": "demo:mail",
+          "action": "access",
+          "resource": "demo:mail:provider_context:provider-local:b-mail",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "device",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "allow"
+        },
+        "identity_claim_ref": "identity-claim:a588aa39-540e-49a4-b898-b05e8d329d44",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:a4a399d0-2b72-4e82-a8ba-7f4151867187",
+          "request_id": "request:ae08a735-ec9d-4055-8542-5e2e43be6f45",
+          "evaluated_at": "2026-10-10T07:59:09.202Z",
+          "decision": "allow",
+          "expires_at": "2026-10-10T08:04:09.202Z",
+          "policy_versions": [
+            "capability:1"
+          ]
+        },
+        "execution_status": "relayed_verified_and_decrypted"
+      },
+      {
+        "provider": "demo:messenger",
+        "base_url": "http://127.0.0.1:45602",
+        "status": "executable",
+        "representation": "provider_context",
+        "provider_subject": "provider-local:b-messenger",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:98ff8e55-69e5-45b6-b487-f1e55c7ea339",
+          "requester": "user:a",
+          "executor": "demo:messenger",
+          "action": "access",
+          "resource": "demo:messenger:provider_context:provider-local:b-messenger",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "provider",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:59cb0847-89da-489f-abdb-bacb077ec67a",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:af15eecf-1bf0-4280-98d7-f27e3a5f2a4e",
+          "request_id": "request:98ff8e55-69e5-45b6-b487-f1e55c7ea339",
+          "evaluated_at": "2026-10-10T07:59:09.203Z",
+          "decision": "allow",
+          "expires_at": "2026-10-10T08:04:09.203Z",
+          "policy_versions": [
+            "capability:1"
+          ]
+        },
+        "execution_status": "relayed_verified_and_decrypted"
+      },
+      {
+        "provider": "demo:enterprise",
+        "base_url": "http://127.0.0.1:45603",
+        "status": "executable",
+        "representation": "interaction_metadata",
+        "provider_subject": "provider-local:b-enterprise",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:bab65c2e-0753-4c2d-a140-ab47ae70d452",
+          "requester": "user:a",
+          "executor": "demo:enterprise",
+          "action": "access",
+          "resource": "demo:enterprise:interaction_metadata:provider-local:b-enterprise",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "provider",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:23b4ab9e-6707-466b-b678-d4b1d4621ccb",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:2ae77b91-4249-4036-8b2b-2705300e3083",
+          "request_id": "request:bab65c2e-0753-4c2d-a140-ab47ae70d452",
+          "evaluated_at": "2026-10-10T07:59:09.203Z",
+          "decision": "allow",
+          "expires_at": "2026-10-10T08:04:09.203Z",
+          "policy_versions": [
+            "capability:1"
+          ]
+        },
+        "execution_status": "relayed_verified_and_decrypted"
+      },
+      {
+        "provider": "demo:phone",
+        "base_url": "http://127.0.0.1:45604",
+        "status": "blocked",
+        "representation": "interaction_metadata",
+        "provider_subject": "provider-local:b-phone",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:718291a7-a984-4fd8-a946-077206bbccab",
+          "requester": "user:a",
+          "executor": "demo:phone",
+          "action": "access",
+          "resource": "demo:phone:interaction_metadata:provider-local:b-phone",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "device",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:ffbbcace-cb75-445c-af0c-065ce7caf883",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:7692b180-f206-4d8c-a126-3bc9fcb4aa31",
+          "request_id": "request:718291a7-a984-4fd8-a946-077206bbccab",
+          "evaluated_at": "2026-10-10T07:59:09.204Z",
+          "decision": "conditional",
+          "required_conditions": [
+            "satisfy:demo:phone:policy:metadata-only-v1"
+          ],
+          "expires_at": "2026-10-10T08:04:09.204Z",
+          "policy_versions": [
+            "capability:1",
+            "demo:phone:policy:metadata-only-v1"
+          ]
+        },
+        "execution_status": "skipped"
+      },
+      {
+        "provider": "demo:meeting",
+        "base_url": "http://127.0.0.1:45605",
+        "status": "executable",
+        "representation": "provider_context",
+        "provider_subject": "provider-local:b-meeting",
+        "request": {
+          "type": "rcp.permission_request",
+          "rcp_version": "0.1",
+          "request_id": "request:d935e915-8e7a-449c-804f-13459dd449e3",
+          "requester": "user:a",
+          "executor": "demo:meeting",
+          "action": "access",
+          "resource": "demo:meeting:provider_context:provider-local:b-meeting",
+          "subject": "person:b",
+          "purpose": "meeting_preparation",
+          "destination": "user:a:private-memory",
+          "processing_location": "provider",
+          "requested_at": "2026-10-10T07:59:09.198Z"
+        },
+        "capability_version": "1",
+        "selected_from": {
+          "representation_state": "allow",
+          "external_processing_state": "limited"
+        },
+        "identity_claim_ref": "identity-claim:21bb3548-f065-4d93-b4ee-85a5c19ab3cb",
+        "identity_verification_state": "user_confirmed",
+        "decision": {
+          "type": "rcp.permission_decision",
+          "rcp_version": "0.1",
+          "decision_id": "decision:0e9e2f60-105b-4c14-8f34-cb250debfe38",
+          "request_id": "request:d935e915-8e7a-449c-804f-13459dd449e3",
+          "evaluated_at": "2026-10-10T07:59:09.204Z",
+          "decision": "allow",
+          "expires_at": "2026-10-10T08:04:09.204Z",
+          "policy_versions": [
+            "capability:1"
+          ]
+        },
+        "execution_status": "relayed_verified_and_decrypted"
+      }
+    ],
+    "trace": [
+      {
+        "event": "plan.created",
+        "at": "2026-10-10T07:59:09.198Z",
+        "protected_data_retrieved": false,
+        "identity_resolution_applied": true
+      },
+      {
+        "event": "plan.permissions_evaluated",
+        "at": "2026-10-10T07:59:09.200Z",
+        "protected_data_retrieved": false
+      },
+      {
+        "event": "plan.executed",
+        "at": "2026-10-10T07:59:09.205Z",
+        "protected_data_retrieved": true,
+        "retrieved_provider_count": 4,
+        "activated_assertion_count": 4,
+        "stale_provider_count": 0,
+        "relay_routed_count": 4,
+        "context_revision": 1
+      }
+    ],
+    "identity_resolution_id": "identity-resolution:bbca1a52-3242-4a2f-bef5-709e45c7a8b3",
+    "evaluated_at": "2026-10-10T07:59:09.200Z",
+    "envelopes": [
+      {
+        "type": "rcp.secure_envelope",
+        "rcp_version": "0.1",
+        "envelope_id": "envelope:1640d7b0-4568-4ff9-b9bf-3eda640aba32",
+        "sender": "demo:mail",
+        "recipient": "consumer:relationship-agent",
+        "action": "access",
+        "resource_ref": "demo:mail:provider_context:provider-local:b-mail",
+        "resource_class": "relationship_context",
+        "purpose": "meeting_preparation",
+        "destination": "user:a:private-memory",
+        "processing_location": "device",
+        "permission_decision_ref": "decision:a4a399d0-2b72-4e82-a8ba-7f4151867187",
+        "policy_refs": [
+          "capability:1"
+        ],
+        "issued_at": "2026-10-10T07:59:09.207Z",
+        "expires_at": "2026-10-10T08:04:09.202Z",
+        "payload": {
+          "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+          "jwe": "eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImtpZCI6ImNvbnN1bWVyOnJlbGF0aW9uc2hpcC1hZ2VudDplbmM6MSIsInR5cCI6ImFwcGxpY2F0aW9uL3JjcCtqd2UiLCJjdHkiOiJhcHBsaWNhdGlvbi9yY3AranNvbiIsImVwayI6eyJ4IjoiVktZcUQ0Um1RdVlnU3VCX0NtMkplbUtSaFhTSl9HZHdBc3JuMzVFNl9WMCIsImNydiI6IlgyNTUxOSIsImt0eSI6Ik9LUCJ9fQ..7t4qQXyCyWsX139w.AQpEMA-hO6cnjfRNq00Tq9s2SOpLrg9YXtzyb3bGzCyhCfZ_Bpt8CZ38ZYOul8LxJr5ChXjqA84Z5CAKhLCEOSEISQg7YfJtNfGYqhktUTGqu7cy3TM9Cwvjd9JPbLh4sY41rf3RVAhASrrQl8hTqldcsyIOJ0m3Tt2yxxIJnkMyeTuwNCO7UAvzTshdVFATDBDuVM4U5WJG9yWeQri-eQSyIqLlF1mSTOIx1DUtDDWCL8n281tzN_5p64aU9oXfJP-GPpawi8lFCrvFLkIbsGc7jTejCRNVWD_wNd1WzN2-2udlz3ctsyYpAji8NFbv6EtDdY6goW4pQtKqz_BIKKjEmOGYz5kp8hvHfbRgRCg0HugBfms2WA9TTJx74ZSzzQkXY4DBTBUM5YZCfGqYEwdnn46t7Pv8sdvd-ilno9pYvhLp7w_cGtgJBvGMLK3IpMVQMUQCTKZ0D4nM5TKYOhHYH1DSKMBf.v4WDs7rt9SBuUGy2Q0nahA"
+        },
+        "signature": {
+          "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+          "protected": "eyJhbGciOiJFZDI1NTE5Iiwia2lkIjoiZGVtbzptYWlsOnNpZ246MSIsInR5cCI6ImFwcGxpY2F0aW9uL3JjcCtqd3MiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ",
+          "signature": "YK5zSPhzbGC3SsFf4PbIzYHb8XZEu6SjzaWn8pyC1JDRcmlwoiQPGG5l_9s-v5s0mdF0CLUyT6lgXCbSIrm5CA"
+        }
+      },
+      {
+        "type": "rcp.secure_envelope",
+        "rcp_version": "0.1",
+        "envelope_id": "envelope:a0758e2d-7c32-4003-95c5-1f39085d3877",
+        "sender": "demo:messenger",
+        "recipient": "consumer:relationship-agent",
+        "action": "access",
+        "resource_ref": "demo:messenger:provider_context:provider-local:b-messenger",
+        "resource_class": "relationship_context",
+        "purpose": "meeting_preparation",
+        "destination": "user:a:private-memory",
+        "processing_location": "provider",
+        "permission_decision_ref": "decision:af15eecf-1bf0-4280-98d7-f27e3a5f2a4e",
+        "policy_refs": [
+          "capability:1"
+        ],
+        "issued_at": "2026-10-10T07:59:09.225Z",
+        "expires_at": "2026-10-10T08:04:09.203Z",
+        "payload": {
+          "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+          "jwe": "eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImtpZCI6ImNvbnN1bWVyOnJlbGF0aW9uc2hpcC1hZ2VudDplbmM6MSIsInR5cCI6ImFwcGxpY2F0aW9uL3JjcCtqd2UiLCJjdHkiOiJhcHBsaWNhdGlvbi9yY3AranNvbiIsImVwayI6eyJ4IjoiQWZxWllmcXZPS0RSVG1IendzWDRtVmVPRWNhdy1RLWFvNW5TWlRWOExWMCIsImNydiI6IlgyNTUxOSIsImt0eSI6Ik9LUCJ9fQ..erDY3x0s_7A63403.OGpTjaTXZ6ouUXrk8cRU0SSorhGoIK8eZW_Xlof3E_WAKe1HgZMbryrSXm_XcP8paP_1isRCaKF_QMlEwANZavFi3QbRrKOg0tLPHMU80BCRjJ5PfSotPGiMFVaNUW-5jMlWOzDN3gt5v6XjspF2Rj2crZeW1epoiqzZ_iW7OY9m3gQQ_-T9d8oKFBITzlX_LpCKHHXFGHcdoqjXkcofn2rAPr-r47pPGQy_FUI_fcAWyhMf8P72d3B0mzdYimQPRxS6b4n3CnlcMo5WOdX7CfG8W3eymf7QQMEqaXRhfIiYhP1rEWq-UD-HBV0sLIWT8DZn1YLn_sRxrwZ97_bHL8iCXgzJ0u97NZxaFKQzqVXKxkWoC30YBdBM--H7Zdm1LR-nsmDNetkohP1JkiEqEMpMQJ0kn2ZPQgYlom1TchOnLqqphG67Pw5_dlwC0fgSJh7cckb31-vRf6Xx5eLssP8US_skNAOz.-7nCW6XKwnVRF18jlkkGHQ"
+        },
+        "signature": {
+          "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+          "protected": "eyJhbGciOiJFZDI1NTE5Iiwia2lkIjoiZGVtbzptZXNzZW5nZXI6c2lnbjoxIiwidHlwIjoiYXBwbGljYXRpb24vcmNwK2p3cyIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
+          "signature": "hQpue-85iGf_up_Mk_sXhFrvPmNKAe-t27FL79QG1SUX3vj-gB8w7n3HuwYcL6Yv9FKqTtK2-VX3PT2uadbADw"
+        }
+      },
+      {
+        "type": "rcp.secure_envelope",
+        "rcp_version": "0.1",
+        "envelope_id": "envelope:e54ad8eb-e927-4650-a3c4-bd08a046b16f",
+        "sender": "demo:enterprise",
+        "recipient": "consumer:relationship-agent",
+        "action": "access",
+        "resource_ref": "demo:enterprise:interaction_metadata:provider-local:b-enterprise",
+        "resource_class": "relationship_context",
+        "purpose": "meeting_preparation",
+        "destination": "user:a:private-memory",
+        "processing_location": "provider",
+        "permission_decision_ref": "decision:2ae77b91-4249-4036-8b2b-2705300e3083",
+        "policy_refs": [
+          "capability:1"
+        ],
+        "issued_at": "2026-10-10T07:59:09.241Z",
+        "expires_at": "2026-10-10T08:04:09.203Z",
+        "payload": {
+          "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+          "jwe": "eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImtpZCI6ImNvbnN1bWVyOnJlbGF0aW9uc2hpcC1hZ2VudDplbmM6MSIsInR5cCI6ImFwcGxpY2F0aW9uL3JjcCtqd2UiLCJjdHkiOiJhcHBsaWNhdGlvbi9yY3AranNvbiIsImVwayI6eyJ4IjoiLWlRbGYyTUtGb3JzSHVyREd5ZElIWC1yVWJ4QWF6bFBQc3Qyd3ItbnFsYyIsImNydiI6IlgyNTUxOSIsImt0eSI6Ik9LUCJ9fQ..oNsHaRnYEme30dLj.ysyYG0QkDEzYS37PHjja38k3QHZMJS-7lTwoU6cL6glJtE1btmMjzgIcVtIpy7T7QBDIjf1Dc6i5nF0VgZCblNa7uyWA8opYsmriKdlH9taFqJk8cS8RP83EBoaySC8qzCa9fA_cF4oBWYJryUl42BvdHphrexmTm83Ueaie7BTVJ8I4ol5hWs5bskvBejgggtpznjztIKOhSrDNdES_Rqhcr0TxSoWTORPbDoftmcy07VlbQIQx_RF7we_aS_SXTVug0Gd_99cJmPRg9EpYl25mz8kxsG53wrJKnE_AGxrphk-rfspuhEMF59u7ZGPhUeJNNIDlEBNuEe54euW3Yp_qNP1qOcdgxMrhxChwjVv-1J8MKbNc7yK3VB-m0TP4e7-w34v3r24IwrikkJlqu_lVMNg18wdVoS0OA-z_tipxZ6FXwYSLZtJzgDYc3AQaEhdM0lTPInEGAPUv4zyhk8x_9A_Ppe9SLPyNFhPrAg4Yiz8.o5bkWhBEpT0UEOX4y9TdqQ"
+        },
+        "signature": {
+          "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+          "protected": "eyJhbGciOiJFZDI1NTE5Iiwia2lkIjoiZGVtbzplbnRlcnByaXNlOnNpZ246MSIsInR5cCI6ImFwcGxpY2F0aW9uL3JjcCtqd3MiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ",
+          "signature": "cbZUJ_it5i8CyKA-Dfp9otdyTcnD7lhJy7NJQL-SjZLF8gEavWu2znP2dzoTF4aR7HcM4OXp3rLVXCOX4YKsDQ"
+        }
+      },
+      {
+        "type": "rcp.secure_envelope",
+        "rcp_version": "0.1",
+        "envelope_id": "envelope:ab788ecb-c68c-465e-875a-e00f4d9e1d07",
+        "sender": "demo:meeting",
+        "recipient": "consumer:relationship-agent",
+        "action": "access",
+        "resource_ref": "demo:meeting:provider_context:provider-local:b-meeting",
+        "resource_class": "relationship_context",
+        "purpose": "meeting_preparation",
+        "destination": "user:a:private-memory",
+        "processing_location": "provider",
+        "permission_decision_ref": "decision:0e9e2f60-105b-4c14-8f34-cb250debfe38",
+        "policy_refs": [
+          "capability:1"
+        ],
+        "issued_at": "2026-10-10T07:59:09.257Z",
+        "expires_at": "2026-10-10T08:04:09.204Z",
+        "payload": {
+          "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+          "jwe": "eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImtpZCI6ImNvbnN1bWVyOnJlbGF0aW9uc2hpcC1hZ2VudDplbmM6MSIsInR5cCI6ImFwcGxpY2F0aW9uL3JjcCtqd2UiLCJjdHkiOiJhcHBsaWNhdGlvbi9yY3AranNvbiIsImVwayI6eyJ4Ijoid05SSkd0UjF2NTU3aENUVWVmMzdHWW96aXZGbGN3Qnl2NTdLajI2ODBoQSIsImNydiI6IlgyNTUxOSIsImt0eSI6Ik9LUCJ9fQ..ktD15B1yPD_ArODo.my0krv44LEe96Rs_301vpjwa3_a6aQqBwIKZMcNqXCdGXow3c37koiqLZpzZ4okn7bRirtdbnlDT-m5uZZQEIs0I7ObvMX54xlSfrJ8YmY-__ePHTkNdTXWPSQDX_5o2VPwUFvRbNGLCqAcK1A4_Nx7bBhw9Pg6W58WAdtwwsF-O4YaO4Ffgviht-CRctT_3F_1yQ9d-fOfOdnZQ0Dl5J6iTgdes-7gr5ZhkYQMklx3g2IezZFuGi2M1fy3PjNJLE0lFO8fouxmbNmRc1xuNZqYjOX2wKho0IT63bUjRUn3QNhnp6FnYgF-uN01ErKmp_Rx5oqRRmQetPt40V89y7eomOIZqEpTc7K07blMK6O0jaVFUV2ajVQJOrpYMZzATec1q-oAUQdauCtNsvkjf9PHepY1VoyKygn3sOoJlYgx_iQk4zhqgx3N4wj_32ybVG5mR6vlefZggk3QgZic4QPya7tiDs8lo4V8.R53HGUxuvRW09cSnXjBo5A"
+        },
+        "signature": {
+          "profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+          "protected": "eyJhbGciOiJFZDI1NTE5Iiwia2lkIjoiZGVtbzptZWV0aW5nOnNpZ246MSIsInR5cCI6ImFwcGxpY2F0aW9uL3JjcCtqd3MiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ",
+          "signature": "aDs8yRqm6X2wagHy6TPHgTpNvVBTIwzno37xvexlJgoVHR9cpX7TIgQ8sOmgxzSixXWBMWnxBLZ3t8WkhO2uDQ"
+        }
+      }
+    ],
+    "relay_receipts": [
+      {
+        "type": "rcp.relay_receipt",
+        "rcp_version": "0.1",
+        "relay_id": "relay:64e843c9-b5a4-4971-8adf-a983456259fe",
+        "envelope_id": "envelope:1640d7b0-4568-4ff9-b9bf-3eda640aba32",
+        "accepted_at": "2026-10-10T07:59:09.217Z"
+      },
+      {
+        "type": "rcp.relay_receipt",
+        "rcp_version": "0.1",
+        "relay_id": "relay:af5f92ba-3b2a-4e6f-bd13-03349050cf58",
+        "envelope_id": "envelope:a0758e2d-7c32-4003-95c5-1f39085d3877",
+        "accepted_at": "2026-10-10T07:59:09.233Z"
+      },
+      {
+        "type": "rcp.relay_receipt",
+        "rcp_version": "0.1",
+        "relay_id": "relay:aa6d2794-7e4e-4fb2-8d26-e271e2c40485",
+        "envelope_id": "envelope:e54ad8eb-e927-4650-a3c4-bd08a046b16f",
+        "accepted_at": "2026-10-10T07:59:09.250Z"
+      },
+      {
+        "type": "rcp.relay_receipt",
+        "rcp_version": "0.1",
+        "relay_id": "relay:a1238a40-5a33-4b14-bd61-3df532cec995",
+        "envelope_id": "envelope:ab788ecb-c68c-465e-875a-e00f4d9e1d07",
+        "accepted_at": "2026-10-10T07:59:09.267Z"
+      }
+    ],
+    "assertions": [
+      {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.1",
+        "assertion_id": "assertion:13e08028-0c1b-42ab-95e5-00ea7972b286",
+        "assertion_type": "commitment",
+        "epistemic_class": "system_interpretation",
+        "statement": "A and B agreed to revisit Project X in November.",
+        "subjects": [
+          "user:a",
+          "person:b"
+        ],
+        "provenance": {
+          "origin_type": "provider_generated",
+          "source_refs": [
+            "demo:mail:provider_context:provider-local:b-mail#item:0"
+          ],
+          "visibility": "redacted"
+        },
+        "policy_refs": [
+          "capability:1"
+        ],
+        "status": "active",
+        "created_at": "2026-10-10T07:59:09.223Z"
+      },
+      {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.1",
+        "assertion_id": "assertion:9d6f301b-49b9-4be5-bae2-ebc388e80830",
+        "assertion_type": "status",
+        "epistemic_class": "system_interpretation",
+        "statement": "B is preparing for a Japan trip.",
+        "subjects": [
+          "user:a",
+          "person:b"
+        ],
+        "provenance": {
+          "origin_type": "provider_generated",
+          "source_refs": [
+            "demo:messenger:provider_context:provider-local:b-messenger#item:0"
+          ],
+          "visibility": "redacted"
+        },
+        "policy_refs": [
+          "capability:1"
+        ],
+        "status": "active",
+        "created_at": "2026-10-10T07:59:09.239Z"
+      },
+      {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.1",
+        "assertion_id": "assertion:2c1954db-8202-4da3-a1ed-894e7bd591e1",
+        "assertion_type": "event",
+        "epistemic_class": "extracted_fact",
+        "statement": "Interaction meeting-project-x occurred at 2026-09-28T02:00:00Z.",
+        "subjects": [
+          "user:a",
+          "person:b"
+        ],
+        "provenance": {
+          "origin_type": "external_provider",
+          "source_refs": [
+            "demo:enterprise:interaction_metadata:provider-local:b-enterprise#item:meeting-project-x"
+          ],
+          "visibility": "type_only"
+        },
+        "policy_refs": [
+          "capability:1"
+        ],
+        "status": "active",
+        "created_at": "2026-10-10T07:59:09.254Z",
+        "valid_from": "2026-09-28T02:00:00Z"
+      },
+      {
+        "type": "rcp.context_assertion",
+        "rcp_version": "0.1",
+        "assertion_id": "assertion:cc64707b-0e70-4fbd-9842-178876dd9e82",
+        "assertion_type": "event",
+        "epistemic_class": "system_interpretation",
+        "statement": "Project X was discussed in a video meeting.",
+        "subjects": [
+          "user:a",
+          "person:b"
+        ],
+        "provenance": {
+          "origin_type": "provider_generated",
+          "source_refs": [
+            "demo:meeting:provider_context:provider-local:b-meeting#item:0"
+          ],
+          "visibility": "redacted"
+        },
+        "policy_refs": [
+          "capability:1"
+        ],
+        "status": "active",
+        "created_at": "2026-10-10T07:59:09.272Z"
+      }
+    ],
+    "context_revision": 1,
+    "brief": {
+      "type": "rcp.relationship_brief",
+      "rcp_version": "0.1",
+      "subject": "person:b",
+      "store_revision": 1,
+      "active_assertion_count": 4,
+      "items": [
+        {
+          "assertion_id": "assertion:13e08028-0c1b-42ab-95e5-00ea7972b286",
+          "assertion_type": "commitment",
+          "epistemic_class": "system_interpretation",
+          "statement": "A and B agreed to revisit Project X in November.",
+          "provenance": {
+            "origin_type": "provider_generated",
+            "source_refs": [
+              "demo:mail:provider_context:provider-local:b-mail#item:0"
+            ],
+            "visibility": "redacted"
+          }
+        },
+        {
+          "assertion_id": "assertion:9d6f301b-49b9-4be5-bae2-ebc388e80830",
+          "assertion_type": "status",
+          "epistemic_class": "system_interpretation",
+          "statement": "B is preparing for a Japan trip.",
+          "provenance": {
+            "origin_type": "provider_generated",
+            "source_refs": [
+              "demo:messenger:provider_context:provider-local:b-messenger#item:0"
+            ],
+            "visibility": "redacted"
+          }
+        },
+        {
+          "assertion_id": "assertion:2c1954db-8202-4da3-a1ed-894e7bd591e1",
+          "assertion_type": "event",
+          "epistemic_class": "extracted_fact",
+          "statement": "Interaction meeting-project-x occurred at 2026-09-28T02:00:00Z.",
+          "provenance": {
+            "origin_type": "external_provider",
+            "source_refs": [
+              "demo:enterprise:interaction_metadata:provider-local:b-enterprise#item:meeting-project-x"
+            ],
+            "visibility": "type_only"
+          }
+        },
+        {
+          "assertion_id": "assertion:cc64707b-0e70-4fbd-9842-178876dd9e82",
+          "assertion_type": "event",
+          "epistemic_class": "system_interpretation",
+          "statement": "Project X was discussed in a video meeting.",
+          "provenance": {
+            "origin_type": "provider_generated",
+            "source_refs": [
+              "demo:meeting:provider_context:provider-local:b-meeting#item:0"
+            ],
+            "visibility": "redacted"
+          }
+        }
+      ],
+      "text": "- [commitment] A and B agreed to revisit Project X in November.\n- [status] B is preparing for a Japan trip.\n- [event] Interaction meeting-project-x occurred at 2026-09-28T02:00:00Z.\n- [event] Project X was discussed in a video meeting."
+    },
+    "executed_at": "2026-10-10T07:59:09.205Z"
+  },
+  "relay_audit": {
+    "transfers": [
+      {
+        "relay_id": "relay:64e843c9-b5a4-4971-8adf-a983456259fe",
+        "envelope_id": "envelope:1640d7b0-4568-4ff9-b9bf-3eda640aba32",
+        "sender": "demo:mail",
+        "recipient": "consumer:relationship-agent",
+        "action": "access",
+        "resource_class": "relationship_context",
+        "purpose": "meeting_preparation",
+        "destination": "user:a:private-memory",
+        "processing_location": "device",
+        "permission_decision_ref": "decision:a4a399d0-2b72-4e82-a8ba-7f4151867187",
+        "payload_profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+        "signature_profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+        "ciphertext_bytes": 812,
+        "ciphertext_sha256": "b4b59be2ba9cf3b08b7bad06c90ab3ba2d681a4c44e2546c0883f76cd98d3102",
+        "received_at": "2026-10-10T07:59:09.217Z",
+        "delivered_at": "2026-10-10T07:59:09.220Z"
+      },
+      {
+        "relay_id": "relay:af5f92ba-3b2a-4e6f-bd13-03349050cf58",
+        "envelope_id": "envelope:a0758e2d-7c32-4003-95c5-1f39085d3877",
+        "sender": "demo:messenger",
+        "recipient": "consumer:relationship-agent",
+        "action": "access",
+        "resource_class": "relationship_context",
+        "purpose": "meeting_preparation",
+        "destination": "user:a:private-memory",
+        "processing_location": "provider",
+        "permission_decision_ref": "decision:af15eecf-1bf0-4280-98d7-f27e3a5f2a4e",
+        "payload_profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+        "signature_profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+        "ciphertext_bytes": 812,
+        "ciphertext_sha256": "05df3d7c451563d15e64bb83a65cd30aaf7556c0e1af854dabefdad07098f175",
+        "received_at": "2026-10-10T07:59:09.233Z",
+        "delivered_at": "2026-10-10T07:59:09.238Z"
+      },
+      {
+        "relay_id": "relay:aa6d2794-7e4e-4fb2-8d26-e271e2c40485",
+        "envelope_id": "envelope:e54ad8eb-e927-4650-a3c4-bd08a046b16f",
+        "sender": "demo:enterprise",
+        "recipient": "consumer:relationship-agent",
+        "action": "access",
+        "resource_class": "relationship_context",
+        "purpose": "meeting_preparation",
+        "destination": "user:a:private-memory",
+        "processing_location": "provider",
+        "permission_decision_ref": "decision:2ae77b91-4249-4036-8b2b-2705300e3083",
+        "payload_profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+        "signature_profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+        "ciphertext_bytes": 827,
+        "ciphertext_sha256": "f874bc7f28118c9a395bf7ebf06b831b6ac7a7a8d56c2fa0ab0758866b7d16bb",
+        "received_at": "2026-10-10T07:59:09.250Z",
+        "delivered_at": "2026-10-10T07:59:09.253Z"
+      },
+      {
+        "relay_id": "relay:a1238a40-5a33-4b14-bd61-3df532cec995",
+        "envelope_id": "envelope:ab788ecb-c68c-465e-875a-e00f4d9e1d07",
+        "sender": "demo:meeting",
+        "recipient": "consumer:relationship-agent",
+        "action": "access",
+        "resource_class": "relationship_context",
+        "purpose": "meeting_preparation",
+        "destination": "user:a:private-memory",
+        "processing_location": "provider",
+        "permission_decision_ref": "decision:0e9e2f60-105b-4c14-8f34-cb250debfe38",
+        "payload_profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+        "signature_profile": "rcp-jose-x25519-a256gcm-ed25519-v0.1",
+        "ciphertext_bytes": 815,
+        "ciphertext_sha256": "36b29a5771d3f7dfd293db6bce295244df8f99c521f409d7593b6e567c5e0b5a",
+        "received_at": "2026-10-10T07:59:09.267Z",
+        "delivered_at": "2026-10-10T07:59:09.271Z"
+      }
+    ]
+  }
+}

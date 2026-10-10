@@ -1,0 +1,6 @@
+
+> self-test
+> node self-test.mjs
+
+RCP external Provider harness self-test: PASS
+Report: /var/folders/j0/s79yn2wj64j857ml0mr7__hr0000gn/T/rcp-external-harness-K1Lx7X/provider-report.json

@@ -1,0 +1,5 @@
+
+> rcp-reference-ecosystem@0.0.1 test:permission
+> node tests/permission-before-retrieval.mjs
+
+RCP permission + SecureEnvelope + provenance integration: PASS

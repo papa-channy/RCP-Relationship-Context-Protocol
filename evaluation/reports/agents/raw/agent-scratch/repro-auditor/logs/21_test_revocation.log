@@ -1,0 +1,5 @@
+
+> rcp-reference-ecosystem@0.0.1 test:revocation
+> node tests/revocation-recompute.mjs
+
+RCP source revocation and relationship brief recomputation: PASS

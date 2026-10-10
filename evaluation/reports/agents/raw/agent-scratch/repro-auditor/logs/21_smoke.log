@@ -1,0 +1,5 @@
+
+> rcp-reference-ecosystem@0.0.1 smoke
+> node tests/topology-smoke.mjs
+
+RCP reference ecosystem topology smoke: PASS

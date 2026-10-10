@@ -1,0 +1,3221 @@
+{
+ "cleanroom-implementer(sonnet)": {
+  "language": "TypeScript (Node 24.14.0, type stripping, ajv 2020-12)",
+  "files": [
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl/src/evaluate.ts",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl/src/adapter.ts",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl/adapter.sh",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl/schema.json",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl/package.json",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl/public-report.json"
+  ],
+  "adapter_cmd": "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl/adapter.sh",
+  "public_total": 15,
+  "public_passed": 15,
+  "public_failures": [],
+  "ambiguities": [
+   {
+    "topic": "bilateral/group 범위의 참여자 수 규칙",
+    "spec_ref": "core-v0.2 4.2, standards-reconciliation 2절(scope_type: 'relationship assertion cardinality/scope semantics를 결정')",
+    "decision_taken": "bilateral은 구분되는 참여자가 정확히 2명, group은 3명 이상으로 판정했다. 참여자 동일성은 (scope, actor_id) 쌍 기준이다. 스키마의 minItems 2만으로는 이 규칙이 표현되지 않고, 산문에도 group의 최소 인원이 명시되어 있지 않다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "알 수 없는 scope_type의 처리 범위 (unknown, 확장 이름, provider_defined, organization_mediated)",
+    "spec_ref": "core-v0.2 5.11, wire 13",
+    "decision_taken": "scope_type 'unknown'은 거부했다. 확장 이름 scope_type은 supported_extensions에 있을 때만 수용했다. provider_defined와 organization_mediated는 스키마가 열거한 값이므로 인원 수 제약 없이(최소 2명) 수용했다. 이 두 값을 '이해하지 못하는 의미'로 보고 거부해야 하는지는 산문에 없다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "required_extensions 항목이 extensions 객체에 실제로 존재해야 하는지, 그리고 확장형 assertion_type/evidence_type/actor_type의 처리",
+    "spec_ref": "wire 13",
+    "decision_taken": "required_extensions의 각 항목이 supported_extensions에 없으면 거부하되, extensions 객체에 해당 키가 있는지는 요구하지 않았다. required_extensions에 없는 확장형 assertion_type, evidence_type, actor_type은 무시 가능한 것으로 보고 수용했다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "파생(derived) 의존성의 evidence 참조가 provenance.evidence 항목으로 해석되어야 하는지",
+    "spec_ref": "wire 8-9, CONTRACT.md 3절 응답 예시",
+    "decision_taken": "CONTRACT 예시가 evidence_refs가 비어 있으면서 material_dependency_refs에 evidence:a를 갖는 수락 사례를 보여 주므로, dependency_type이 evidence인 의존성이 provenance.evidence에 선언되어 있지 않아도 수용했다. 이 가정은 CONTRACT 예시에서 읽은 것이며 다른 근거는 없다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "support_sets 항목이 가리킬 수 있는 의존성의 종류",
+    "spec_ref": "core 4.8, wire 9",
+    "decision_taken": "각 참조는 derivation.dependencies에 선언된 material 의존성이어야 하고, 종류는 evidence 또는 assertion이어야 한다. identity_binding이나 policy 의존성은 '증거 지지 경로'가 아니므로 거부했다. 비-material 의존성을 support set에 넣는 경우와 assertion 종류를 허용할지는 산문이 명시하지 않는다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "verification_basis_refs가 해석되어야 하는 '선언된 lineage'의 범위",
+    "spec_ref": "core 4.5, wire 3",
+    "decision_taken": "provenance.evidence의 evidence_ref 또는 derivation.dependencies의 dependency_ref(종류 불문) 중 하나와 일치하면 해석된 것으로 보았다. identity_dependency_refs, policy_refs, assertion_relations는 lineage에 포함하지 않았다. verified_fact가 아닌 클래스에 붙은 verification_basis_refs는 검사하지 않고 무시했다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "material identity 의존성의 보존 방향",
+    "spec_ref": "core 5.4, semantic-scenarios G",
+    "decision_taken": "material이면서 identity_binding인 의존성은 relationship_scope.identity_dependency_refs에 반드시 포함되어야 한다는 한 방향만 강제했다. 반대 방향(scope에 선언된 identity ref가 derivation에 없는 경우)은 거부하지 않았다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "material policy 의존성과 증거 단위 policy_refs의 보존 규칙",
+    "spec_ref": "wire 10, core 5.6-5.7, semantic-scenarios D",
+    "decision_taken": "material이면서 policy인 의존성은 최상위 policy_refs에 포함되어야 한다. 또한 provenance.evidence 항목의 policy_refs는 (같은 ref의 의존성이 비-material로만 선언된 경우를 제외하고) 최상위 policy_refs에 포함되어야 한다고 보수적으로 해석했다. 두 번째 규칙(증거 단위 제약의 상속)은 산문이 'conservative by default'라고만 말하고 정확한 검사 형태를 정하지 않아 내가 추론한 것이다. 공개 케이스가 이 규칙을 직접 검증하는지는 확인하지 않았다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "참여자 투영 규칙의 비교 방식",
+    "spec_ref": "core 4.2, 5.2, wire 6, semantic-scenarios A",
+    "decision_taken": "source_participants와 target participants의 집합이 하나라도 다르면(부분집합, 상위집합, 교집합 형태 무관) projection_basis_ref를 요구했다. 시나리오 A의 'source ⊇ target은 필요조건이지만 충분하지 않다'는 문장은 source가 target을 덮지 못하는 경우의 처리를 직접 말하지 않는다. wire 6의 'whenever those sets differ'를 문자 그대로 적용한 것이다. 배우 동일성은 (scope, actor_id)이며 actor_type은 비교에서 제외했다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "digest 정렬 규칙: support_sets 바깥 목록의 비교 방식",
+    "spec_ref": "CONTRACT.md 4절 (sort the outer list lexicographically by its JSON-array value)",
+    "decision_taken": "'JSON 배열 값 기준 사전식'을 원소별 비교(짧은 접두 배열이 먼저)로 읽었다. 직렬화 문자열 비교로 읽으면 [\"a\"]와 [\"a\",\"b\"]의 순서가 뒤바뀐다. 문자열 비교는 유니코드 코드포인트(UTF-8 바이트) 순서를 썼다. 이 구분을 드러내는 공개 케이스가 있는지는 확인하지 못했다.",
+    "classification": "schema_prose_mismatch"
+   },
+   {
+    "topic": "digest 항목의 중복 처리와 동일 ref의 상충 선언",
+    "spec_ref": "CONTRACT.md 4절 (collect ... and sort), wire 9",
+    "decision_taken": "material_dependency_refs와 evidence_refs는 중복을 제거하고 정렬했다. 같은 dependency_ref가 서로 다른 dependency_type으로 선언되면 거부했다. materiality가 엇갈리면 material로 간주했다(보수적 해석). 같은 evidence_ref를 가진 증거 항목이 둘 이상이면 거부했다. 자기 자신 assertion_id에 대한 dependency_ref도 자기 의존으로 보고 거부했다. 이들은 산문이 직접 정하지 않은 내 선택이다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "lifecycle과 relation 사이의 일관성 검사 범위",
+    "spec_ref": "core 4.9-4.10, wire 11-12",
+    "decision_taken": "자기 자신을 향한 relation은 거부했다. valid_from이 valid_until보다 늦으면 거부했다. 'superseded'나 'disputed' 상태가 대응하는 supersedes/conflicts_with 관계를 반드시 동반해야 하는지, supports와 conflicts_with가 같은 대상에 동시에 걸린 모순을 거부할지는 검사하지 않았다. 현재 시각 기준의 만료 판정도 하지 않았다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "trust_domain과 참여자 scope의 관계",
+    "spec_ref": "standards-reconciliation 2절 (trust_domain: cross-tenant collapse 방지)",
+    "decision_taken": "참여자 scope 문자열이 trust_domain과 같아야 한다는 규칙은 적용하지 않았다. organization_mediated 같은 범위는 여러 도메인에 걸칠 수 있다고 보았고, 산문에 일치 요구가 없다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "provenance.mode와 visibility 및 실제 포함 필드 간의 일관성",
+    "spec_ref": "wire 8, standards-reconciliation 2절",
+    "decision_taken": "mode가 opaque/unavailable인데 evidence나 derivation이 함께 있거나, visibility가 hidden인데 evidence가 노출된 경우 등을 거부하지 않고 수용했다. 이런 모순 조합이 fail-closed 대상인지는 산문에 없다.",
+    "classification": "spec_ambiguity"
+   },
+   {
+    "topic": "JSON Schema가 정확히 표현하지 못하는 정책 보존 규칙을 어휘 수준에서 이중으로 검사",
+    "spec_ref": "wire 18 (스키마 + 의미 검증 두 단계)",
+    "decision_taken": "구조 검증은 ajv(2020-12) + ajv-formats로 스키마를 그대로 적용했고, 그 위에 위의 의미 규칙을 얹었다. 스키마의 if/then(verified_fact 시 verification_basis_refs 필수)은 스키마가 이미 거부하므로 의미 단계에서 중복 구현하지 않았다.",
+    "classification": "standards_overlap"
+   }
+  ],
+  "files_read": [
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/docs/IMPLEMENTER_GUIDE_V0_2.md",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/conformance/external/v0_2/CONTRACT.md",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/spec/core-v0.2-draft.md",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/spec/wire-v0.2-draft.md",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/spec/schemas/v0.2-draft/context-assertion.schema.json",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/docs/semantic-scenarios-v0.2.md",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/docs/standards-boundary.md",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/docs/standards-reconciliation-v0.2.md",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/conformance/external/v0_2/harness.py",
+   "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl/public-report.json"
+  ],
+  "prohibited_material_accessed": false,
+  "implementable_from_spec": true,
+  "notes": "스펙 산문, 스키마, 시나리오, CONTRACT.md만으로 구현했고 첫 실행에서 공개 케이스 15개가 모두 통과했다. 구현과 첫 하네스 실행이 끝날 때까지 공개 케이스 파일(cases/public.json)은 열지 않았다. 따라서 공개 케이스가 산문에 없는 규칙을 가르쳐 준 사례는 없고, 위 모호성 목록은 전부 산문을 읽고 내가 내린 판단이다. 리포트 파일(public-report.json)은 열어서 케이스 ID와 거부 사유를 확인했다. 15개 중 거부 케이스 8개는 모두 의도한 사유로 거부되었다. 투영 누락, 알 수 없는 support_sets 참조, 해석 불가 verification basis, unknown 범위, 미지원 required extension, 제거된 confidence 필드, 중복된 assertion_type, 자기 관계가 그 사유다. 수락 케이스 7개의 digest는 모두 기대값과 정확히 일치했다. 공개 케이스가 직접 다루지 않는 material identity/policy 보존, bilateral/group 인원 수 규칙은 내가 만든 소규모 스모크 테스트로만 확인했다. 이 규칙들은 보류(held-out) 케이스에서 기대와 어긋날 수 있다. 특히 증거 단위 policy_refs의 상속 검사, support_sets 바깥 목록 정렬 방식, group 최소 3명 규칙이 위험이 크다. 금지된 자료(/Users/chan/Developer/service/RCP-Relationship-Context-Protocol, scratchpad/wt, scratchpad 내 cleanroom 바깥)는 열지 않았다. 다만 작업 디렉터리가 원본 저장소였으므로 시스템이 제공한 환경 정보(git 상태 요약)가 컨텍스트에 있었으나 그 내용은 구현에 사용하지 않았다. 도구 실행 중 stdin 대기로 멈춘 명령 하나를 중단한 일이 있었고 결과에는 영향이 없다. 사용 라이브러리는 ajv와 ajv-formats이다."
+ },
+ "standards-skeptic(opus)": {
+  "one_line_verdict": "RCP v0.2의 고유 개념 다섯 가지는 모두 기존 표준이나 선행 연구로 부분 또는 완전히 표현됩니다. 기존 표준 조합이 실패한다는 것을 보여 주는 실행 가능한 증거는 저장소에 없습니다. 현재 남은 고유 가치는 '관계 맥락용 PROV/ODRL 프로파일 + 안전 기본 규칙 묶음' 수준으로 보입니다. 위임 경계 문서는 정직하지만, Core와 오라클에는 의미가 정의되지 않은 필드와 정책 어휘 잔재가 남아 있습니다.",
+  "strengths": [
+   "표준 위임이 문서에만 있지 않고 실제로 일부 이행되었습니다. v0.2 스키마 디렉터리에는 context-assertion.schema.json 하나만 있습니다. v0.1의 PermissionRequest/PermissionDecision, SecureEnvelope, RevocationEvent에 해당하는 객체는 v0.2 Core에 없습니다(ls spec/schemas/v0.2-draft). 최상위 confidence와 epistemic 중복 assertion_type도 스키마에서 거부됩니다(wire-cases: legacy-top-level-confidence-rejected, epistemic-duplicate-assertion-type-rejected PASS).",
+   "docs/standards-reconciliation-v0.2.md:112-154는 필드 단위 KEEP/PROFILE/BINDING/REMOVE 판정표입니다. 표준 경계 문서로서 보기 드물게 구체적이며, 반증 가능한 형태로 주장을 내놓았습니다.",
+   "required_extensions fail-closed 규칙이 명확하고 실행 검증됩니다(run_wire.py:145-150, wire-case unsupported-required-extension-fails-closed).",
+   "README:249와 standards-boundary.md:290은 고유성 주장을 '가설'로 명시합니다. 외부 검증이 Core를 줄일 수 있다고도 스스로 적어 두었습니다."
+  ],
+  "urgent_problems": [
+   "Core 불변식 '참여자 범위의 침묵 축소 금지'를 와이어 검증기에서 우회할 수 있습니다. provenance.mode=derived 또는 opaque이면 source_participants 검사가 아예 실행되지 않습니다(probe P1, P1b ACCEPTED). 범위 확장 {A,B}→{A,B,D}도 아무 basis 문자열('x')만 있으면 통과합니다. 같은 경우를 추상 오라클 projection_allowed는 False로 판정하므로, 두 오라클이 서로 어긋납니다(P2).",
+   "제한 상속 불변식(5.6)도 와이어에서 깨집니다. 증거 수준의 policy_refs는 단언 policy_refs로 옮겨지지 않아도 통과합니다(P3 ACCEPTED). 추상 오라클의 제한 상속 시험은 와이어 모델에 존재하지 않는 4개 정책 차원(목적, 외부 처리, 학습, 보존 기간)에 묶여 있어 와이어와 분리되어 있습니다.",
+   "출처가 같은 비독립 증거를 표현할 방법이 없습니다. 그래서 원본이 삭제되어도 복사본 하나로 단언이 'recompute'로 살아남습니다(P5). 이 표현력은 PROV(hadPrimarySource)가 RCP보다 더 높습니다."
+  ],
+  "scores": [
+   {
+    "id": "C1",
+    "score": 1,
+    "confidence": "중",
+    "rationale": "시나리오 A~J는 '안전하지 않은 Consumer 행동'을 보여 줍니다. 하지만 'PROV+ODRL+AuthZEN+SSF 조합이 깨지는' 반례는 하나도 실행 가능하게 제시되지 않았습니다. 저장소에 PROV/ODRL/AuthZEN/SSF 매핑 산출물이 없고(grep 결과 문서 4개뿐, ROADMAP:215-218 미체크), 위임 판단은 한 문장짜리 서술입니다. 가장 강한 근거인 support_sets 논증은 '평평한 PROV 간선'만 반박하고, 한정 파생(qualified derivation)+프로파일 규칙은 다루지 않습니다. 이 의미론은 why-provenance, provenance semiring, ATMS 레이블과 48000/48000 일치했습니다(SS-01). 표현 적합성 7개 상황 중 2개는 Core에서 불가능하고 5개는 확장이 필요합니다(SS-10, SS-02). 1~2점 경계이며, 반대 가설을 시도하지 않았고 선행 연구를 언급하지 않았기 때문에 1점으로 판정했습니다."
+   },
+   {
+    "id": "C2",
+    "score": 2,
+    "confidence": "중",
+    "rationale": "전송, 인가, 신호, 암호 책임은 v0.2 스키마에서 실제로 빠졌습니다(강점 참조). 그러나 (1) 추상 오라클이 정책 어휘를 하드코딩하고 있고(run.py:69-101), (2) 의미가 어디에도 정의되지 않은 열거값이 있으며(scope_type provider_defined/organization_mediated), (3) KEEP 판정 필드 상당수(trust_domain, lifecycle.state, representation, visibility)에 실행 불변식이 없어 자체 가드레일 5번(standards-boundary.md:300)을 위반하고, (4) PROV와 겹치는 actor_type과 중복 관계 어휘가 남아 있습니다. 위임은 대부분 '생략'이고 '매핑'은 아직 없습니다(M6 미착수)."
+   },
+   {
+    "id": "C3",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "주 평가 범위가 아닙니다. 다만 wire-v0.2-draft.md:176(범위가 다르면 basis 필요)과 semantic-scenarios-v0.2.md:34(source⊇target이 필요조건) 사이의 불일치는 SS-04에 기록했습니다."
+   },
+   {
+    "id": "C4",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "주 평가 범위가 아닙니다. 관련 증거(P1~P4, P8)는 SS-04, SS-05, SS-07, SS-10에 기록했으며, 점수는 해당 평가자에게 맡깁니다."
+   },
+   {
+    "id": "C5",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "다루지 않았습니다. 다만 와이어 오라클과 추상 오라클이 투영 규칙에서 서로 다른 답을 내는 점(P2)은 오라클 일관성 문제로 SS-04에 기록했습니다."
+   },
+   {
+    "id": "C6",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "v0.2 두 스위트만 실행했습니다(31건 PASS, 20+1건 PASS). CI 전체는 재현하지 않았습니다."
+   },
+   {
+    "id": "C7",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "다루지 않았습니다."
+   },
+   {
+    "id": "C8",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "주 평가 범위가 아닙니다. 제한 세탁(P3), 근거 세탁(P5), 범위 누출(P1)의 증거는 발견 항목에 기록했습니다."
+   },
+   {
+    "id": "C9",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "다루지 않았습니다."
+   },
+   {
+    "id": "C10",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "다루지 않았습니다."
+   }
+  ],
+  "findings": [
+   {
+    "fid": "SS-01",
+    "title": "support_sets는 기존 why-provenance/provenance semiring/ATMS 레이블과 의미가 같고, PROV 한정 파생 + 프로파일 규칙 1개로 재현됩니다",
+    "criteria": [
+     "C1"
+    ],
+    "severity": "높음",
+    "kind": "검증됨",
+    "evidence": "scratchpad/eval/standards-skeptic/prior_art_equiv.py를 실행했습니다. 무작위 support_sets 3000개 × 제거 부분집합 16개 = 48000쌍에 대해 conformance/v0_2/run.py:46-66 dependency_invalidation_result의 current_support_exists와 (a) 양의 불리언 다항식(Green·Karvounarakis·Tannen PODS 2007), (b) ATMS 레이블 환경 검사(de Kleer 1986), (c) PROV-O 프로파일('지원 집합마다 prov:qualifiedDerivation/prov:hadActivity 하나, 해당 activity가 prov:used한 엔티티 중 wasInvalidatedBy가 없으면 지원 성립')을 비교했습니다. 출력: 'compared 48000 (support_sets, removal) pairs; mismatches=0'. 이에 비해 저장소는 'PROV can express lineage but not alternative sufficient evidence sets'(standards-reconciliation-v0.2.md:143), 'A flat provenance edge does not say...'(README:100)라고 주장합니다. 저장소 전체 grep에서 semiring, why-provenance, ATMS, nanopub, verifiable credential은 0건이고, truth-maintenance는 core-v0.2-draft.md:436의 미해결 질문 1건뿐입니다.",
+    "detail": "support_sets([[A],[B]] = A+B, [[A,B]] = A·B)는 Buneman 등(ICDT 2001)의 witness basis와 같고, semiring 다항식의 DNF와도 같습니다. 출처 제거는 변수를 0으로 두는 연산, 곧 deletion propagation입니다. 저장소가 반박한 것은 '평평한 PROV 간선'일 뿐입니다. PROV의 qualified Derivation/Activity로 그룹을 나누고 SHACL/SPARQL 규칙 하나를 프로파일로 정의하는 대안은 검토되지 않았습니다. 따라서 이 개념은 '선행 연구로 완전히 포괄, PROV로는 부분 포괄(프로파일 규칙 필요)'에 해당합니다. 새로운 것은 '관계 맥락 교환에서 이 필드를 필수로 둔다'는 프로파일 결정뿐입니다.",
+    "recommendation": "support_sets를 'RCP 고유 의미론'이 아니라 why-provenance/ATMS 레이블의 직렬화로 재서술하십시오. 같은 사례를 PROV-O 한정 파생 + SHACL 규칙으로 인코딩해, 기존 표준 대안이 실제로 실패하는 지점이 있는지 실행 가능한 비교 사례로 문서화하십시오. 실패 지점이 없다면 Core 필드가 아니라 PROV 프로파일로 옮기십시오."
+   },
+   {
+    "fid": "SS-02",
+    "title": "같은 출처의 비독립 증거를 표현할 수 없어 '독립 근거 생존' 판정이 틀립니다. 이 부분은 PROV가 더 표현력이 높습니다",
+    "criteria": [
+     "C1",
+     "C4",
+     "C8"
+    ],
+    "severity": "높음",
+    "kind": "검증됨",
+    "evidence": "probes.py P5: Dependency에 had_primary_source를 추가하자 'SCHEMA-REJECT: Additional properties are not allowed (had_primary_source was unexpected)'가 났습니다(schema:181-195 additionalProperties:false). 오라클 확인: dependency_invalidation_result({support_sets:[[gmail:m1],[crm:m1-copy]], removed:[gmail:m1]}) → {'current_support_exists': True, 'action': 'recompute'}.",
+    "detail": "Gmail 메시지와 그 메시지를 CRM에 로깅한 기록은 출처가 하나입니다. RCP에서는 둘을 [[E1],[E2]]로 적으면 독립 지원이 되고, 원본이 철회되어도 복사본 때문에 단언이 현재 상태로 유지됩니다. 반복이 근거를 승격시키는 셈인데, 이는 Core 5.3/시나리오 E의 '반복으로 승격 금지' 정신과 충돌합니다. role=corroborates로 표시하면 오히려 확증된 것처럼 보입니다. PROV는 prov:hadPrimarySource와 prov:wasQuotedFrom으로 공통 출처를 표현할 수 있습니다. 표현 적합성 분류: 불가능.",
+    "recommendation": "EvidenceReference/Dependency에 공통 출처(primary source) 참조를 두거나 PROV hadPrimarySource 매핑을 필수로 하십시오. 지원 집합 평가는 출처 동치류 단위로 하도록 규정하십시오. 시맨틱 케이스에 '같은 출처의 이중 보고' 음성 사례를 추가하십시오."
+   },
+   {
+    "fid": "SS-03",
+    "title": "기존 표준 조합의 실패를 실행 가능하게 보여 주지 못했습니다. 위임과 고유성 판단이 한 문장짜리 서술에 머물러 있습니다",
+    "criteria": [
+     "C1",
+     "C2"
+    ],
+    "severity": "높음",
+    "kind": "검증됨",
+    "evidence": "git ls-files | xargs grep -l -E 'prov:|odrl:|dpv:|authzen|caep' 결과는 docs/outreach/TARGET_MAP.md, docs/standards-boundary.md, docs/standards-reconciliation-v0.2.md, spec/wire-v0.2-draft.md 4개 문서뿐이고 코드와 픽스처는 0건입니다. ROADMAP.md:215-218의 PROV/AuthZEN/SSF/ODRL-DPV 프로파일은 모두 '- [ ]'(미착수)입니다. semantic-scenarios-v0.2.md:351은 '각 시나리오를 기존 표준과 대조해야 한다'고 스스로 적었지만 대조 산출물이 없습니다. WebFetch로 ODRL 2.2를 확인했습니다: §2.9 Policy Inheritance('child Policy may inherit all the atomic Rules of one or more parent Policies'), §2.6.3 Duty의 assignee, §2.10 conflict perm/prohibit/invalid. WebSearch로 Nanopub-X를 확인했습니다: npx:supersedes, npx:retracts.",
+    "detail": "개념별 판정은 다음과 같습니다(판단). (1) 참여자 범위 투영은 부분 포괄입니다. AS2 to/cc/audience + PROV 한정 파생의 prov:hadPlan(=projection_basis) + SHACL '참여자 집합이 다르면 Plan 필수'로 표현됩니다. 고유 부분은 'target⊆source 필요, basis 필수'라는 안전 기본값뿐입니다. (2) epistemic class도 부분 포괄입니다. GO evidence code(TAS/NAS/IC/IEA/EXP), ECO, PROV wasQuotedFrom, VC의 evidence/proof가 같은 축을 다룹니다. 고유 부분은 8개 값 목록과 승격 금지 규칙입니다. (3) support_sets는 SS-01에 정리했습니다. (4) 제한 상속은 선행 연구로 완전 포괄, 표준으로는 부분 포괄입니다. Myers-Liskov DLM의 레이블 join, sticky policy, ODRL inheritFrom과 conflict=prohibit가 해당합니다. 다만 ODRL은 파생 자산의 자동 상속을 정의하지 않으므로, 프로파일 규칙 1개가 필요합니다. (5) 하류 무효화/수명주기는 부분 포괄입니다. PROV wasInvalidatedBy, SSF 사용자 정의 이벤트, nanopub supersedes/retracts, JTMS/ATMS 철회, IVM의 DRed가 해당합니다. 고유 부분은 상태 열거값뿐이고 전이 규칙은 없습니다(SS-11). 다섯 개념 모두 '진정으로 새로움'으로 판정할 결정 시나리오가 저장소에 없습니다. README:22가 스스로 세운 정당성 기준은 아직 입증되지 않았습니다.",
+    "recommendation": "개념마다 'PROV+ODRL+AuthZEN+SSF(+선행 연구) 인코딩 → 같은 시나리오 → 어디서 결과가 갈리는지'를 픽스처와 실행 비교로 만드십시오. 갈리지 않는 개념은 Core에서 빼고 프로파일로 옮기십시오. standards-reconciliation에 선행 연구 절(provenance semiring, ATMS, DLM/sticky policy, ECO, nanopub, VC)을 추가하십시오."
+   },
+   {
+    "fid": "SS-04",
+    "title": "참여자 투영 불변식이 와이어 검증기에서 우회됩니다(derived/opaque 모드). 범위 확장도 임의 basis로 통과해 추상 오라클과 판정이 어긋납니다",
+    "criteria": [
+     "C1",
+     "C4",
+     "C8",
+     "C3"
+    ],
+    "severity": "높음",
+    "kind": "검증됨",
+    "evidence": "probes.out: '[P1 derived-mode bypasses projection check ...] ACCEPTED', '[P1b opaque provenance: no projection basis needed] ACCEPTED', '[P2 wire: scope EXPANSION {A,B}->{A,B,D} with basis x] ACCEPTED / semantic-oracle projection_allowed same case: False'. 코드 위치: run_wire.py:62-67(evidence 항목이 있을 때만 검사하고 target⊆source 검사는 없음), run.py:29(target⊆source 강제), semantic-cases.json:27-32(projection-target-not-in-source expected false), wire-v0.2-draft.md:176('Whenever those sets differ ... basis required', 부분집합 조건 없음), semantic-scenarios-v0.2.md:34, core-v0.2-draft.md:261.",
+    "detail": "C1 관점에서 보면 '가장 관계 특화적'이라고 내세운 개념의 실제 집행 수준은 'evidence가 내장된 경우에 한해, 참여자 집합이 다르면 비어 있지 않은 문자열이 있어야 한다'에 그칩니다. Dependency에는 source_participants가 없어서 derived 모드는 구조적으로 투영을 표현할 수 없습니다. opaque 모드는 허용된 노출 방식이므로 투영 축소가 침묵 속에서 일어나도 막을 수 없습니다. 외부 클린룸 하네스는 run_wire를 참조 오라클로 쓰기 때문에(reference_adapter.py:110-112), 클린룸 구현이 추상 오라클을 따르면 참조와 다른 답을 냅니다.",
+    "recommendation": "와이어 규칙에 target⊆source(증거별 또는 합집합 기준)를 명시하십시오. derived/opaque 모드에서는 source 참여자 범위 또는 '투영 없음' 선언을 필수로 두거나, 선언이 없으면 fail-closed로 처리하십시오. P1/P2를 음성 와이어 케이스로 추가하십시오."
+   },
+   {
+    "fid": "SS-05",
+    "title": "제한 상속이 와이어에서 증거 수준 policy_refs를 잃어도 통과합니다. 추상 오라클의 제한 시험은 와이어 모델과 연결되지 않습니다",
+    "criteria": [
+     "C1",
+     "C4",
+     "C8"
+    ],
+    "severity": "높음",
+    "kind": "검증됨",
+    "evidence": "probes.out: '[P3 evidence policy_refs not carried to assertion policy_refs] ACCEPTED'(evidence.policy_refs=[policy:external-processing-deny], assertion.policy_refs=[]). run_wire.py:122-133은 derivation의 policy 의존성만 검사하고 provenance.evidence[*].policy_refs는 보지 않습니다. run.py:69-101의 effective_parent_policy는 allowed_purposes/external_processing/training/retention_max_seconds를 다루지만, 이 필드들은 v0.2 스키마에 없습니다(schema:51-55, 174-178은 문자열 참조만 있음).",
+    "detail": "Core 5.6과 5.7('변환이 제한을 지우지 않는다')이 RCP 고유 가치라고 주장되지만, 와이어 수준 집행은 '문자열 참조 복사 여부'뿐이고 그마저 evidence 모드에서는 빠집니다. 추상 오라클의 단조성 검사(목적 교집합, deny 유지, 보존 기간 최솟값)는 DLM 레이블 join이나 ODRL conflict=prohibit와 같은 기존 의미론입니다. 그런데 이 검사를 와이어 객체에 적용할 방법이 없으므로, 고유 개념의 집행이 실제로는 비어 있습니다.",
+    "recommendation": "evidence 모드에서도 증거 policy_refs ⊆ 단언 policy_refs를 요구하십시오. 추상 단조성 규칙은 ODRL/DPV 프로파일 위의 검사로 옮기고, 와이어 케이스와 연결하십시오."
+   },
+   {
+    "fid": "SS-06",
+    "title": "적합성 오라클이 정책 어휘(목적, 외부 처리, 학습, 보존 기간)를 하드코딩합니다. 정책 어휘를 위임했다는 주장과 모순됩니다",
+    "criteria": [
+     "C2"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "grep 결과 conformance/v0_2/run.py:70-78, 93-99와 semantic-cases.json:80-143입니다. 반면 standards-boundary.md:184는 'The syntax and vocabulary of those policies live outside Core', core-v0.2-draft.md:239는 'RCP does not define a universal policy language'라고 적었습니다. v0.2-semantic-conformance-notes.md:97-104는 이를 '추상 정규화 차원'이라고 정당화합니다.",
+    "detail": "이 네 차원은 v0.1 레지스트리(spec/registries/purposes.md, processing-locations.md)의 잔재이며 DPV의 dpv:Purpose, StorageDuration, 처리 위치 개념과 겹칩니다. 오라클이 특정 차원 집합을 고정하면, 클린룸 구현자는 RCP가 이 네 차원을 정의한다고 읽을 수 있습니다.",
+    "recommendation": "오라클 입력을 DPV/ODRL 용어로 표기하거나, '프로파일 제공 정책 격자의 meet 연산'으로 일반화하십시오. 차원 이름은 테스트 프로파일 파일로 분리하십시오."
+   },
+   {
+    "fid": "SS-07",
+    "title": "verified_fact의 근거 검사가 명목상입니다. 정책 참조나 자기 자신의 source_statement 증거도 검증 근거로 통과합니다",
+    "criteria": [
+     "C1",
+     "C4",
+     "C8"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "probes.out: '[P4a verified_fact with basis = policy ref] ACCEPTED'(verification_basis_refs=[policy:no-training]), '[P4b verified_fact with basis = its own source_statement evidence] ACCEPTED'. run_wire.py:135-138은 근거가 알려진 evidence/dependency ref 집합에 있는지만 확인합니다.",
+    "detail": "epistemic class의 핵심 불변식인 '승격 금지'가 와이어에서는 '아무 ref나 하나 걸면 승격 가능'으로 약해집니다. W3C VC(issuer + proof + evidence)나 ECO의 실험 증거 코드보다 검증 의미가 약하므로, 이 개념을 RCP 고유 가치로 주장할 근거가 더 줄어듭니다.",
+    "recommendation": "검증 근거는 dependency_type이 evidence/assertion인 항목이어야 한다고 규정하십시오. 근거 자체의 epistemic 등급이나 검증 활동(PROV Activity/VC proof) 참조도 요구하십시오."
+   },
+   {
+    "fid": "SS-08",
+    "title": "KEEP 판정 필드 상당수에 실행 불변식이 없습니다. scope_type의 provider_defined/organization_mediated는 의미가 정의되지 않았습니다",
+    "criteria": [
+     "C2",
+     "C4"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "run_wire.py의 semantic_errors(38-152행)를 필드별로 grep한 결과, representation, visibility, evidence_type, provider_ref, occurred_at, trust_domain, relationship_ref, assertion_type, lifecycle state, valid_from/valid_until, reason_refs, statement가 모두 0회 등장합니다. probes.out: '[P9a scope_type=provider_defined] ACCEPTED', '[P9b cross-tenant participants, trust_domain=tenant:t3] ACCEPTED'. provider_defined/organization_mediated는 schema:137에만 나오고 spec과 docs 어디에도 정의가 없습니다(grep 0건). standards-reconciliation-v0.2.md:122는 trust_domain을 'KEEP — prevents accidental cross-tenant ... collapse'로 판정했습니다. standards-boundary.md:300의 가드레일 5번은 'It produces an executable interoperability invariant'입니다.",
+    "detail": "저장소 자체 규칙으로 보면 이 필드들은 Core에 남을 자격이 아직 없습니다. 특히 scope_type=unknown은 fail-closed로 거부되는데, 의미가 정의되지 않은 provider_defined는 카디널리티 검사까지 건너뛰고 통과합니다. 이는 '미지 값은 더 제한적으로 해석한다'는 원칙(5.11)과 어긋납니다.",
+    "recommendation": "각 KEEP 필드에 최소 한 개의 실행 불변식을 붙이거나 프로파일/확장으로 강등하십시오. provider_defined는 프로파일 참조를 필수로 하고, 없으면 fail-closed로 처리하십시오. trust_domain과 actor scope의 관계도 규정하십시오."
+   },
+   {
+    "fid": "SS-09",
+    "title": "기존 어휘와의 중복 및 Core 내부 중복 어휘가 남아 있습니다(actor_type, representation과 visibility, role과 relation)",
+    "criteria": [
+     "C2"
+    ],
+    "severity": "낮음",
+    "kind": "판단",
+    "evidence": "schema:121-125 actor_type 열거값 person/organization/service/agent는 PROV-O의 prov:Person/prov:Organization/prov:SoftwareAgent와 같은 축입니다. standards-reconciliation-v0.2.md:120은 이를 PROFILE/MAP으로 판정했지만 Core 스키마에 기본 열거값으로 남아 있습니다. actor_type은 신원 동등성 키에 들어갑니다(run_wire.py:34-35). probe P13에서 같은 B가 evidence에서는 unknown, target에서는 person으로 표기되면 투영 basis가 요구됩니다. representation(schema:164: opaque_ref/type_only/...)과 provenance.visibility(schema:226: type_only/opaque/...)는 노출 수준 축이 겹칩니다. Dependency.role(schema:191: supports/corroborates/refines)과 AssertionRelation.relation(schema:253)은 같은 관계 어휘를 두 위치에서 씁니다.",
+    "detail": "분류 어휘가 신원 키에 들어가면 Provider마다 타입 표기 단위가 다를 때 같은 사람을 다른 참여자로 취급합니다. fail-closed 쪽이라 안전하긴 하지만 상호운용 마찰이 생깁니다. 같은 의미를 두 경로로 표현할 수 있으면 구현마다 정규화 결과가 갈릴 수 있습니다.",
+    "recommendation": "actor_type은 신원 키에서 빼고 PROV/DPV 매핑 프로파일로 옮기십시오. representation과 visibility를 하나의 노출 축으로 합치거나 둘의 차이를 규정하십시오. assertion 의존성 role과 assertion_relations 중 하나를 정본으로 정하십시오."
+   },
+   {
+    "fid": "SS-10",
+    "title": "표현 적합성: 현실 상황 7개 중 Core에서 불가능 2개, 확장 필요 5개입니다. 서로 모순되는 관계 선언도 통과합니다",
+    "criteria": [
+     "C1"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "probes.out 기준입니다. P6(relationship_scope를 배열로) SCHEMA-REJECT 'is not of type object'. P10(참여자별 valid_until) SCHEMA-REJECT. P13(Provider별 타입/범위 단위 차이) SEMANTIC-REJECT. P11(관계 'qualifies') SCHEMA-REJECT 'not one of [supports, corroborates, conflicts_with, supersedes, refines]'. P7b(확장으로 불확실성/의무 전달 시 미지원 Consumer) SEMANTIC-REJECT 'required extension is unsupported'. P12(부분 대체 selector) SCHEMA-REJECT. P7(당사자별 의무 필드) SCHEMA-REJECT. P5(비독립 증거)는 SS-02 참조. P8(같은 대상에 supersedes+conflicts_with+supports 동시 선언) ACCEPTED.",
+    "detail": "상황별 분류입니다. (1) 여러 관계에 걸친 단언은 확장이 필요합니다. 단언을 복제하고 lineage로 묶어야 합니다. (2) 시간에 따라 바뀌는 참여자도 확장이 필요합니다. 단언 단위 supersedes로만 표현됩니다. (3) Provider마다 다른 범위 단위도 확장이 필요합니다. 조직/멤버 포함 관계가 없고 actor_key는 완전 일치를 요구합니다. (4) 충돌은 아니지만 불확실한 근거도 확장이 필요합니다. confidence가 확장으로 빠졌고, required로 두면 미지원 Consumer는 거부하며, optional로 두면 Core 의미가 아닙니다. (5) 부분 대체도 확장이 필요합니다. 단언을 분할하고 refines로 우회해야 합니다. (6) 당사자별 의무를 지닌 약속은 Core에서 불가능합니다. statement 산문으로만 표현되고, ODRL Duty assignee는 이를 구조적으로 표현합니다. (7) 같은 출처의 비독립 증거는 불가능하고 결과도 틀립니다(SS-02). 이 가운데 (6), (7)은 기존 표준이 RCP보다 표현력이 높은 사례입니다.",
+    "recommendation": "C1 표현 적합성 표를 저장소 문서에 두고, 각 상황을 와이어 픽스처로 만드십시오. 의무는 ODRL Duty 매핑, 출처 공유는 PROV hadPrimarySource 매핑으로 해결할 수 있는지 먼저 검토하십시오. 모순 관계 조합은 거부 규칙을 정하십시오."
+   },
+   {
+    "fid": "SS-11",
+    "title": "가장 고유하다는 '하류 무효화/수명주기'에 와이어나 실행 표면이 없습니다. 존재하는 추상 오라클은 ATMS 철회와 같습니다",
+    "criteria": [
+     "C1",
+     "C2"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "conformance/external/v0_2/CONTRACT.md:35 'operation — currently fixed to evaluate_context_assertion'은 정적 단일 객체 평가입니다. 변경 이벤트, 전이 입력, 전후 상태를 비교하는 연산은 없습니다. run_wire.py에서 lifecycle.state에 대한 의미 검사는 0건입니다(SS-08 grep). 하류 무효화를 다루는 것은 run.py:46-66의 15행 함수(support 생존 여부 → none/recompute/invalidate)뿐이고, 이 결과는 SS-01의 ATMS 레이블 검사와 48000/48000 일치합니다. SSF 프로파일은 ROADMAP.md:217에서 미착수입니다. core-v0.2-draft.md:233-235는 전이 결과를 열거만 하고 전이 함수는 정의하지 않습니다.",
+    "detail": "README:5와 standards-boundary.md:64는 'Relationship-assertion lifecycle after dependency change'를 RCP Core 소유로 둡니다. 그러나 와이어에는 어떤 변경이 어떤 상태 전이를 일으키는지 표현할 수단도, 이를 시험할 수단도 없습니다. 신호 전달은 SSF로 위임되었지만 그 프로파일이 없으므로, 이 개념은 현재 'PROV wasInvalidatedBy + 상태 열거값'에 불과합니다.",
+    "recommendation": "(이전 단언, 변경 신호) → (새 상태, 새 lineage) 형태의 전이 케이스와 하네스 연산을 추가하십시오. 그렇게 해도 기존 TMS/IVM 의미론과 다른 결과가 나오지 않는다면, 고유성 주장을 '관계 맥락 프로파일'로 낮추십시오."
+   }
+  ],
+  "checks_run": "아래 명령은 모두 wt 체크아웃(68026af)과 .venv에서 실행했습니다.\n1) `python conformance/v0_2/run.py` → 'RCP v0.2 draft semantic conformance: PASS (31 cases)'.\n2) `python conformance/v0_2/run_wire.py` → 'PASS (20 schema/semantic cases, 1 binding-equivalence case)'.\n3) `python scratchpad/eval/standards-skeptic/probes.py`(출력: probes.out): 와이어 스키마와 semantic_errors에 대한 반례 탐침 13종입니다. ACCEPTED는 P1, P1b, P2, P3, P4a, P4b, P8, P9a, P9b입니다. 스키마 거부는 P5, P6, P7, P10, P11, P12, 의미 거부는 P7b, P13입니다. P2에서는 추상 오라클 projection_allowed가 False를 내 와이어 오라클과 판정이 갈렸습니다.\n4) `python scratchpad/eval/standards-skeptic/prior_art_equiv.py`(출력: prior_art_equiv.out): run.py의 dependency_invalidation_result를 semiring 다항식, ATMS 레이블, PROV-O 한정 파생 프로파일과 48000쌍 비교했고 불일치는 0입니다.\n5) `git ls-files | xargs grep -l -E 'prov:|odrl:|dpv:|authzen|caep'` → 문서 4개만 걸렸고 실행 매핑 산출물은 없습니다.\n6) `grep -il 'semiring|why-provenance|ATMS|nanopub|verifiable cred|truth-maintenance'` → core-v0.2-draft.md 1건(미해결 질문)뿐입니다.\n7) run_wire.py semantic_errors 범위(38-152행)를 필드별로 grep했습니다. representation, visibility, trust_domain, lifecycle state 등 12개 필드가 0회 등장합니다.\n8) WebFetch https://www.w3.org/TR/odrl-model/ 로 §2.9 Policy Inheritance, §2.6.3 Duty assignee, §2.10 conflict 전략을 확인했습니다. WebSearch로 Nanopub-X의 npx:supersedes와 npx:retracts를 확인했습니다.",
+  "limitations": "- PROV 대안은 rdflib/SHACL 없이 파이썬 트리플 목록으로만 모사했습니다. 실제 PROV-O 직렬화와 SHACL 검증으로 확인한 것은 아닙니다.\n- 선행 연구 대응(GO/ECO 증거 코드, DLM, sticky policy, why-provenance, ATMS)은 평가자의 지식에 기반한 판단입니다. 원문을 웹에서 확인한 것은 ODRL 2.2와 Nanopub-X뿐입니다.\n- AuthZEN, SSF/CAEP, VC, Solid 원문은 이번에 다시 읽지 않았습니다.\n- 바인딩(bindings/v0_2) 코드, v0.1 생태계, CI 전체 재현은 범위 밖으로 두었습니다.\n- 다섯 개념의 '부분 포괄' 판정은 프로파일 규칙 1~2개를 추가하면 기존 표준으로 같은 결과를 낸다는 주장입니다. 그 프로파일을 실제로 작성해 실행 검증하지는 않았습니다(support_sets 제외).\n- C4·C8 관련 발견(SS-04, SS-05, SS-07)은 주 기준 밖이라 점수에 반영하지 않았고, 심각도는 '높음'으로 두었습니다. 시험이 잘못된 동작을 단언하는 경우가 아니라 집행 공백이라고 판단했기 때문입니다. 게이트 판단은 C4/C8 평가자에게 맡깁니다."
+ },
+ "repro-auditor(sonnet)": {
+  "one_line_verdict": "CI 세 워크플로의 모든 run 단계(28개)가 신규 클론에서 CI 버전(Python 3.12/Node 22)과 두 개의 더 새로운 조합(3.11/Node 24, 3.14/Node 26)에서 모두 통과했고 약 21초에 끝나 재현성은 높다. 반면 README·ROADMAP·core-v0.2의 '완료/executable coverage' 주장 중 일부는 과장되었거나 오래되었다: core §5의 13개 불변식 중 3개는 v0.2 테스트가 없거나 항상 참인 상수이고 5개는 일부만 시험되며, ROADMAP M4.6과 이슈 #19의 상태가 저장소 현실과 어긋난다.",
+  "strengths": [
+   "C6: 신규 clone + 신규 venv에서 conformance.yml(14단계), reference-ecosystem.yml(9단계), semantic-v0.2.yml(7단계 + 독립성 grep 2개)이 모두 rc=0. Python 3.12.13/Node 22.23.3 합계 약 21초(wall).",
+   "C6: 3.11/Node 24.14와 3.14.8/Node 26.4 조합에서도 28/28 통과. 런타임 버전 민감도는 관찰되지 않았다.",
+   "C6: 외부 네트워크 의존은 pip/npm 설치뿐이다. 테스트 코드는 127.0.0.1 루프백 HTTP/stdio만 쓴다. jose·canonicalize·jwcrypto·rfc8785는 정확한 버전으로 고정되어 있다.",
+   "C6: GitHub Actions 실제 기록(gh run list)에서 68026af의 'RCP Conformance'와 'RCP v0.2 Semantic Draft'가 success였다.",
+   "C10: README·ROADMAP·spec/README·core-v0.2·wire-v0.2·하네스 README가 모두 비규범/실험 고지를 강하게 달고 있다. 작성자 오라클을 쓰는 reference_adapter는 '클린룸 증거 아님'이라고 명시하고, 하네스의 import 금지는 CI grep으로 강제한다.",
+   "C10: 추적 중인 *.md 50개의 상대 링크 107개 중 깨진 것은 0개였다. 백틱 경로 참조도 실제 누락은 없었다(CONTRIBUTING.md의 provider-report.json은 산출물 이름, conformance/README.md의 /spec/…·/docs/…는 저장소 루트 기준 경로).",
+   "C10: M0~M4.5의 ✅ 항목 대부분이 코드·테스트·PR로 뒷받침된다. PR #24/#26/#28/#30은 merged, 이슈 #23/#31은 존재한다. MCP SDK v2는 실제 2.3.1이 설치되어 MCP stdio 클라이언트의 readResource 경로를 실제로 쓴다."
+  ],
+  "urgent_problems": [
+   "core-v0.2-draft.md §5의 '다음은 executable coverage가 있다' 문장이 13개 불변식 전부에는 성립하지 않는다(RA-1, RA-2).",
+   "ROADMAP M4.6 체크박스, 이슈 #19 상태, 문서의 '#19는 열려 있다'는 서술이 서로 모순이다. 또한 v0.2 클린룸 표면이 어느 진입 문서에도 연결되어 있지 않다(RA-3, RA-4)."
+  ],
+  "scores": [
+   {
+    "id": "C1",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "이 역할의 범위 밖이라 증거를 모으지 않았다."
+   },
+   {
+    "id": "C2",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "다루지 않았다."
+   },
+   {
+    "id": "C3",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "규범 언어 불일치(RA-5)만 관찰했다. 스키마와 Wire의 필드 대조는 하지 않아 점수를 매기지 않았다."
+   },
+   {
+    "id": "C4",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "다루지 않았다."
+   },
+   {
+    "id": "C5",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "불변식 대 케이스 매핑 일부(RA-1, RA-2)만 수행했다. 전체 추적표와 변이 시험은 하지 않았다."
+   },
+   {
+    "id": "C6",
+    "score": 3,
+    "confidence": "상",
+    "rationale": "신규 clone에서 CI 3개 워크플로의 모든 run 단계가 CI 버전과 두 개의 더 새로운 조합에서 통과했고 21초 안에 끝났다. 네트워크는 설치 단계에서만 쓰이고 비결정성은 데모 산출물의 UUID/타임스탬프뿐이다(테스트 판정에는 영향 없음). 4점이 아닌 이유는 lockfile이 없고 npm install과 caret 범위를 쓰며 cryptography 등 전이 의존성이 고정되지 않았고(RA-7) CI 경로 필터, 고정 포트, .gitignore 부재 같은 위생 결함이 있기 때문이다(RA-8)."
+   },
+   {
+    "id": "C7",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "다루지 않았다."
+   },
+   {
+    "id": "C8",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "다루지 않았다."
+   },
+   {
+    "id": "C9",
+    "score": null,
+    "confidence": "N/A",
+    "rationale": "다루지 않았다. 다만 v0.2 하네스는 단일 ContextAssertion 수락/거부만 시험한다는 점(RA-3)은 C9 평가자에게 참고가 된다."
+   },
+   {
+    "id": "C10",
+    "score": 3,
+    "confidence": "중",
+    "rationale": "고지·한계 서술·링크 무결성·M0~M4.5의 ✅ 근거는 양호하다. 그러나 core §5의 'executable coverage' 문장이 13개 중 3개(5.1, 5.9, 5.12)에는 근거가 없고 5개(5.4, 5.5, 5.7, 5.8, 5.11)는 일부만 근거가 있다(RA-1, RA-2). 여기에 ROADMAP M4.6과 이슈 #19의 상태 불일치(RA-3, RA-4), 대문자 MUST와 소문자 must의 불일치(RA-5), 진입 문서의 v0.1 쏠림(RA-6)이 더해진다. 비규범 고지가 영향을 완화하므로 3점으로 두되, 경계선(2에 가까운 3)이다."
+   }
+  ],
+  "findings": [
+   {
+    "fid": "RA-1",
+    "title": "core-v0.2 §5의 'executable coverage' 문장이 불변식 13개 전부에는 성립하지 않는다",
+    "criteria": [
+     "C10",
+     "C5"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "spec/core-v0.2-draft.md:253 '다음은 executable coverage가 있고…'. 매핑한 근거: conformance/v0_2/semantic-cases.json(10개 범주 31건), conformance/v0_2/wire-cases.json(20건), conformance/v0_2/run.py, conformance/v0_2/run_wire.py. 명령: grep -ci 'rights' semantic-cases.json wire-cases.json run_wire.py → 0/0/0; grep -ci central → 0/0/0; grep -ci unavailable → 0/0/0. semantic-cases.json:97,116,141의 declassification_basis는 전부 false. wire-cases.json의 scope_type 'unknown' 케이스는 0건(external/v0_2/cases/public.json:377에만 있음).",
+    "detail": "불변식별 판정(근거가 있는 것만 지지로 계산). 지지(5): 5.2 참여자 붕괴 금지, 5.3 인식론적 승격 금지, 5.6 변환이 제한을 지우지 않음, 5.10 독립 지지 경로(단, '현재 정책이 허용할 때'라는 조건은 시험되지 않음), 5.13 전송 프레이밍. 부분 지지(5): 5.4 계보 연속성(material 정책/신원 의존성 보존은 run_wire.py에서 시험되나, 'opaque/unavailable 명시' 분기는 시험되지 않는다. opaque는 픽스처 모드로만 쓰이고 unavailable은 어디에도 없음), 5.5 자식 접근이 원본 접근을 주지 않음(오라클 source_access_allowed는 입력 플래그 두 개를 읽을 뿐 자식/원본 관계를 계산하지 않음), 5.7 보수적 상속(프로파일 정의 완화 분기는 한 번도 실행되지 않음), 5.8 의존성 변경(증거·신원 변경만 시험하고 정책·인가 근거 변경은 없음), 5.11 미지 범위 fail-closed(run_wire.py:49-50에 코드는 있으나 wire-cases.json에 케이스 없음; 하네스 public.json에만 있음). 근거 없음(3): 5.1 권리 확장 금지(v0.2 케이스 0건, 참조 생태계의 v0.1 permission-before-retrieval이 가장 가까움), 5.9 역사적 계보 불변(RA-2), 5.12 중앙 인프라 의존 금지(시험 불가능한 구조적 요구인데 'executable'로 분류됨).",
+    "recommendation": "§5 문구를 '아래 불변식 중 X개는 실행 가능한 시험이 있고 나머지는 서술뿐'으로 바꾸거나, 불변식마다 케이스 ID를 연결한 표를 둔다. 5.1·5.9·5.12는 시험을 추가하거나 '미시험'으로 표시한다."
+   },
+   {
+    "fid": "RA-2",
+    "title": "5.9 '역사적 계보 불변'은 오라클이 항상 True를 반환하는 상수라 시험이 아니다",
+    "criteria": [
+     "C10",
+     "C5"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "conformance/v0_2/run.py:65 '\"historical_lineage_preserved\": True,'. dependency_invalidation 케이스 3건이 모두 기대값 True를 갖는다(grep -n historical_lineage conformance/v0_2/run.py → 65 한 줄뿐).",
+    "detail": "dependency_invalidation_result()는 current_support_exists와 action만 입력에서 계산하고 historical_lineage_preserved는 입력과 무관하게 상수다. 이 값을 거짓으로 만드는 구현이나 입력이 존재할 수 없으므로 README의 '역사적 계보는 다시 쓰이지 않는다'(README.md:94)와 core 5.9는 이 스위트가 어떤 위반도 탐지하지 못한다. 같은 성격으로 arrival_order(run.py:153-156)는 케이스가 이미 explicit_supersedes 플래그를 주고 오라클이 그 불리언을 되돌려 줄 뿐이다.",
+    "recommendation": "계보 보존을 실제 상태(예: 재계산 전후의 lineage 레코드 비교)에서 계산하도록 오라클을 고치거나, 이 필드를 '미시험'으로 표기한다."
+   },
+   {
+    "fid": "RA-3",
+    "title": "v0.2 클린룸 표면(M4.6 준비물)이 ROADMAP·README·spec README·core §10에 반영되지 않았고, 하네스는 생애주기 시나리오를 다루지 않는다",
+    "criteria": [
+     "C10",
+     "C9"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "ROADMAP.md:184-190의 M4.6 7개 항목이 전부 '[ ]'. 커밋 68026af 'M4.6: prepare v0.2 clean-room implementation harness'는 docs/IMPLEMENTER_GUIDE_V0_2.md, docs/INDEPENDENT_IMPLEMENTATION_REPORT_V0_2_TEMPLATE.md, conformance/external/v0_2/{CONTRACT.md,README.md,cases/public.json,harness.py,reference_adapter.py}를 추가했다. 명령: grep -rln 'IMPLEMENTER_GUIDE_V0_2\\|external/v0_2' --include='*.md' --include='*.yml' . → docs/IMPLEMENTER_GUIDE_V0_2.md, .github/workflows/semantic-v0.2.yml, conformance/external/v0_2/README.md 세 곳뿐. grep -rn 'M4.6' --include='*.md' . → ROADMAP.md:178 하나. spec/README.md:149-151은 '독립적으로 검증된 v0.2 구현 대상이 아직 없다. 다음 단계는 외부 클린룸 구현'이라고 쓰고 가이드 링크가 없다. README.md의 'Executable evidence'(223-236행)와 core-v0.2 §10도 하네스를 언급하지 않는다.",
+    "detail": "ROADMAP의 앞 세 항목(구현자 표면 공개, 참조 코드 없이 소비 가능한 스위트, v0.2용 보고서 템플릿)은 실제로 산출물이 존재하는데 미완료로 남아 있다(과소 주장). 또 어떤 진입 문서도 v0.2 가이드로 연결하지 않아 외부 구현자가 찾을 경로가 없다(RA-6). 게다가 '현재 의미론/와이어 스위트를 참조 코드 없이 소비 가능'이라는 항목은 일부만 충족된다: conformance/external/v0_2/cases/public.json의 15건은 모두 단일 ContextAssertion 수락/거부이고(CONTRACT.md operation은 evaluate_context_assertion 하나), 31건 시맨틱 시나리오(무효화·대체·조합·정책 투영·도착 순서·식별 변경)는 외부 구현이 접근할 방법이 없다. 이것들이 RCP의 핵심 가치인 하류 무효화와 수명주기다.",
+    "recommendation": "ROADMAP에서 완료된 항목을 체크하고 '시맨틱 시나리오는 아직 외부 소비 불가'를 명시한다. README, spec/README, conformance/README, core §10에 IMPLEMENTER_GUIDE_V0_2로 가는 링크를 추가한다. 시나리오 계층의 외부 계약(예: evaluate_dependency_change)을 설계한다."
+   },
+   {
+    "fid": "RA-4",
+    "title": "GitHub 이슈 #19가 'completed'로 닫혀 있는데 저장소 문서는 열려 있다고 하고 로드맵은 미완료로 둔다",
+    "criteria": [
+     "C10"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "명령: gh api repos/papa-channy/RCP-Relationship-Context-Protocol/issues/19 → state=closed, state_reason=completed, closed_at=2026-10-08T17:31:11Z, title 'M4.6: Obtain first unrelated clean-room RCP v0.2 implementation'. conformance/external/v0_2/README.md 끝부분: 'Issue #19 remains open until an actual unrelated implementation supplies that evidence.' ROADMAP.md:178은 M4.6을 '← next external milestone'으로 둔다. README.md:245는 '독립 제3자 v0.2 구현: not established'.",
+    "detail": "이슈는 68026af 푸시 직후 1초 안에 닫혔다(CI 실행 시각 17:31:12Z). 이슈 제목은 '무관한 구현을 얻는다'인데 실제로는 무관한 구현이 없다. 문서는 일관되게 '아직 없다'고 말하므로 README의 서술은 정직하지만, 외부 추적기는 완료로 읽힌다. 하네스 README는 '열려 있다'고 단정하기 때문에 지금은 거짓이다. 이슈 상태는 저장소 밖 가변 정보라서 평가 시점의 관찰이다.",
+    "recommendation": "이슈를 다시 열거나 '하네스 준비' 이슈와 '실제 구현 획득' 이슈로 분리한다. 하네스 README의 단정 문장은 이슈 번호를 빼거나 상태와 맞춘다."
+   },
+   {
+    "fid": "RA-5",
+    "title": "README는 v0.2 불변식을 대문자 MUST로 적지만 v0.2 명세는 소문자 must이고 RFC 2119 선언도 없다",
+    "criteria": [
+     "C10",
+     "C3"
+    ],
+    "severity": "낮음",
+    "kind": "검증됨",
+    "evidence": "명령: grep -o '\\bMUST( NOT)?\\b' | wc -l → README.md 8, spec/core-v0.1.md 99, spec/core-v0.2-draft.md 0, spec/wire-v0.2-draft.md 0. 소문자 must: core-v0.2 9, wire-v0.2 3. spec/core-v0.1.md:9에는 키워드 선언이 있고 v0.2 두 문서에는 RFC 2119/8174 선언이 없다. README.md:87-95 'RCP MUST NOT create rights…'는 core-v0.2:257 'RCP must not create rights…'와 같은 내용이다.",
+    "detail": "README는 비규범 초안인 v0.2를 RFC 2119 어조로 제시하여 독자에게 규범적 요구처럼 읽히게 한다. 반면 명세 본문은 'non-normative design draft'(core-v0.2:3)라고 선언한다. 결과적으로 어느 쪽이 권위 있는지가 불분명하다. docs/IMPLEMENTER_GUIDE_V0_2.md와 하네스 README는 다시 대문자 MUST/MAY를 쓴다.",
+    "recommendation": "README의 불변식 서술을 소문자나 '후보 불변식' 표현으로 낮추거나, v0.2 문서에 비규범 상태를 유지하는 한 키워드 비규범 선언을 한 줄 넣는다."
+   },
+   {
+    "fid": "RA-6",
+    "title": "기여/아웃리치 진입 문서가 아직 v0.1 Provider 하네스로 안내하고 #19를 v0.1 마일스톤으로 부른다 (v0.1/v0.2 혼동)",
+    "criteria": [
+     "C10"
+    ],
+    "severity": "낮음",
+    "kind": "검증됨",
+    "evidence": "docs/outreach/IMPLEMENTATION_CHALLENGE.md:15,19,20은 spec/core-v0.1.md, docs/IMPLEMENTER_GUIDE.md, provider-harness-profile-v0.1.md를 읽으라고 하고 :5는 'Provider implementation'을 만들라고 한다. CONTRIBUTING.md:24,29,66도 v0.1 문서를 가리키며 이슈 #19를 추적처로 쓴다. docs/outreach/TECHNICAL_BRIEF.md:217은 'Preserved v0.1 clean-room milestone: Issue #19', 반면 docs/IMPLEMENTER_GUIDE_V0_2.md:130은 '## 9. Required evidence for Issue #19'.",
+    "detail": "같은 이슈 #19가 한 곳에서는 v0.1 클린룸, 다른 곳에서는 v0.2 클린룸이다. README와 ROADMAP은 다음 결정적 단계가 v0.2 클린룸이라고 하는데, 실제로 외부 구현자가 따라갈 아웃리치 문서는 v0.1 Provider 구현 챌린지다. 어느 쪽 결과가 들어와도 증거 해석이 모호해진다.",
+    "recommendation": "IMPLEMENTATION_CHALLENGE와 CONTRIBUTING에 v0.2 챌린지 경로를 추가하고, #19의 범위를 한 가지로 정리한다."
+   },
+   {
+    "fid": "RA-7",
+    "title": "의존성 고정이 불완전하다: lockfile 없음, npm install, caret 범위, 전이 의존성 미고정",
+    "criteria": [
+     "C6"
+    ],
+    "severity": "중간",
+    "kind": "검증됨",
+    "evidence": "find . -name package-lock.json -not -path '*/node_modules/*' → 없음(git ls-files에 lockfile 0개). conformance/requirements.txt: 'jsonschema[format]>=4.23,<5'(설치 결과 4.26.0). bindings/v0_2/package.json: '@modelcontextprotocol/client' '^2.0.0', server '^2.0.0', zod '^4.0.0'(설치 결과 2.3.1, 4.6.5). implementations/python-probe/requirements.txt는 jwcrypto==1.6.1, rfc8785==0.1.4만 고정하고 전이 의존성 cryptography는 50.0.2가 설치됨. 워크플로는 모두 'npm install'(npm ci 아님). 반대로 crypto/external/reference-ecosystem은 jose 6.2.12, canonicalize 5.1.0을 정확히 고정했다.",
+    "detail": "오늘은 통과하지만, 2026-10-10에 해석된 2.3.1이 아닌 다른 MCP SDK 2.x가 나오면 같은 커밋이 다른 결과를 낼 수 있다. 특히 v0.2 바인딩 증명은 SDK v2 마이너 릴리스에 가장 민감하다. CI에 schedule(cron) 트리거가 없어 드리프트가 다음 푸시까지 숨는다.",
+    "recommendation": "각 npm 디렉터리에 package-lock.json을 커밋하고 CI에서 npm ci를 쓴다. Python은 pip-compile 등으로 전이 의존성까지 고정한 요구 파일을 둔다. 주간 cron으로 최신 의존성 해석을 시험한다."
+   },
+   {
+    "fid": "RA-8",
+    "title": "CI/실행 위생: 경로 필터 공백, 고정 포트, .gitignore 부재, 데모 산출물 비결정",
+    "criteria": [
+     "C6"
+    ],
+    "severity": "낮음",
+    "kind": "검증됨",
+    "evidence": "(a) .github/workflows/conformance.yml은 reference-ecosystem/**와 bindings/**를 paths에 두지 않지만 'Install reference Provider dependencies for harness self-test'로 reference-ecosystem을 설치해 하네스 self-test를 돌린다. reference-ecosystem.yml은 conformance/external/**와 spec/**를 paths에 두지 않는다. semantic-v0.2.yml은 conformance/requirements.txt를 설치하지만 그 파일이 paths에 없다(conformance/v0_2/**만). (b) reference-ecosystem/tests/*.mjs는 45401-45505, 45580, 45590 같은 포트를 하드코딩. 포트 45403을 점유한 채 npm run test:policy → 'Error: service did not become healthy: http://127.0.0.1:45403/health'로 28초 후 실패(큰 소리로 실패하므로 오탐은 없음). (c) 저장소에 .gitignore가 없다: 전체 단계 실행 후 git status --short가 node_modules/, package-lock.json, __pycache__/, conformance/external/v0_2/out/, reference-ecosystem/out/ 등을 미추적으로 표시. (d) 데모를 두 번 실행하면 canonical-brief.txt는 동일하나 canonical-trace.json은 generated_at, resolution_id, claim_id(UUID), issued_at이 달라 cmp 실패.",
+    "detail": "(a)의 결과로 reference-ecosystem 변경이 하네스 self-test를 깨뜨려도 PR에서 잡히지 않을 수 있다. (b)는 병렬 실행·공유 CI 러너에서 취약. (d)는 테스트 판정에는 영향이 없고(브리프는 결정적) 산출물 해시 비교 용도로만 쓸 수 없다는 뜻이다. 어느 것도 현재 통과 결과를 뒤집지는 않는다.",
+    "recommendation": "paths 필터를 교차 의존성에 맞게 넓히거나 하나의 워크플로로 합친다. 포트를 0(임의 할당)으로 받도록 하고, .gitignore를 추가하며, 트레이스의 비결정 필드를 정규화한다."
+   },
+   {
+    "fid": "RA-9",
+    "title": "바인딩 동등성 증명은 두 서버가 같은 정적 JSON 파일을 내보낸다는 점에서 주장 범위가 좁고 README 문구가 이를 넘어선다",
+    "criteria": [
+     "C10",
+     "C5"
+    ],
+    "severity": "낮음",
+    "kind": "판단",
+    "evidence": "bindings/v0_2/test-equivalence.mjs: MCP stdio 서버(mcp-server.mjs)와 HTTP 서버(http-server.mjs)가 같은 bindings/v0_2/assertion.json을 반환하고, 클라이언트가 받은 JSON을 conformance/v0_2/normalize_wire.py로 정규화해 문자열이 같은지 비교한다(normalize_wire.py는 스키마+시맨틱 검증 후에만 출력하므로 '같은 검증기를 통과했다'는 로그는 사실이다). README.md:140 '이것은 시험된 의미론 조각이 숨은 MCP 전용 상태를 요구하지 않음을 증명한다.'",
+    "detail": "정적 페이로드는 어떤 JSON이든 두 전송을 손실 없이 통과하므로 이 시험은 '전송이 바이트를 바꾸지 않는다'는 점만 보인다. 서버 쪽 의미 계산(무효화, 대체 등)이 바인딩마다 다르게 동작하는지는 시험하지 않는다. 그나마 README.md:140이 '외부 상호운용 증거 아님'이라고 단서를 달고 'tested slice'로 범위를 한정하여 과장은 약하다. 또 이 시험은 PATH의 'python'(PYTHON 환경변수 기본값)과 사전 설치된 jsonschema에 의존하는데 bindings/v0_2/README.md:111-112가 이를 안내하므로 재현성 문제는 아니다.",
+    "recommendation": "문구를 '정적 ContextAssertion의 직렬화가 두 바인딩에서 보존됨'으로 좁히고, 의미론적 동등성은 서버가 상태 변화(무효화)를 노출하는 경우에 별도로 증명한다."
+   }
+  ],
+  "checks_run": "[\"git clone /Users/chan/Developer/service/RCP-Relationship-Context-Protocol → checkout 68026af (scratch/clone, clone_a, clone_b). uv venv로 Python 3.12.13, npm install node@22으로 Node v22.23.3 확보(로컬 기본은 Python 3.11.15/Node 24.14/Node 26.4). 시스템 npm 11.9.0을 Node 22로 구동했으므로 CI(Node 22 번들 npm 10.x)와 npm 버전만 다르다.\", \"scratch/runci.sh로 세 워크플로의 모든 run 단계를 순서대로 실행: conformance.yml(pip 설치, conformance/run.py, boundary_checks.py, python-probe 설치, crypto npm install/test, Node↔Python 두 방향 벡터, external npm install, reference-ecosystem npm install, 독립성 grep, 외부 Provider self-test), reference-ecosystem.yml(npm install, smoke, test:permission, test:revocation, test:policy, test:relay, test:identity, demo), semantic-v0.2.yml(v0_2/run.py, run_wire.py, 독립성 grep, 외부 v0_2 하네스 self-test, bindings npm install/test). 결과: Python 3.12 + Node 22에서 전부 rc=0, 전체 21.1초(wall). 대표 출력: 'RCP v0.2 draft semantic conformance: PASS (31 cases)', 'wire conformance: PASS (20 schema/semantic cases, 1 binding-equivalence case)', 'external clean-room harness: PASS (15/15 cases)'.\", \"동일 스크립트를 Python 3.11.15+Node 24.14.0(run_py311_node24.log)과 Python 3.14.8+Node 26.4.0(run_py314_node26.log)에서 재실행: 둘 다 28/28 rc=0.\", \"비결정성: canonical demo 2회 실행 비교 → canonical-brief.txt 동일, canonical-trace.json은 generated_at/UUID/issued_at 차이. 포트 45403 점유 시 test:policy가 명시적 오류로 실패(28초).\", \"의존성 확인: package-lock.json 없음, 설치된 MCP SDK 2.3.1/zod 4.6.5/jsonschema 4.26.0/cryptography 50.0.2, workflow가 npm install과 ubuntu-latest/태그 고정 action을 사용.\", \"gh run list: 68026af의 Conformance와 v0.2 Semantic Draft 워크플로 success. gh api로 PR #24/#26/#28/#30 merged, 이슈 #19 closed(completed) 확인.\", \"링크 점검 스크립트: 추적 중 *.md 50개의 상대 링크 107개 중 깨진 것 0개. 백틱 경로 참조의 실제 누락 0개.\", \"README.md·ROADMAP.md의 ✅/[x] 전 항목을 코드와 테스트에 대조: M0~M4.5 지지, M4.6의 앞 세 항목은 산출물이 존재하지만 미체크(RA-3). core-v0.2 §5의 13개 불변식을 semantic-cases.json/wire-cases.json/run.py/run_wire.py/public.json에 매핑(RA-1, RA-2). 규범 키워드 빈도 grep(RA-5).\"]",
+  "limitations": "[\"콜드 npm/pip 캐시나 완전 오프라인 상태에서의 설치는 시험하지 않았다. 설치 시간(npm 0.4-2.6초)은 로컬 캐시 영향이 있어 CI 러너보다 빠를 수 있다. 오프라인 재현성은 미검증이다.\", \"Linux(ubuntu-latest) 실행은 하지 않았다. macOS(arm64, Darwin 25.6)에서만 재현했다. CI 성공 기록은 gh run list로만 확인했다.\", \"Node 22는 npm 패키지 node@22로 설치했고 npm CLI는 시스템 11.9.0을 썼다. 정확히 actions/setup-node가 주는 Node 22.x/npm 10.x 조합은 아니다. action 버전(checkout@v4 등) 자체는 실행하지 않았다.\", \"변이 시험(규칙 하나를 끄고 실패 여부 확인)과 전체 요구-케이스 추적표는 만들지 않았다. RA-1의 불변식 매핑은 케이스 이름, JSON 키, 오라클 코드를 읽어 판정한 것이고 일부 항목(5.5, 5.10)은 해석이 갈릴 수 있다.\", \"이슈 #19의 닫힘 상태(RA-4)는 평가 시점의 GitHub 상태이며 시간이 지나면 바뀔 수 있다. docs/ 아래 나머지 설계 문서(threat/rights/provenance 등)의 내용 정확성과 spec/wire-v0.2-draft.md ↔ 스키마의 필드 단위 일치는 점검하지 않았다.\"]"
+ },
+ "heldout-author(opus)": {
+  "cases": [
+   {
+    "id": "ho-01-evidence-bilateral-source-reordered",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:167-180; conformance/external/v0_2/CONTRACT.md:102-114",
+    "rationale": "source_participants가 target과 같은 집합(순서만 다름)이므로 projection_basis_ref가 필요 없다. digest의 target_participants는 사전순 정렬이므로 'u-12'가 'u-3'보다 앞에 온다(문자열 비교).",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:quote-friday",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:quote-friday",
+      "assertion_type": "commitment",
+      "epistemic_class": "extracted_fact",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:mail-881"
+      ],
+      "material_dependency_refs": [],
+      "support_sets": [],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-02-reject-legacy-top-level-confidence",
+    "determinacy": "determinate",
+    "spec_basis": "spec/schemas/v0.2-draft/context-assertion.schema.json:7; spec/wire-v0.2-draft.md:98-108; docs/standards-reconciliation-v0.2.md:126,160-174",
+    "rationale": "M4.5에서 최상위 confidence가 제거되었고, 스키마 최상위가 additionalProperties:false이므로 confidence 필드가 있으면 구조 검증에서 거부된다. 확신도는 네임스페이스 확장으로만 표현해야 한다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:quote-conf",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "confidence": 0.82
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-03-reject-epistemic-value-as-assertion-type",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:76-83; spec/schemas/v0.2-draft/context-assertion.schema.json:83-99; docs/standards-reconciliation-v0.2.md:176-185",
+    "rationale": "'inference'는 epistemic_class 축에만 속한다. 기본 assertion_type 열거값도 아니고 네임스페이스 확장 형식도 아니므로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:relocation-guess",
+     "assertion_type": "inference",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_inference",
+     "statement": "u-12 is likely to relocate to Busan next spring.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-04-reject-removed-derivation-transformation",
+    "determinacy": "determinate",
+    "spec_basis": "spec/schemas/v0.2-draft/context-assertion.schema.json:196-219; spec/wire-v0.2-draft.md:265; spec/core-v0.2-draft.md:185",
+    "rationale": "transformation 필드는 기본 구조에서 제거되었고 Derivation이 additionalProperties:false이므로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:followup-k",
+     "assertion_type": "open_loop",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "u-3 still owes u-12 an answer about the pilot scope.",
+     "provenance": {
+      "mode": "derived",
+      "visibility": "redacted",
+      "derivation": {
+       "dependencies": [
+        {
+         "dependency_ref": "ev:mail-881",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        }
+       ],
+       "support_sets": [
+        [
+         "ev:mail-881"
+        ]
+       ],
+       "transformation": "summarization"
+      }
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-05-namespaced-evidence-type-and-actor-type",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:156-165; spec/schemas/v0.2-draft/context-assertion.schema.json:79-82,100-127; docs/standards-reconciliation-v0.2.md:120,132",
+    "rationale": "스펙은 채널 어휘를 네임스페이스 evidence_type으로 표현하라고 명시하며, actor_type도 네임스페이스 외부 타입을 허용한다. source 집합이 target과 같아 basis가 필요 없고, required_extensions가 비어 있어 미지원 확장 문제도 없다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:vendor-pref",
+     "assertion_type": "preference",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "org-9",
+        "scope": "tenant:hanbit",
+        "actor_type": "x-crm:account_contact"
+       },
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "source_statement",
+     "statement": "org-9's contact said they prefer invoices in KRW.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "type_only",
+      "evidence": [
+       {
+        "evidence_ref": "ev:thread-5521",
+        "evidence_type": "x-mailco:thread",
+        "provider_ref": "provider:mailco",
+        "representation": "type_only",
+        "source_participants": [
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "org-9",
+          "scope": "tenant:hanbit",
+          "actor_type": "x-crm:account_contact"
+         }
+        ]
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:vendor-pref",
+      "assertion_type": "preference",
+      "epistemic_class": "source_statement",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "org-9",
+        "x-crm:account_contact"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:thread-5521"
+      ],
+      "material_dependency_refs": [],
+      "support_sets": [],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-06-reject-bilateral-with-three-participants",
+    "determinacy": "determinate",
+    "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:47; docs/standards-reconciliation-v0.2.md:121; spec/wire-v0.2-draft.md:146",
+    "rationale": "scope_type은 관계 단언의 cardinality를 결정하며, 구현 가이드가 bilateral/group cardinality 검사를 요구한다. bilateral은 정의상 참여자가 정확히 두 명이므로 3명이면 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:tri-commit",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-40",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:meet-30",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-40",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ]
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-07-group-scope-with-two-participants",
+    "determinacy": "indeterminate",
+    "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:47 (group의 정확한 최소 인원은 명시되지 않음); spec/schemas/v0.2-draft/context-assertion.schema.json:141-146",
+    "rationale": "스펙은 group cardinality 검사를 요구하지만 수치는 정의하지 않는다. 스키마가 이미 최소 2명을 강제하므로, group에 별도 cardinality 규칙이 있다는 것은 3명 이상을 뜻한다고 읽는 것이 가장 자연스럽다(2명이면 bilateral과 구별되지 않음). 따라서 거부를 예상한다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:group-of-two",
+     "assertion_type": "shared_topic",
+     "relationship_scope": {
+      "scope_type": "group",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "u-3 and u-12 keep discussing the Q4 hiring plan.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-08-group-narrowing-with-explicit-basis",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:167-182; docs/standards-reconciliation-v0.2.md:204-210; spec/core-v0.2-draft.md:93-97",
+    "rationale": "source {u-3,u-12,u-40,u-55}가 target {u-3,u-12,u-40}로 좁혀지지만, 명시적 projection_basis_ref가 있으므로 허용된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:offsite-topic",
+     "assertion_type": "shared_topic",
+     "relationship_scope": {
+      "scope_type": "group",
+      "participants": [
+       {
+        "actor_id": "u-40",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit",
+      "relationship_ref": "rel:hanbit:offsite-crew"
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "u-3, u-12 and u-40 are jointly planning the November offsite.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:chan-offsite-11",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-40",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-55",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "projection_basis_ref": "basis:u55-declined-offsite-planning"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:offsite-topic",
+      "assertion_type": "shared_topic",
+      "epistemic_class": "system_interpretation",
+      "scope_type": "group",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-40",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:chan-offsite-11"
+      ],
+      "material_dependency_refs": [],
+      "support_sets": [],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-09-reject-unknown-scope-type-fail-closed",
+    "determinacy": "determinate",
+    "spec_basis": "spec/core-v0.2-draft.md:295-297; docs/IMPLEMENTER_GUIDE_V0_2.md:48",
+    "rationale": "unknown relationship scope를 더 허용적인 알려진 값으로 해석하면 안 되고 fail closed해야 한다. 따라서 스키마가 'unknown'을 허용하더라도 의미 검증에서 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:unknown-scope",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "unknown",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-10-unsupported-namespaced-scope-type",
+    "determinacy": "indeterminate",
+    "spec_basis": "spec/core-v0.2-draft.md:295-297; spec/schemas/v0.2-draft/context-assertion.schema.json:135-139 (네임스페이스 scope_type이 required_extensions에 없을 때의 처리는 명시되지 않음)",
+    "rationale": "스키마는 네임스페이스 scope_type을 허용한다. 하지만 평가기가 이해하지 못하는(supported_extensions에 없는) scope는 의미를 알 수 없는 material relationship scope이므로 fail closed가 가장 타당한 해석이다. required_extensions에 없다는 이유로 수용하는 구현도 가능하므로 미확정으로 둔다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:deal-room",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "x-crm:deal_room",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-11-reject-silent-participant-collapse",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:167-180; spec/core-v0.2-draft.md:93-97,259-261; docs/semantic-scenarios-v0.2.md:9-34",
+    "rationale": "source {u-3,u-12,u-40}가 target {u-3,u-12}로 축소되었는데 projection_basis_ref가 없다. silent participant collapse이므로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:salary-remark",
+     "assertion_type": "relationship_state",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "source_statement",
+     "statement": "u-40 mentioned u-12 is unhappy with compensation.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:lunch-call-3",
+        "evidence_type": "interaction",
+        "representation": "source_statement",
+        "source_participants": [
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-40",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ]
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-12-user-note-widening-with-basis",
+    "determinacy": "indeterminate",
+    "spec_basis": "spec/wire-v0.2-draft.md:176-180; docs/standards-reconciliation-v0.2.md:136,208 vs docs/semantic-scenarios-v0.2.md:34",
+    "rationale": "source {u-3}와 target {u-3,u-12}가 달라 basis가 필요한데, basis가 있다. 조정 문서는 basis가 '축소 또는 그 밖의 참여자 범위 변경'을 정당화한다고 하므로 수용이 가장 타당한 해석이다. 다만 시나리오 A의 'source ⊇ target은 필요조건'을 일반 규칙으로 읽으면 거부될 수도 있어 미확정이다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:note-async",
+     "assertion_type": "preference",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "user_observation",
+     "statement": "u-12 seems to prefer async status updates.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "full",
+      "evidence": [
+       {
+        "evidence_ref": "ev:note-204",
+        "evidence_type": "user_note",
+        "representation": "source_statement",
+        "source_participants": [
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "projection_basis_ref": "basis:author-note-about-counterparty"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:note-async",
+      "assertion_type": "preference",
+      "epistemic_class": "user_observation",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:note-204"
+      ],
+      "material_dependency_refs": [],
+      "support_sets": [],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-13-reject-namespaced-evidence-without-basis",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:176; docs/standards-reconciliation-v0.2.md:204-210; docs/standards-boundary.md:278-282",
+    "rationale": "참여자 투영 규칙은 evidence_type과 무관하다. 두 번째 증거(네임스페이스 transcript)의 source 집합이 target과 다른데 basis가 없으므로, 첫 번째 증거가 정상이어도 단언 전체가 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:launch-date",
+     "assertion_type": "event",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "u-3 and u-12 fixed the launch review for Nov 18.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-902",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ]
+       },
+       {
+        "evidence_ref": "ev:transcript-77",
+        "evidence_type": "x-meetco:transcript",
+        "representation": "provider_projection",
+        "source_participants": [
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-55",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ]
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-14-reject-verified-fact-without-basis",
+    "determinacy": "determinate",
+    "spec_basis": "spec/schemas/v0.2-draft/context-assertion.schema.json:69-77; spec/wire-v0.2-draft.md:96; spec/core-v0.2-draft.md:156-160",
+    "rationale": "verified_fact는 verification_basis_refs가 반드시 있어야 한다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:contract-signed",
+     "assertion_type": "event",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "verified_fact",
+     "statement": "u-12 signed the master service agreement on Oct 2.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-15-reject-verified-fact-basis-not-in-lineage",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:96; spec/core-v0.2-draft.md:160,263-265",
+    "rationale": "verification_basis_refs는 있지만 'verif:esign-audit-41'이 선언된 evidence_ref나 dependency_ref 어디에도 없다. lineage로 해소되지 않으므로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:contract-signed-2",
+     "assertion_type": "event",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "verified_fact",
+     "statement": "u-12 signed the master service agreement on Oct 2.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "verification_basis_refs": [
+      "verif:esign-audit-41"
+     ]
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-16-verified-fact-basis-resolves-to-evidence",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:96; spec/core-v0.2-draft.md:148,160; spec/schemas/v0.2-draft/context-assertion.schema.json:69-77",
+    "rationale": "검증 근거 참조가 선언된 evidence_ref와 일치해 lineage로 해소되므로 verified_fact가 허용된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:contract-signed-3",
+     "assertion_type": "event",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "verified_fact",
+     "statement": "u-12 signed the master service agreement on Oct 2.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:esign-audit-41",
+        "evidence_type": "x-esign:audit_record",
+        "provider_ref": "provider:esignco",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-02T03:11:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "verification_basis_refs": [
+      "ev:esign-audit-41"
+     ]
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:contract-signed-3",
+      "assertion_type": "event",
+      "epistemic_class": "verified_fact",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:esign-audit-41"
+      ],
+      "material_dependency_refs": [],
+      "support_sets": [],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-17-reject-support-set-dangling-reference",
+    "determinacy": "determinate",
+    "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:52-53; spec/wire-v0.2-draft.md:221-255; spec/core-v0.2-draft.md:187-197",
+    "rationale": "support_sets는 선언된 dependency 가운데 독립적으로 충분한 조합을 나타낸다. 'ev:chat-1003'은 dependencies에 없으므로 파생 참조 무결성 위반으로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:revisit-pricing",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "u-3 will revisit pricing with u-12 after the pilot.",
+     "provenance": {
+      "mode": "derived",
+      "visibility": "opaque",
+      "derivation": {
+       "dependencies": [
+        {
+         "dependency_ref": "ev:mail-1001",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        },
+        {
+         "dependency_ref": "ev:call-1002",
+         "dependency_type": "evidence",
+         "role": "corroborates",
+         "material": true
+        }
+       ],
+       "support_sets": [
+        [
+         "ev:mail-1001"
+        ],
+        [
+         "ev:chat-1003"
+        ]
+       ]
+      }
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-18-independent-support-sets-with-nonmaterial-dependency",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:229-255; conformance/external/v0_2/CONTRACT.md:116-135",
+    "rationale": "독립 support set 두 개는 OR 의미로 유효하다. material=false 의존성은 material_dependency_refs에서 빠지고, support_sets의 외부 리스트는 사전순으로 정렬된다. provenance.evidence가 없으므로 evidence_refs는 빈 배열이다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:revisit-pricing-2",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "u-3 will revisit pricing with u-12 after the pilot.",
+     "provenance": {
+      "mode": "derived",
+      "visibility": "redacted",
+      "derivation": {
+       "dependencies": [
+        {
+         "dependency_ref": "ev:sms-b20",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        },
+        {
+         "dependency_ref": "ev:mail-a10",
+         "dependency_type": "evidence",
+         "role": "corroborates",
+         "material": true
+        },
+        {
+         "dependency_ref": "ev:crm-c30",
+         "dependency_type": "evidence",
+         "role": "refines",
+         "material": false
+        }
+       ],
+       "support_sets": [
+        [
+         "ev:sms-b20"
+        ],
+        [
+         "ev:mail-a10"
+        ]
+       ]
+      }
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:revisit-pricing-2",
+      "assertion_type": "commitment",
+      "epistemic_class": "system_interpretation",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [],
+      "material_dependency_refs": [
+       "ev:mail-a10",
+       "ev:sms-b20"
+      ],
+      "support_sets": [
+       [
+        "ev:mail-a10"
+       ],
+       [
+        "ev:sms-b20"
+       ]
+      ],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-19-joint-support-set-inner-sorted",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:257-263; spec/core-v0.2-draft.md:199-203; conformance/external/v0_2/CONTRACT.md:120-125",
+    "rationale": "한 support set에 참조 두 개가 함께 있으면 AND(둘 다 필요) 의미이다. digest에서는 내부 참조만 정렬되어 [['ev:c-mail-2','ev:z-call-7']]이 되며, 독립 집합 [[a],[b]]과 구별되어야 한다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:joint-commit",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_inference",
+     "statement": "u-12 will likely co-sign the renewal once legal approves.",
+     "provenance": {
+      "mode": "derived",
+      "visibility": "type_only",
+      "derivation": {
+       "dependencies": [
+        {
+         "dependency_ref": "ev:z-call-7",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        },
+        {
+         "dependency_ref": "ev:c-mail-2",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        }
+       ],
+       "support_sets": [
+        [
+         "ev:z-call-7",
+         "ev:c-mail-2"
+        ]
+       ]
+      }
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:joint-commit",
+      "assertion_type": "commitment",
+      "epistemic_class": "system_inference",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [],
+      "material_dependency_refs": [
+       "ev:c-mail-2",
+       "ev:z-call-7"
+      ],
+      "support_sets": [
+       [
+        "ev:c-mail-2",
+        "ev:z-call-7"
+       ]
+      ],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-20-support-set-outer-order-prefix",
+    "determinacy": "indeterminate",
+    "spec_basis": "conformance/external/v0_2/CONTRACT.md:120-125 ('JSON-array value' 기준 정렬이 원소별 비교인지 직렬화 문자열 비교인지 불명확)",
+    "rationale": "수용 자체는 확정적이다. 다만 한 집합이 다른 집합의 접두사일 때 외부 정렬 결과가 비교 방식에 따라 갈린다. 원소별(list) 비교면 [['ev:a-ticket-5'],['ev:a-ticket-5','ev:a-ticket-5b']]이고, 직렬화한 JSON 문자열로 비교하면 ','(0x2C)<']'(0x5D) 때문에 순서가 뒤집힌다. 원소별 사전순 비교가 가장 타당한 해석이다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:prefix-order",
+     "assertion_type": "open_loop",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "u-12 is waiting on u-3's security questionnaire.",
+     "provenance": {
+      "mode": "derived",
+      "visibility": "redacted",
+      "derivation": {
+       "dependencies": [
+        {
+         "dependency_ref": "ev:a-ticket-5",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        },
+        {
+         "dependency_ref": "ev:a-ticket-5b",
+         "dependency_type": "evidence",
+         "role": "corroborates",
+         "material": true
+        }
+       ],
+       "support_sets": [
+        [
+         "ev:a-ticket-5b",
+         "ev:a-ticket-5"
+        ],
+        [
+         "ev:a-ticket-5"
+        ]
+       ]
+      }
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:prefix-order",
+      "assertion_type": "open_loop",
+      "epistemic_class": "system_interpretation",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [],
+      "material_dependency_refs": [
+       "ev:a-ticket-5",
+       "ev:a-ticket-5b"
+      ],
+      "support_sets": [
+       [
+        "ev:a-ticket-5"
+       ],
+       [
+        "ev:a-ticket-5",
+        "ev:a-ticket-5b"
+       ]
+      ],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-21-reject-material-policy-dependency-erased",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:279-283; spec/core-v0.2-draft.md:275-281; docs/standards-boundary.md:180-184",
+    "rationale": "material policy 의존성 'pol:hr-confidential'이 최상위 policy_refs에 남아 있지 않다. 파생 단언은 material policy 의존성을 계속 지니고 있어야 하므로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:hr-note",
+     "assertion_type": "constraint",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "Do not discuss u-12's leave schedule outside the HR channel.",
+     "provenance": {
+      "mode": "derived",
+      "visibility": "hidden",
+      "derivation": {
+       "dependencies": [
+        {
+         "dependency_ref": "ev:hr-ticket-61",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        },
+        {
+         "dependency_ref": "pol:hr-confidential",
+         "dependency_type": "policy",
+         "role": "derived_from",
+         "material": true
+        }
+       ],
+       "support_sets": [
+        [
+         "ev:hr-ticket-61"
+        ]
+       ]
+      }
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "policy_refs": []
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-22-policy-restrictions-carried-and-sorted",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:271-283; docs/standards-reconciliation-v0.2.md:138,286; conformance/external/v0_2/CONTRACT.md:116-129",
+    "rationale": "증거의 제한('pol:no-external-llm')과 material policy 의존성('pol:eu-residency')이 모두 최상위 policy_refs에 보존되어 있으므로 수용된다. material_dependency_refs에는 policy 타입 의존성도 들어가며, policy_refs는 정렬된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:eu-pilot",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "u-3 committed to share the EU pilot results with u-12.",
+     "provenance": {
+      "mode": "derived",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:slack-4",
+        "evidence_type": "x-slack:dm",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "policy_refs": [
+         "pol:no-external-llm"
+        ]
+       }
+      ],
+      "derivation": {
+       "dependencies": [
+        {
+         "dependency_ref": "ev:slack-4",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        },
+        {
+         "dependency_ref": "pol:eu-residency",
+         "dependency_type": "policy",
+         "role": "derived_from",
+         "material": true
+        }
+       ],
+       "support_sets": [
+        [
+         "ev:slack-4"
+        ]
+       ]
+      }
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "policy_refs": [
+      "pol:no-external-llm",
+      "pol:eu-residency"
+     ]
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:eu-pilot",
+      "assertion_type": "commitment",
+      "epistemic_class": "system_interpretation",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:slack-4"
+      ],
+      "material_dependency_refs": [
+       "ev:slack-4",
+       "pol:eu-residency"
+      ],
+      "support_sets": [
+       [
+        "ev:slack-4"
+       ]
+      ],
+      "policy_refs": [
+       "pol:eu-residency",
+       "pol:no-external-llm"
+      ],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-23-reject-evidence-restriction-dropped",
+    "determinacy": "determinate",
+    "spec_basis": "docs/semantic-scenarios-v0.2.md:117-144; spec/wire-v0.2-draft.md:281; spec/core-v0.2-draft.md:275-281; docs/standards-reconciliation-v0.2.md:138",
+    "rationale": "원천 증거에 붙어 있던 'pol:no-external-processing' 제한이 단언의 최상위 policy_refs에서 사라졌다. 충실도가 낮은 투영이라도 제한을 조용히 지울 수 없으므로 거부된다. 다른 제한 하나만 남긴 이번 경우도 마찬가지다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:board-remark",
+     "assertion_type": "relationship_state",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "source_statement",
+     "statement": "u-12 told u-3 the board is reconsidering the vendor.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:call-551",
+        "evidence_type": "interaction",
+        "representation": "source_statement",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "policy_refs": [
+         "pol:no-external-processing",
+         "pol:retention-90d"
+        ]
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "policy_refs": [
+      "pol:retention-90d"
+     ]
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-24-identity-binding-not-in-scope",
+    "determinacy": "indeterminate",
+    "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:54; spec/core-v0.2-draft.md:85-89,267-269; spec/wire-v0.2-draft.md:143-150 (보존의 구체적 형태는 명시되지 않음)",
+    "rationale": "material identity_binding 의존성이 derivation에만 있고 relationship_scope.identity_dependency_refs에는 없다. 스코프가 '스코프된 신원 해석에 대한 의존'을 담는 자리이고 identity 의존성 보존이 요구되므로 거부가 가장 타당한 해석이다. 다만 derivation에 남아 있는 것만으로 보존이 충족된다고 볼 수도 있어 미확정이다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:identity-dropped",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "u-3 promised u-12 a follow-up demo.",
+     "provenance": {
+      "mode": "derived",
+      "visibility": "redacted",
+      "derivation": {
+       "dependencies": [
+        {
+         "dependency_ref": "ev:crm-881",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        },
+        {
+         "dependency_ref": "idb:p-123->u-12",
+         "dependency_type": "identity_binding",
+         "role": "derived_from",
+         "material": true
+        }
+       ],
+       "support_sets": [
+        [
+         "ev:crm-881"
+        ]
+       ]
+      }
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-25-identity-dependency-preserved",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:143-150; spec/core-v0.2-draft.md:85-89,267-269; conformance/external/v0_2/CONTRACT.md:116-118",
+    "rationale": "identity binding이 스코프의 identity_dependency_refs와 material identity_binding 의존성 양쪽에 일관되게 선언되어 있으므로 수용된다. material_dependency_refs는 타입과 관계없이 정렬된다('ev:crm-881' < 'idb:...').",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:identity-kept",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit",
+      "identity_dependency_refs": [
+       "idb:p-123->u-12"
+      ]
+     },
+     "epistemic_class": "system_interpretation",
+     "statement": "u-3 promised u-12 a follow-up demo.",
+     "provenance": {
+      "mode": "derived",
+      "visibility": "redacted",
+      "derivation": {
+       "dependencies": [
+        {
+         "dependency_ref": "idb:p-123->u-12",
+         "dependency_type": "identity_binding",
+         "role": "derived_from",
+         "material": true
+        },
+        {
+         "dependency_ref": "ev:crm-881",
+         "dependency_type": "evidence",
+         "role": "supports",
+         "material": true
+        }
+       ],
+       "support_sets": [
+        [
+         "ev:crm-881"
+        ]
+       ]
+      }
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:identity-kept",
+      "assertion_type": "commitment",
+      "epistemic_class": "system_interpretation",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [],
+      "material_dependency_refs": [
+       "ev:crm-881",
+       "idb:p-123->u-12"
+      ],
+      "support_sets": [
+       [
+        "ev:crm-881"
+       ]
+      ],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-26-reject-self-relation",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:297; docs/IMPLEMENTER_GUIDE_V0_2.md:56",
+    "rationale": "단언은 자기 자신에 대해 refines 같은 관계를 선언할 수 없으므로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:self-ref",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "assertion_relations": [
+      {
+       "relation": "refines",
+       "assertion_ref": "assertion:hanbit:self-ref"
+      }
+     ]
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-27-conflicts-with-other-assertion-disputed",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:285-311; docs/semantic-scenarios-v0.2.md:38-76",
+    "rationale": "다른 단언을 향한 명시적 conflicts_with와 disputed 상태는 정상이다. assertion_relations는 digest에 포함되지 않으며 lifecycle_state는 'disputed'이다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:provb:review-nov15",
+     "assertion_type": "event",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "source_statement",
+     "statement": "u-12 said the Project Hana review moved to Nov 15.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "disputed",
+      "reason_refs": [
+       "reason:provider-conflict-88"
+      ]
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "assertion_relations": [
+      {
+       "relation": "conflicts_with",
+       "assertion_ref": "assertion:prova:review-nov12"
+      }
+     ]
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:provb:review-nov15",
+      "assertion_type": "event",
+      "epistemic_class": "source_statement",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:mail-881"
+      ],
+      "material_dependency_refs": [],
+      "support_sets": [],
+      "policy_refs": [],
+      "lifecycle_state": "disputed",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-28-reject-processing-operation-as-lifecycle-state",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:301-313; spec/core-v0.2-draft.md:233; spec/schemas/v0.2-draft/context-assertion.schema.json:262-265",
+    "rationale": "recompute는 처리 연산이지 공개 lifecycle 상태가 아니므로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:recompute-state",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "recompute"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-29-reject-unsupported-required-extension",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:319-331; spec/core-v0.2-draft.md:295-297",
+    "rationale": "required_extensions의 'x-hanbit:confidence-model'을 평가기가 지원하지 않는다(supported_extensions에는 다른 확장만 있다). fail closed이므로 거부된다.",
+    "supported_extensions": [
+     "x-hanbit:consent-tier"
+    ],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:conf-ext",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_inference",
+     "statement": "u-12 will probably accept the revised quote.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "required_extensions": [
+      "x-hanbit:confidence-model"
+     ],
+     "extensions": {
+      "x-hanbit:confidence-model": {
+       "score": 0.64,
+       "model_version": "3",
+       "semantics": "isotonic-calibrated probability"
+      }
+     }
+    },
+    "expected": {
+     "accepted": false,
+     "semantic_digest": null
+    }
+   },
+   {
+    "id": "ho-30-supported-required-extensions-historical",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:110-123,301-331; conformance/external/v0_2/CONTRACT.md:131-133",
+    "rationale": "필수 확장 두 개가 모두 supported_extensions에 있으므로 수용된다. digest의 required_extensions는 사전순으로 정렬되고, lifecycle_state는 'historical'이며, 시간 필드는 digest에 포함되지 않는다.",
+    "supported_extensions": [
+     "x-hanbit:confidence-model",
+     "x-hanbit:consent-tier",
+     "x-other:unused"
+    ],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:conf-ext-ok",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "system_inference",
+     "statement": "u-12 will probably accept the revised quote.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "historical",
+      "valid_from": "2026-09-01T00:00:00Z",
+      "valid_until": "2026-10-01T00:00:00Z",
+      "reason_refs": [
+       "reason:quote-cycle-closed"
+      ]
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "required_extensions": [
+      "x-hanbit:consent-tier",
+      "x-hanbit:confidence-model"
+     ],
+     "extensions": {
+      "x-hanbit:confidence-model": {
+       "score": 0.64,
+       "model_version": "3"
+      },
+      "x-hanbit:consent-tier": {
+       "tier": "internal-only"
+      }
+     }
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:conf-ext-ok",
+      "assertion_type": "commitment",
+      "epistemic_class": "system_inference",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:mail-881"
+      ],
+      "material_dependency_refs": [],
+      "support_sets": [],
+      "policy_refs": [],
+      "lifecycle_state": "historical",
+      "required_extensions": [
+       "x-hanbit:confidence-model",
+       "x-hanbit:consent-tier"
+      ]
+     }
+    }
+   },
+   {
+    "id": "ho-31-optional-extension-ignorable",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:327-331; spec/schemas/v0.2-draft/context-assertion.schema.json:62-66",
+    "rationale": "required_extensions에 없는 선택적 확장 데이터는 Core 의미를 바꾸지 않는 한 무시할 수 있다. 따라서 평가기가 지원하지 않아도 수용된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:hanbit:optional-ext",
+     "assertion_type": "commitment",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-3",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-12",
+        "scope": "tenant:hanbit",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "tenant:hanbit"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:mail-881",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-12",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-3",
+          "scope": "tenant:hanbit",
+          "actor_type": "person"
+         }
+        ],
+        "occurred_at": "2026-10-06T14:02:00Z"
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z",
+     "extensions": {
+      "x-hanbit:ui-hint": {
+       "badge": "follow-up",
+       "color": "amber"
+      }
+     }
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:hanbit:optional-ext",
+      "assertion_type": "commitment",
+      "epistemic_class": "extracted_fact",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:hanbit",
+        "u-12",
+        "person"
+       ],
+       [
+        "tenant:hanbit",
+        "u-3",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:mail-881"
+      ],
+      "material_dependency_refs": [],
+      "support_sets": [],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   },
+   {
+    "id": "ho-32-same-actor-id-in-different-scopes-is-two-actors",
+    "determinacy": "indeterminate",
+    "spec_basis": "spec/core-v0.2-draft.md:71-72; spec/wire-v0.2-draft.md:131-141; docs/standards-reconciliation-v0.2.md:122 (actor scope와 trust_domain의 관계는 명시되지 않음)",
+    "rationale": "actor_id 문자열이 같아도 scope가 다르면 서로 다른 actor이므로, bilateral 2인 스코프로 유효하고 중복 참여자도 아니다(이 부분은 확정적이다). source 집합도 target과 같다. 다만 actor scope(tenant:alpha/beta)가 trust_domain(federation:alpha-beta)과 다를 때의 규칙은 스펙에 없어 미확정으로 둔다. 가장 타당한 해석은 수용이며, digest는 scope 순으로 먼저 정렬된다.",
+    "supported_extensions": [],
+    "assertion": {
+     "type": "rcp.context_assertion",
+     "rcp_version": "0.2-draft",
+     "assertion_id": "assertion:federation:intro-call",
+     "assertion_type": "event",
+     "relationship_scope": {
+      "scope_type": "bilateral",
+      "participants": [
+       {
+        "actor_id": "u-7",
+        "scope": "tenant:beta",
+        "actor_type": "person"
+       },
+       {
+        "actor_id": "u-7",
+        "scope": "tenant:alpha",
+        "actor_type": "person"
+       }
+      ],
+      "trust_domain": "federation:alpha-beta"
+     },
+     "epistemic_class": "extracted_fact",
+     "statement": "The two u-7 accounts held an intro call on Oct 3.",
+     "provenance": {
+      "mode": "evidence",
+      "visibility": "redacted",
+      "evidence": [
+       {
+        "evidence_ref": "ev:cal-3301",
+        "evidence_type": "interaction",
+        "representation": "metadata",
+        "source_participants": [
+         {
+          "actor_id": "u-7",
+          "scope": "tenant:alpha",
+          "actor_type": "person"
+         },
+         {
+          "actor_id": "u-7",
+          "scope": "tenant:beta",
+          "actor_type": "person"
+         }
+        ]
+       }
+      ]
+     },
+     "lifecycle": {
+      "state": "active"
+     },
+     "created_at": "2026-10-08T09:30:00Z"
+    },
+    "expected": {
+     "accepted": true,
+     "semantic_digest": {
+      "assertion_id": "assertion:federation:intro-call",
+      "assertion_type": "event",
+      "epistemic_class": "extracted_fact",
+      "scope_type": "bilateral",
+      "target_participants": [
+       [
+        "tenant:alpha",
+        "u-7",
+        "person"
+       ],
+       [
+        "tenant:beta",
+        "u-7",
+        "person"
+       ]
+      ],
+      "evidence_refs": [
+       "ev:cal-3301"
+      ],
+      "material_dependency_refs": [],
+      "support_sets": [],
+      "policy_refs": [],
+      "lifecycle_state": "active",
+      "required_extensions": []
+     }
+    }
+   }
+  ],
+  "notes": "홀드아웃 팩 32건을 작성했다. 결정적 26건, 미확정 6건(07, 10, 12, 20, 24, 32)이며, 수용 14건과 거부 18건이다. 근거로는 specdocs 디렉터리(스펙, 스키마, 가이드, 시나리오, 표준 문서, CONTRACT.md)만 읽었다. jsonschema(Draft 2020-12, format 검사 포함)로 모든 assertion을 검증한 결과, 스키마 거부를 의도한 02/03/04/14/28만 스키마 오류를 냈고 나머지 27건은 스키마를 통과한다. 이 27건의 수용/거부는 의미 규칙으로 갈린다.\n\ndigest는 CONTRACT.md 4절 규칙대로 스크립트로 계산했다. 다만 CONTRACT.md가 명시하지 않은 관례가 하나 있다. provenance.evidence, derivation, support_sets, policy_refs, required_extensions가 없으면 빈 배열 []로 표기했다(CONTRACT.md:59의 예시에서 evidence_refs가 []인 것을 따름).\n\n스펙 모호점을 미확정 케이스로 분리했다.\n(1) group의 최소 인원\n(2) 지원되지 않는 네임스페이스 scope_type\n(3) 참여자 확장(source ⊂ target) + basis: wire:176은 basis만 있으면 충분하다고 읽히지만, scenarios:34는 source ⊇ target을 필요조건으로 든다.\n(4) CONTRACT.md:125의 'JSON-array value' 외부 정렬이 원소별 비교인지 직렬화 문자열 비교인지\n(5) material identity_binding 의존성이 relationship_scope.identity_dependency_refs에도 있어야 하는지\n(6) actor scope와 trust_domain의 관계\n\n생성 스크립트와 결과 파일은 /private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/heldout/gen.py, cases.json에 있다."
+ },
+ "verify-standards-skeptic(sonnet)": {
+  "verdicts": [
+   {
+    "fid": "SS-01",
+    "verdict": "confirmed",
+    "severity_adjusted": "중간",
+    "reasoning": "독립 재현했습니다. run.py의 dependency_invalidation_result는 '지원 집합 중 제거된 출처와 교집합이 없는 것이 하나라도 있는가'를 계산합니다. 이는 정의상 양의 불리언 다항식(DNF)의 변수 0 대입 평가이자 ATMS 최소 환경 레이블 검사입니다. 제가 새로 작성한 스크립트로 무작위 48000쌍을 비교했더니 불일치가 0건이었습니다. 다만 이 일치는 오라클이 곧 DNF 평가이기 때문에 사실상 항진입니다. 저는 PROV-O 한정 파생 + SHACL 인코딩은 실행하지 못했고, 그 부분은 평가자의 서술에 의존하며 재현하지 못했습니다. 저장소에서 semiring, why-provenance, ATMS, nanopub, verifiable credential, sticky, hadPrimarySource를 git grep한 결과 0건이었고, truth-maintenance는 core-v0.2-draft.md:436의 미해결 질문 1건뿐이었습니다. 따라서 선행 연구 미인용은 사실입니다. 반박 소지도 있습니다. 순수 PROV는 복수 qualified derivation에 AND/OR 충분성 의미를 부여하지 않으므로, standards-reconciliation:143의 'PROV can express lineage but not alternative sufficient evidence sets'가 틀렸다고 단정할 수 없습니다. 평가자도 '프로파일 규칙 1개가 필요하다'고 인정합니다. 즉 실제 결함은 선행 연구 대조와 근거 서술의 누락이라는 문서·정당화 격차입니다. 테스트나 불변식이 깨진 것은 아닙니다. 그래서 높음은 과대평가이고 중간으로 조정합니다.",
+    "evidence": "git grep -i -E 'semiring|why-provenance|ATMS|nanopub|verifiable credential|truth.maintenance|sticky|hadPrimarySource' → spec/core-v0.2-draft.md:436 한 줄만 나옴. scratchpad/eval/verify/standards-skeptic/equiv.py 실행 결과 '48000 0'(비교 쌍 수, 불일치 수). docs/standards-reconciliation-v0.2.md:143, README.md:100, spec/core-v0.2-draft.md 4.8절."
+   },
+   {
+    "fid": "SS-02",
+    "verdict": "confirmed",
+    "severity_adjusted": "낮음",
+    "reasoning": "기계적 재현은 됩니다. had_primary_source를 Dependency에 넣으면 'Additional properties are not allowed (had_primary_source was unexpected)'로 스키마가 거부합니다. dependency_invalidation_result({support_sets:[[gmail:m1],[crm:m1-copy]], removed:[gmail:m1]})는 current_support_exists=True, action=recompute를 반환합니다. 그러나 결함의 크기와 표현은 과장되었습니다. (1) 스펙의 'independently sufficient'는 각 지원 집합이 단독으로 충분하다는 뜻으로 Provider가 선언합니다. 출처 독립성의 판정 기준은 정의하지 않으며, 같은 출처의 복사본을 별도 집합으로 적는 것은 Provider의 선언 오류입니다. (2) 올바른 결과는 이미 표현 가능합니다. 복사본을 원본과 같은 집합에 [[gmail:m1,crm:m1-copy]]로 묶으면 원본 제거 시 invalidate가 됩니다. 따라서 '표현 불가능'은 맞지 않고, 정확히는 '공통 출처라는 이유를 기계적으로 검증·기술할 필드가 없음'입니다. (3) Core 5.3 'no epistemic promotion'은 epistemic class를 verified_fact로 올리는 것을 막는 규칙입니다. 지원 집합의 생존 판정과는 다른 사안이라 충돌 주장은 오독에 가깝습니다. (4) core-v0.2-draft.md의 미해결 질문('Is disjunctive-normal support_sets expressive enough for real Providers?')이 이미 이 방향의 한계를 열어 둡니다. 다만 PROV의 hadPrimarySource가 이 점에서 더 풍부하다는 지적은 타당합니다. 설계상 갭으로 낮음입니다.",
+    "evidence": "probes.py P5 출력 'SCHEMA-REJECT: Additional properties are not allowed'. 오라클 호출 결과 {'current_support_exists': True, 'action': 'recompute', 'historical_lineage_preserved': True}. spec/core-v0.2-draft.md 5.3(263행)은 epistemic class 승격 규칙. docs/semantic-scenarios-v0.2.md 80-106행 Scenario C와 wire-v0.2-draft.md 9절은 독립성 기준을 정의하지 않음."
+   },
+   {
+    "fid": "SS-03",
+    "verdict": "confirmed",
+    "severity_adjusted": "중간",
+    "reasoning": "핵심 사실은 재현됩니다. git ls-files | xargs grep -l -E 'prov:|odrl:|dpv:|authzen|caep'는 docs/outreach/TARGET_MAP.md, docs/standards-boundary.md, docs/standards-reconciliation-v0.2.md, spec/wire-v0.2-draft.md 네 문서만 반환하며 코드와 픽스처는 0건입니다. ROADMAP.md M6의 PROV/AuthZEN/SSF/ODRL-DPV 프로파일은 모두 '- [ ]'입니다. 기존 표준 조합이 어디서 실패하는지 보여 주는 실행형 비교 사례가 없다는 점도 맞고, 선행 연구 절이 없다는 점은 SS-01에서 확인했습니다. 다만 반박할 부분이 있습니다. (1) '대조 산출물이 없다'는 과장입니다. docs/standards-reconciliation-v0.2.md(M4.5)가 필드 단위 대조표로 KEEP/PROFILE/MAP 판정을 내립니다. semantic-scenarios의 'reconcile 해야 한다'는 문장은 M4.5 이전에 쓰인 낡은 문장입니다. 빠진 것은 문서 대조가 아니라 실행형 대조입니다. (2) ROADMAP M6은 'Build only profiles demonstrated to be required by implementation'이라고 명시하므로 미착수는 의도입니다. (3) 개념별 '부분 포괄/완전 포괄' 판정은 평가자 스스로 '판단'이라 표시한 의견입니다. ODRL 인용(§2.9, §2.6.3, §2.10)과 Nanopub-X는 제가 웹으로 다시 확인하지 않았고, 일반 지식으로는 그럴듯하지만 미검증으로 둡니다. 따라서 근거 입증 부족이라는 취지는 타당하나 과장이 섞인 중간으로 조정합니다.",
+    "evidence": "git ls-files | xargs grep -l ... → 4개 문서, 코드 0건. ROADMAP.md 215-218행 '- [ ]'. docs/semantic-scenarios-v0.2.md 346-349행 'Before doing so, the project should reconcile...' 문장. docs/standards-reconciliation-v0.2.md 존재. spec/core-v0.2-draft.md 12절 Core 추가 규칙."
+   },
+   {
+    "fid": "SS-04",
+    "verdict": "confirmed",
+    "severity_adjusted": "높음",
+    "reasoning": "전부 재현했습니다. wire-cases.json의 explicit-bilateral-projection을 변형해 run_wire.semantic_errors에 넣은 결과는 다음과 같습니다. (a) 범위 확장: 증거 source {A,B}에서 target 그룹 {A,B,D}로 projection_basis_ref='x'를 달면 ACCEPTED입니다. 같은 입력을 run.py의 projection_allowed에 주면 False입니다. (b) 완전 분리된 source {C,D}에서 target {A,B}로 basis만 있어도 ACCEPTED입니다. (c) derived 모드(derived-independent-support)와 opaque 모드는 투영 검사를 아예 거치지 않아 ACCEPTED입니다. 근거 코드는 run_wire.py의 'source != target and not basis'뿐이고 부분집합 검사가 없습니다. 문서 불일치도 확인됩니다. semantic-scenarios Scenario A의 불변식은 'source_participants ⊇ target_participants is necessary but not sufficient'이고, semantic-cases.json의 projection-target-not-in-source는 expected_allowed=false입니다. 반면 wire-v0.2-draft.md 6절은 'differ → basis required'만 적고 ⊇ 조건이 없습니다. 외부 클린룸 하네스의 reference_adapter.py는 run_wire의 semantic_errors를 참조 오라클로 호출하므로, 추상 오라클을 따르는 구현과 참조 구현의 판정이 갈립니다. 다만 opaque 모드는 노출 방식이 허용된 설계이고 derived 모드의 Dependency에 source 참여자 필드가 없는 것은 스펙이 주장한 적 없는 범위이므로, 그 부분은 설계 갭이고 증거 모드 확장 통과는 명백한 불변식 불일치입니다. 핵심 불변식 자체가 스펙이나 테스트 안에서 직접 깨진 것은 아니므로(와이어 draft는 비규범이고 negative case도 없음) 치명은 아니고 높음을 유지합니다.",
+    "evidence": "probes.py 출력: [P1 derived] ACCEPTED, [P1b opaque] ACCEPTED, [P2 scope EXPANSION {A,B}->{A,B,D} basis x] ACCEPTED, 'oracle expansion: False', [P1c disjoint source {C,D}->{A,B}] ACCEPTED. conformance/v0_2/run_wire.py의 투영 검사 루프, conformance/v0_2/run.py projection_allowed, conformance/v0_2/semantic-cases.json projection-target-not-in-source, conformance/external/v0_2/reference_adapter.py:110-112, docs/semantic-scenarios-v0.2.md Scenario A 불변식."
+   },
+   {
+    "fid": "SS-05",
+    "verdict": "confirmed",
+    "severity_adjusted": "중간",
+    "reasoning": "재현됩니다. 증거 모드에서 evidence[0].policy_refs=['policy:external-processing-deny']이고 assertion.policy_refs가 없는 인스턴스가 ACCEPTED입니다. 대조군으로 derived 모드에서 material policy 의존성을 assertion.policy_refs에서 빼면 'material policy dependencies are not preserved'로 REJECTED됩니다. run_wire.py는 derivation의 policy 의존성만 검사하고 provenance.evidence[*].policy_refs는 보지 않습니다. run.py의 effective_parent_policy가 쓰는 allowed_purposes, external_processing, training, retention_max_seconds는 v0.2 스키마에 없는 필드이므로 추상 단조성 검사는 와이어 객체에 적용할 수 없습니다. 그러나 이는 상당 부분 의도된 설계입니다. wire-v0.2-draft.md 10절은 'RCP v0.2 does not define a universal policy ... vocabulary'이고 '참조만 운반'하며, 적합성 요건은 'material policy dependencies가 파생 단언에 남아야 한다'로 한정합니다. Core 5.7도 제한 보존이 'applicable policy profile'에 따른다고 적습니다. 따라서 추상 단조성과 와이어의 단절 및 '고유 개념 집행이 비어 있다'는 평가는 문서화된 범위의 결과입니다. 실제 결함은 증거 모드에서 증거 수준 policy_refs 전파가 검사되지 않는 구멍(Core 5.4·5.6과의 긴장)입니다. DLM·ODRL과의 의미 중복 주장은 SS-01·03과 같은 성격의 의견입니다. 높음은 과대평가이고 중간으로 조정합니다.",
+    "evidence": "probes.py 출력: [P3 evidence policy_refs not carried] ACCEPTED, [P3b derived policy dep not carried (control)] REJECTED ['material policy dependencies are not preserved: policy:no-training']. spec/wire-v0.2-draft.md 10절(268-285행), spec/core-v0.2-draft.md 5.4·5.6·5.7, spec/schemas/v0.2-draft/context-assertion.schema.json의 policy_refs는 문자열 배열, conformance/v0_2/run_wire.py의 derived 블록."
+   }
+  ]
+ },
+ "collision(opus)": {
+  "public_total": 15,
+  "public_passed": 15,
+  "contract_violations": 0,
+  "heldout_total": 32,
+  "heldout_determinate_total": 26,
+  "heldout_determinate_impl_match": 26,
+  "heldout_impl_match_all": 32,
+  "heldout_oracle_match_all": 28,
+  "heldout_determinate_oracle_match": 25,
+  "case_errors": 0,
+  "disagreements": [
+   {
+    "case_id": "ho-10-unsupported-namespaced-scope-type",
+    "determinacy": "indeterminate",
+    "expected_accepted": false,
+    "impl_accepted": false,
+    "oracle_accepted": true,
+    "digest_mismatch": "해당 없음 (수용 여부 자체가 다름)",
+    "classification": "spec_ambiguity",
+    "explanation": "구현은 supported_extensions에 없는 네임스페이스 scope_type을 'unsupported extension scope_type: x-crm:deal_room'으로 거부했고, 오라클은 수용했다. 오라클은 문자 그대로 'unknown'만 fail-closed 처리한다(wt/conformance/v0_2/run_wire.py:49-50). 스키마는 scope_type에 ExtensionName을 허용한다(spec/schemas/v0.2-draft/context-assertion.schema.json:135-139). core 5.11은 '알 수 없는 relationship scope는 더 허용적인 알려진 값으로 해석하지 않는다'고 하지만(spec/core-v0.2-draft.md:295-297), wire 13의 fail-closed 규칙은 required_extensions에 있는 확장에만 명시적으로 적용된다(spec/wire-v0.2-draft.md:327-331). required_extensions에 없는 확장형 scope_type이 '알 수 없는 material scope'인지, 무시해도 되는 선택적 확장인지는 산문이 정하지 않는다. 구현과 기대값은 보수적 해석을, 오라클은 관대한 해석을 택했다."
+   },
+   {
+    "case_id": "ho-20-support-set-outer-order-prefix",
+    "determinacy": "indeterminate",
+    "expected_accepted": true,
+    "impl_accepted": true,
+    "oracle_accepted": true,
+    "digest_mismatch": "support_sets 순서. 기대값과 구현은 [[\"ev:a-ticket-5\"],[\"ev:a-ticket-5\",\"ev:a-ticket-5b\"]](원소별 사전순). 오라클은 [[\"ev:a-ticket-5\",\"ev:a-ticket-5b\"],[\"ev:a-ticket-5\"]](직렬화 문자열 비교, ','(0x2C) < ']'(0x5D))",
+    "classification": "spec_ambiguity",
+    "explanation": "CONTRACT.md는 'sort the outer list lexicographically by its JSON-array value'라고만 적고 있다(conformance/external/v0_2/CONTRACT.md:124). 이 문장은 원소별 비교로도, 직렬화 문자열 비교로도 읽힌다. 외부 참조 어댑터는 json.dumps 문자열을 키로 정렬하는데(wt/conformance/external/v0_2/reference_adapter.py:50-51), 같은 저장소의 정규화기 run_wire.py는 파이썬 리스트 기본 정렬, 즉 원소별 비교를 쓴다(wt/conformance/v0_2/run_wire.py:213-215). 따라서 오라클 내부도 서로 일치하지 않는다. 구현은 원소별 비교를 택했고(cleanroom/impl/src/evaluate.ts:175), 이 결과는 기대값 및 run_wire.py와 일치한다. 계약 문구를 명확히 하고 참조 어댑터의 정렬 키를 고쳐야 한다."
+   },
+   {
+    "case_id": "ho-23-reject-evidence-restriction-dropped",
+    "determinacy": "determinate",
+    "expected_accepted": false,
+    "impl_accepted": false,
+    "oracle_accepted": true,
+    "digest_mismatch": "해당 없음 (수용 여부 자체가 다름)",
+    "classification": "security_privacy",
+    "explanation": "원천 증거의 policy_refs에 있던 'pol:no-external-processing'이 단언의 최상위 policy_refs에서 빠졌다. 구현은 이를 거부했고 오라클은 수용했다. 오라클은 derivation에 선언된 material policy 의존성만 검사하고(wt/conformance/v0_2/run_wire.py:122-133), 증거 단위 policy_refs의 상속은 검사하지 않는다. 산문의 원칙은 분명하다. 'derivation or projection does not silently erase material restrictions'(spec/wire-v0.2-draft.md:279-281), 시나리오 D의 '파생 단언은 material restriction을 기본적으로 유지한다'와 'Lower fidelity does not imply lower restriction'(docs/semantic-scenarios-v0.2.md:137,144), 그리고 증거 제한에 대한 조합 규칙(docs/standards-reconciliation-v0.2.md:138,286)이 모두 같은 방향을 가리킨다. 오라클의 수용은 시나리오 D가 '안전하지 않은 동작'으로 명시한 경우(docs/semantic-scenarios-v0.2.md:133) 그대로이므로 프라이버시 제한이 조용히 소거된다. 다만 근본 원인에는 스펙 공백도 있다. 규범적 conformance 문장이 derivation의 material policy 의존성만 명명하고(spec/wire-v0.2-draft.md:283), 다중 증거 제한의 조합은 아직 정의되지 않았다고 조정 문서가 직접 인정한다(docs/standards-reconciliation-v0.2.md:62). 구현은 이 규칙을 보수적으로 추론해 적용했다."
+   },
+   {
+    "case_id": "ho-24-identity-binding-not-in-scope",
+    "determinacy": "indeterminate",
+    "expected_accepted": false,
+    "impl_accepted": false,
+    "oracle_accepted": true,
+    "digest_mismatch": "해당 없음 (수용 여부 자체가 다름)",
+    "classification": "spec_ambiguity",
+    "explanation": "material identity_binding 의존성이 derivation에만 있고 relationship_scope.identity_dependency_refs에는 없는 경우다. 구현은 정방향 규칙(material identity 의존성은 스코프에 반드시 있어야 함)으로 거부했다. 오라클은 역방향 규칙(스코프의 identity ref는 derivation에 material로 선언되어야 함)만 검사하므로 수용했다(wt/conformance/v0_2/run_wire.py:113-120). 스펙은 '보존'의 방향과 형태를 정하지 않는다. 구현 가이드는 'material identity dependency preservation'이라고만 적고(docs/IMPLEMENTER_GUIDE_V0_2.md:54), core 5.4는 lineage에 identity 의존성을 '유지'하라고만 요구한다(spec/core-v0.2-draft.md:269). 이 요건은 derivation에 남아 있는 것만으로 충족된다고 읽을 수 있다. wire는 스코프의 identity-binding 의존성을 'optional'로 표기하는데(spec/wire-v0.2-draft.md:148), 이는 오라클 해석 쪽에 가깝다. 반대로 core는 identity_dependency_refs를 material 후보로 나열한다(spec/core-v0.2-draft.md:89). 같은 원인으로 반대 방향의 잠재 불일치도 확인했다. 스코프에 identity ref가 있지만 derivation에 없는 추가 탐침(P1)에서는 구현이 수용하고 오라클이 거부한다."
+   }
+  ],
+  "all_disagreements_classified": true,
+  "cleanroom_violation": false,
+  "cleanroom_audit": "감사 대상은 /private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl(node_modules 제외)이다. 이 디렉터리에서 run_wire, run.py, normalize_wire, reference_adapter, reference-ecosystem, bindings/v0_2, 원본 저장소 경로(/Users/chan/Developer/service/RCP-Relationship-Context-Protocol), scratchpad/wt 경로를 grep했고 일치 항목은 없었다(grep rc=1). 구현 파일은 src/adapter.ts, src/evaluate.ts, adapter.sh, package.json, package-lock.json, schema.json, public-report.json 일곱 개다. 외부 import는 ajv/dist/2020.js, ajv-formats와 node 내장 모듈뿐이다. schema.json은 클린룸에 제공된 spec/schemas/v0.2-draft/context-assertion.schema.json과 바이트 단위로 같으며, 이는 허용된 입력의 복사본이다. 클린룸 트리 전체에도 오라클 코드(run_wire.py, reference_adapter.py, README.md)는 없고, 제공된 spec/docs/CONTRACT/harness/public.json만 있다. 클린룸의 spec 사본 7개는 저장소 68026af(wt)와 바이트 단위로 같다. 구조적 차이도 독립성을 뒷받침한다. 구현은 TypeScript이고, 참여자 동일성 키가 (scope, actor_id)여서 actor_type을 제외한다(evaluate.ts:41). 오라클은 (scope, actor_id, actor_type)을 쓴다. support_sets 정렬 방식도 참조 어댑터와 다르다. 클린룸 위반의 구체적 증거는 없다.",
+  "summary": "공개 팩을 다시 실행한 결과 구현은 15/15를 통과했고 계약 위반(응답 형식 오류, digest 없는 수용 등)은 0건이다(eval/collision/impl-public.json). held-out 32건(확정 26건, 미확정 6건, case_error 0건)에서는 구현이 기대값과 32/32 모두 일치했다. 확정 케이스만 보면 26/26이다. 참조 오라클은 28/32, 확정 케이스 기준 25/26이었다.\n\n불일치 4건은 모두 오라클이 기대값 및 구현과 어긋난 경우다.\n- ho-10: 확장형 scope_type의 fail-closed 여부 (spec_ambiguity)\n- ho-20: support_sets 바깥 목록 정렬 방식 (spec_ambiguity). 참조 어댑터는 직렬화 문자열로 정렬하지만 run_wire.py는 원소별로 정렬해 오라클 내부에서도 어긋난다.\n- ho-23: 증거 단위 policy 제한이 조용히 소거됨 (security_privacy). 오라클이 시나리오 D의 '안전하지 않은 동작'을 수용한다.\n- ho-24: identity 의존성 보존 방향 (spec_ambiguity)\n\n구현 결함으로 분류할 불일치는 없다.\n\nheld-out 팩 밖에서 추가 탐침 3건으로 잠재 불일치를 확인했다. 집계에는 넣지 않았다.\n- P1: 스코프에 identity ref가 있지만 derivation에 없는 경우. 구현은 수용하고 오라클은 거부한다.\n- P2: material support 의존성이 있는데 support_sets가 없는 경우. 구현은 수용하고 오라클은 거부한다.\n- P3: evidence 모드에 derivation이 함께 있는 경우. 구현은 수용하고 오라클은 거부한다.\n이 밖에 actor_type 차이를 참여자 동일성 판단에 넣는지도 두 쪽이 다르다. 이 항목들은 다음 held-out 세대의 후보다.\n\n운영 메모: harness.py는 case_pack_version이 'rcp-v0.2-cleanroom-cases-1'이 아니면 rc=2로 종료한다. 그래서 지시대로 heldout.json('heldout-1')을 작성하고, 실행용으로 버전 필드만 바꾼 heldout-run.json을 따로 만들어 돌렸다. 케이스 내용은 같다.\n\n산출물(/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/eval/collision/): heldout.json, heldout-run.json, heldout-full.json(determinacy 포함 분석용), impl-public.json, impl-heldout.json, oracle-heldout.json. 클린룸 위반은 없다."
+ }
+}

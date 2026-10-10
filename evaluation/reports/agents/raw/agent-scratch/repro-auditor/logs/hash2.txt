@@ -1,0 +1,3 @@
+3285ec0bd5b90698c61b15ee1ecc3b80170285ae109aede8024f0740d19df7b4  reference-ecosystem/out/canonical-brief.txt
+a8530b857f907caec7854dae8d44cddc52bceeacf7b6eac93e69662024ca84ae  reference-ecosystem/out/canonical-trace.json
+fd1c0896e2fc4149874033d3bba487154aa72d64cca85bdd4d109fa266a5c621  conformance/external/v0_2/out/self-test-report.json

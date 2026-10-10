@@ -1,0 +1,5 @@
+
+> rcp-reference-ecosystem@0.0.1 test:policy
+> node tests/enterprise-policy-drift.mjs
+
+RCP enterprise policy drift and staleness: PASS

@@ -1,0 +1,840 @@
+{
+ "P0-base": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P1-bilateral-same-actor-two-types": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "agent"
+    ],
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P1b-participants-outside-trust_domain": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t8",
+     "B",
+     "person"
+    ],
+    [
+     "tenant:t9",
+     "A",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P2-target-not-subset-of-source-with-basis": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [
+    "evidence:E"
+   ],
+   "material_dependency_refs": [],
+   "support_sets": [],
+   "policy_refs": [],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P3-duplicate-support-set-reordered": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A",
+     "evidence:B"
+    ],
+    [
+     "evidence:A",
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P3b-non-minimal-superset-support-set": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A",
+     "evidence:B"
+    ],
+    [
+     "evidence:A"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P4-material-support-dep-in-no-support-set": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P7-opaque-mode-carrying-derivation-drops-policy": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:UNKNOWN"
+    ]
+   ],
+   "policy_refs": [],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P7b-unavailable-mode-carrying-derivation-drops-policy": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P7c-control-derived-drops-policy": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": false,
+  "errors": [
+   "material policy dependencies are not preserved: policy:p1"
+  ],
+  "semantic_digest": null
+ },
+ "P8-evidence-mode-unmaterialized-identity-dep": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [
+    "evidence:E"
+   ],
+   "material_dependency_refs": [],
+   "support_sets": [],
+   "policy_refs": [],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P9-verified-basis-is-a-policy-ref": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "verified_fact",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P9b-verified-basis-non-material-dep": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "verified_fact",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P11-valid_from-after-valid_until": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P11b-active-but-past-valid_until": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P12-supersedes-conflicts-supports-same-target": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P13-unknown-namespaced-scope_type": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "x-acme:secret-circle",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P13b-provider_defined-scope": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "provider_defined",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "C",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "D",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P21-self-supporting-assertion-cycle": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "assertion:k",
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "assertion:k"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P20-duplicate-evidence_ref-identical": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": false,
+  "errors": [
+   "schema: [{'evidence_ref': 'evidence:E', 'evidence_type': 'interaction', 'representation': 'opaque_ref', 'source_participants': [{'actor_id': 'A', 'scope': 'tenant:t1', 'actor_type': 'person'}, {'actor_id': 'B', 'scope': 'tenant:t1', 'actor_type': 'person'}]}, {'evidence_ref': 'evidence:E', 'evidence_type': 'interaction', 'representation': 'opaque_ref', 'source_participants': [{'actor_id': 'A', 'scope': 'tenant:t1', 'actor_type': 'person'}, {'actor_id': 'B', 'scope': 'tenant:t1', 'actor_type': 'person'}]}] has non-unique elements"
+  ],
+  "semantic_digest": null
+ },
+ "P22-evidence-mode-with-derivation": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": false,
+  "errors": [
+   "evidence provenance mode must not carry derivation semantics"
+  ],
+  "semantic_digest": null
+ },
+ "P23-unrequired-extension-that-alters-meaning": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [
+    "evidence:A",
+    "evidence:B",
+    "policy:p1"
+   ],
+   "support_sets": [
+    [
+     "evidence:A"
+    ],
+    [
+     "evidence:B"
+    ]
+   ],
+   "policy_refs": [
+    "policy:p1"
+   ],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P24-derived-with-zero-material-deps": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": true,
+  "errors": [],
+  "semantic_digest": {
+   "assertion_id": "assertion:k",
+   "assertion_type": "commitment",
+   "epistemic_class": "system_interpretation",
+   "scope_type": "bilateral",
+   "target_participants": [
+    [
+     "tenant:t1",
+     "A",
+     "person"
+    ],
+    [
+     "tenant:t1",
+     "B",
+     "person"
+    ]
+   ],
+   "evidence_refs": [],
+   "material_dependency_refs": [],
+   "support_sets": [],
+   "policy_refs": [],
+   "lifecycle_state": "active",
+   "required_extensions": []
+  }
+ },
+ "P25-bad-date": {
+  "contract_version": "rcp-v0.2-cleanroom-1",
+  "accepted": false,
+  "errors": [
+   "schema: '2026-13-45T99:00:00Z' is not a 'date-time'"
+  ],
+  "semantic_digest": null
+ }
+}

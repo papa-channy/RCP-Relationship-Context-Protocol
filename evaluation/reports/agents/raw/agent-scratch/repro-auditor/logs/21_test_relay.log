@@ -1,0 +1,5 @@
+
+> rcp-reference-ecosystem@0.0.1 test:relay
+> node tests/operator-blind-relay.mjs
+
+RCP operator-blind relay data path: PASS

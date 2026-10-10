@@ -1,0 +1,9 @@
+
+> test
+> node test-equivalence.mjs
+
+RCP v0.2 real binding equivalence: PASS
+- MCP resource: rcp://relationship/a-b/assertions/binding-equivalent
+- HTTP path: /rcp/relationships/a-b/assertions/binding-equivalent
+- Both outputs passed the same JSON Schema + RCP semantic validator
+- Both outputs normalized to identical canonical relationship state

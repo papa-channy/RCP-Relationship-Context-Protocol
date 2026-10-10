@@ -1,0 +1,115 @@
+python: Python 3.11.15 node: v24.14.0 npm: 11.9.0
+=== workflow: conformance.yml
+STEP pip install conformance/requirements                         rc=0 t=1.5s
+    | Successfully installed arrow-1.4.0 attrs-26.1.0 fqdn-1.6.0 idna-3.20 isoduration-20.11.0 jsonpointer-3.2.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 python-dateutil-2.9.0.post0 referencing-0.37.0 rfc3339-validator-0.1.4 rfc3987-1.3.8 rpds-py-2026.9.1 six-1.17.0 typing-extensions-4.16.0 tzdata-2026.5 uri-template-1.3.0 webcolors-25.10.0
+    | 
+    | [notice] A new release of pip is available: 24.0 -> 26.2.1
+    | [notice] To update, run: pip install --upgrade pip
+STEP conformance/run.py                                           rc=0 t=0.4s
+    | RCP conformance bootstrap: PASS
+STEP boundary_checks.py                                           rc=0 t=0.0s
+    | RCP content/group boundary conformance: PASS
+STEP pip install python-probe reqs                                rc=0 t=0.9s
+    | Successfully installed cffi-2.1.1 cryptography-50.0.2 jwcrypto-1.6.1 pycparser-3.11 rfc8785-0.1.4
+    | 
+    | [notice] A new release of pip is available: 24.0 -> 26.2.1
+    | [notice] To update, run: pip install --upgrade pip
+STEP npm install crypto                                           rc=0 t=0.5s
+    | 1 package is looking for funding
+    |   run `npm fund` for details
+    | 
+    | found 0 vulnerabilities
+STEP npm test crypto                                              rc=0 t=0.2s
+    | > test
+    | > node crypto-profile.test.mjs
+    | 
+    | RCP JOSE crypto profile: PASS
+STEP node producer                                                rc=0 t=0.1s
+    | Node RCP interop vector produced
+STEP py consume                                                   rc=0 t=0.5s
+    | Python consumed node-jose-canonicalize RCP vector: PASS
+STEP py produce                                                   rc=0 t=0.1s
+    | Python RCP interop vector produced
+STEP node consume                                                 rc=0 t=0.1s
+    | Node consumed python-jwcrypto-rfc8785 RCP vector: PASS
+STEP npm install external                                         rc=0 t=0.4s
+    | 1 package is looking for funding
+    |   run `npm fund` for details
+    | 
+    | found 0 vulnerabilities
+STEP npm install reference-ecosystem (for harness)                rc=0 t=0.4s
+    | 1 package is looking for funding
+    |   run `npm fund` for details
+    | 
+    | found 0 vulnerabilities
+STEP independence grep rc=0 (no match)
+STEP external self-test                                           rc=0 t=2.4s
+    | > node self-test.mjs
+    | 
+    | RCP external Provider harness self-test: PASS
+    | Report: /var/folders/j0/s79yn2wj64j857ml0mr7__hr0000gn/T/rcp-external-harness-LaLBZK/provider-report.json
+=== workflow: reference-ecosystem.yml
+STEP npm install                                                  rc=0 t=0.5s
+    | 1 package is looking for funding
+    |   run `npm fund` for details
+    | 
+    | found 0 vulnerabilities
+STEP npm run smoke                                                rc=0 t=0.4s
+    | > rcp-reference-ecosystem@0.0.1 smoke
+    | > node tests/topology-smoke.mjs
+    | 
+    | RCP reference ecosystem topology smoke: PASS
+STEP npm run test:permission                                      rc=0 t=0.4s
+    | > rcp-reference-ecosystem@0.0.1 test:permission
+    | > node tests/permission-before-retrieval.mjs
+    | 
+    | RCP permission + SecureEnvelope + provenance integration: PASS
+STEP npm run test:revocation                                      rc=0 t=0.4s
+    | > rcp-reference-ecosystem@0.0.1 test:revocation
+    | > node tests/revocation-recompute.mjs
+    | 
+    | RCP source revocation and relationship brief recomputation: PASS
+STEP npm run test:policy                                          rc=0 t=0.4s
+    | > rcp-reference-ecosystem@0.0.1 test:policy
+    | > node tests/enterprise-policy-drift.mjs
+    | 
+    | RCP enterprise policy drift and staleness: PASS
+STEP npm run test:relay                                           rc=0 t=0.5s
+    | > rcp-reference-ecosystem@0.0.1 test:relay
+    | > node tests/operator-blind-relay.mjs
+    | 
+    | RCP operator-blind relay data path: PASS
+STEP npm run test:identity                                        rc=0 t=0.1s
+    | > rcp-reference-ecosystem@0.0.1 test:identity
+    | > node tests/identity-resolution.mjs
+    | 
+    | RCP tenant-scoped identity resolution: PASS
+STEP npm run demo                                                 rc=0 t=0.5s
+    | 
+    | Machine trace: out/canonical-trace.json
+    | Human brief: out/canonical-brief.txt
+    | RCP canonical identity-resolved reference demo: PASS
+total 104
+drwxr-xr-x@  4 chan  wheel    128 10월 10 16:47 .
+drwxr-xr-x@ 12 chan  wheel    384 10월 10 16:47 ..
+-rw-r--r--@  1 chan  wheel    900 10월 10 16:47 canonical-brief.txt
+-rw-r--r--@  1 chan  wheel  47705 10월 10 16:47 canonical-trace.json
+=== workflow: semantic-v0.2.yml
+STEP v0_2/run.py                                                  rc=0 t=0.0s
+    | RCP v0.2 draft semantic conformance: PASS (31 cases)
+STEP v0_2/run_wire.py                                             rc=0 t=0.1s
+    | RCP v0.2 draft wire conformance: PASS (20 schema/semantic cases, 1 binding-equivalence case)
+STEP v0.2 independence grep rc=0 (no match)
+STEP external v0_2 harness self-test                              rc=0 t=1.1s
+    | RCP v0.2 external clean-room harness: PASS (15/15 cases)
+    | report: conformance/external/v0_2/out/self-test-report.json
+STEP npm install bindings                                         rc=0 t=0.5s
+    | 2 packages are looking for funding
+    |   run `npm fund` for details
+    | 
+    | found 0 vulnerabilities
+STEP npm test bindings                                            rc=0 t=0.6s
+    | - MCP resource: rcp://relationship/a-b/assertions/binding-equivalent
+    | - HTTP path: /rcp/relationships/a-b/assertions/binding-equivalent
+    | - Both outputs passed the same JSON Schema + RCP semantic validator
+    | - Both outputs normalized to identical canonical relationship state

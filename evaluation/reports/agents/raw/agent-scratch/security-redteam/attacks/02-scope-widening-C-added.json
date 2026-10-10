@@ -1,0 +1,57 @@
+{
+ "type": "rcp.context_assertion",
+ "rcp_version": "0.2-draft",
+ "assertion_id": "assertion:widen",
+ "assertion_type": "commitment",
+ "relationship_scope": {
+  "scope_type": "group",
+  "participants": [
+   {
+    "actor_id": "A",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   },
+   {
+    "actor_id": "B",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   },
+   {
+    "actor_id": "C",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   }
+  ],
+  "trust_domain": "tenant:t1"
+ },
+ "epistemic_class": "system_interpretation",
+ "statement": "A, B and C are jointly committed.",
+ "provenance": {
+  "mode": "evidence",
+  "visibility": "full",
+  "evidence": [
+   {
+    "evidence_ref": "evidence:bilateral-ab",
+    "evidence_type": "interaction",
+    "representation": "metadata",
+    "source_participants": [
+     {
+      "actor_id": "A",
+      "scope": "tenant:t1",
+      "actor_type": "person"
+     },
+     {
+      "actor_id": "B",
+      "scope": "tenant:t1",
+      "actor_type": "person"
+     }
+    ],
+    "projection_basis_ref": "basis:x"
+   }
+  ]
+ },
+ "lifecycle": {
+  "state": "active"
+ },
+ "created_at": "2026-10-09T00:00:00Z"
+}

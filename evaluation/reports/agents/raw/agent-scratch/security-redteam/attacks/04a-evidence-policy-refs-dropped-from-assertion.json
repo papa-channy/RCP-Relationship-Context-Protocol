@@ -1,0 +1,56 @@
+{
+ "type": "rcp.context_assertion",
+ "rcp_version": "0.2-draft",
+ "assertion_id": "assertion:policy-drop",
+ "assertion_type": "commitment",
+ "relationship_scope": {
+  "scope_type": "bilateral",
+  "participants": [
+   {
+    "actor_id": "A",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   },
+   {
+    "actor_id": "B",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   }
+  ],
+  "trust_domain": "tenant:t1"
+ },
+ "epistemic_class": "system_interpretation",
+ "statement": "A and B have an open commitment.",
+ "provenance": {
+  "mode": "evidence",
+  "visibility": "full",
+  "evidence": [
+   {
+    "evidence_ref": "evidence:e1",
+    "evidence_type": "interaction",
+    "representation": "source_statement",
+    "source_participants": [
+     {
+      "actor_id": "A",
+      "scope": "tenant:t1",
+      "actor_type": "person"
+     },
+     {
+      "actor_id": "B",
+      "scope": "tenant:t1",
+      "actor_type": "person"
+     }
+    ],
+    "policy_refs": [
+     "policy:no-external-processing",
+     "policy:no-training",
+     "policy:org-confidential"
+    ]
+   }
+  ]
+ },
+ "lifecycle": {
+  "state": "active"
+ },
+ "created_at": "2026-10-09T00:00:00Z"
+}

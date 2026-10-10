@@ -1,0 +1,153 @@
+{
+  "harness_contract_version": "rcp-v0.2-cleanroom-1",
+  "case_pack_version": "rcp-v0.2-cleanroom-cases-1",
+  "case_pack_path": "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/wt/conformance/external/v0_2/cases/public.json",
+  "case_pack_declared_revision": "repository-self-test",
+  "rcp_revision": "unspecified",
+  "implementation": {
+    "name": "b",
+    "version": "unknown",
+    "language": "unknown",
+    "command": "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/wt/.venv/bin/python /private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/wt/conformance/external/v0_2/reference_adapter.py"
+  },
+  "run_at": "2026-10-10T08:06:50.260237+00:00",
+  "summary": {
+    "total": 15,
+    "passed": 15,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "basic-bilateral-evidence",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "explicit-group-to-bilateral-projection",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "silent-group-to-bilateral-projection-rejected",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "evidence:group-sensitive changes participant scope without projection_basis_ref"
+      ]
+    },
+    {
+      "id": "derived-independent-support-with-policy-and-identity",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "support-set-unknown-reference-rejected",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "support_set references unknown dependency: evidence:missing"
+      ]
+    },
+    {
+      "id": "verified-fact-with-resolved-basis",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "verified-fact-without-basis-rejected",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "schema: 'verification_basis_refs' is a required property"
+      ]
+    },
+    {
+      "id": "verified-fact-unresolved-basis-rejected",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "verification basis does not resolve to evidence/dependency: evidence:missing"
+      ]
+    },
+    {
+      "id": "unknown-scope-fails-closed",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "unknown relationship scope is material and must fail closed"
+      ]
+    },
+    {
+      "id": "required-extension-supported",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "required-extension-unsupported",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "required extension is unsupported: x-example:calibration"
+      ]
+    },
+    {
+      "id": "removed-confidence-field-rejected",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "schema: Additional properties are not allowed ('confidence' was unexpected)"
+      ]
+    },
+    {
+      "id": "epistemic-duplicate-assertion-type-rejected",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "schema: 'inference' is not valid under any of the given schemas"
+      ]
+    },
+    {
+      "id": "self-conflict-rejected",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "assertion cannot declare a semantic relation to itself"
+      ]
+    },
+    {
+      "id": "namespaced-evidence-channel-accepted",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    }
+  ]
+}

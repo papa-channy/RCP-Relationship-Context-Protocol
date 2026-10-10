@@ -1,0 +1,35 @@
+{
+ "type": "rcp.context_assertion",
+ "rcp_version": "0.2-draft",
+ "assertion_id": "assertion:idref-ghost",
+ "assertion_type": "commitment",
+ "relationship_scope": {
+  "scope_type": "bilateral",
+  "participants": [
+   {
+    "actor_id": "A",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   },
+   {
+    "actor_id": "B",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   }
+  ],
+  "trust_domain": "tenant:t1",
+  "identity_dependency_refs": [
+   "identity:ghost"
+  ]
+ },
+ "epistemic_class": "system_interpretation",
+ "statement": "A and B have an open commitment.",
+ "provenance": {
+  "mode": "opaque",
+  "visibility": "opaque"
+ },
+ "lifecycle": {
+  "state": "active"
+ },
+ "created_at": "2026-10-09T00:00:00Z"
+}

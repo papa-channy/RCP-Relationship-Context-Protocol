@@ -1,0 +1,37 @@
+
+> rcp-reference-ecosystem@0.0.1 demo
+> node scenarios/canonical-demo.mjs
+
+RCP Canonical Relationship Brief
+================================
+Tenant: user:a
+Subject: person:b
+Identity resolution: 5 provider bindings (resolved)
+Active relationship context: 4
+Encrypted relay transfers: 4
+
+Context
+-------
+- [commitment] A and B agreed to revisit Project X in November.
+- [status] B is preparing for a Japan trip.
+- [event] Interaction meeting-project-x occurred at 2026-09-28T02:00:00Z.
+- [event] Project X was discussed in a video meeting.
+
+Provider identity bindings
+--------------------------
+- demo:enterprise -> work_email (user_confirmed)
+- demo:mail -> email (user_confirmed)
+- demo:meeting -> meeting_account (user_confirmed)
+- demo:messenger -> messenger_id (user_confirmed)
+- demo:phone -> phone (user_confirmed)
+
+Execution summary
+-----------------
+- Envelopes verified/decrypted: 4
+- ContextAssertions activated: 4
+- Relay-routed envelopes: 4
+- Stale providers: 0
+
+Machine trace: out/canonical-trace.json
+Human brief: out/canonical-brief.txt
+RCP canonical identity-resolved reference demo: PASS

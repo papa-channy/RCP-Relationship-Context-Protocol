@@ -1,0 +1,56 @@
+{
+ "type": "rcp.context_assertion",
+ "rcp_version": "0.2-draft",
+ "assertion_id": "assertion:launder2",
+ "assertion_type": "commitment",
+ "relationship_scope": {
+  "scope_type": "bilateral",
+  "participants": [
+   {
+    "actor_id": "A",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   },
+   {
+    "actor_id": "B",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   }
+  ],
+  "trust_domain": "tenant:t1"
+ },
+ "epistemic_class": "verified_fact",
+ "statement": "B committed fraud.",
+ "provenance": {
+  "mode": "derived",
+  "visibility": "redacted",
+  "derivation": {
+   "dependencies": [
+    {
+     "dependency_ref": "evidence:e1",
+     "dependency_type": "evidence",
+     "role": "supports",
+     "material": true
+    },
+    {
+     "dependency_ref": "policy:p1",
+     "dependency_type": "policy",
+     "role": "derived_from",
+     "material": false
+    }
+   ],
+   "support_sets": [
+    [
+     "evidence:e1"
+    ]
+   ]
+  }
+ },
+ "lifecycle": {
+  "state": "active"
+ },
+ "created_at": "2026-10-09T00:00:00Z",
+ "verification_basis_refs": [
+  "policy:p1"
+ ]
+}

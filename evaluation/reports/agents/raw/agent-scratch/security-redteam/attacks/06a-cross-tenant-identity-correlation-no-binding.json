@@ -1,0 +1,47 @@
+{
+ "type": "rcp.context_assertion",
+ "rcp_version": "0.2-draft",
+ "assertion_id": "assertion:xtenant",
+ "assertion_type": "relationship_state",
+ "relationship_scope": {
+  "scope_type": "bilateral",
+  "participants": [
+   {
+    "actor_id": "alice",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   },
+   {
+    "actor_id": "alice",
+    "scope": "tenant:t2",
+    "actor_type": "person"
+   }
+  ],
+  "trust_domain": "tenant:t1"
+ },
+ "epistemic_class": "system_interpretation",
+ "statement": "alice@t1 and alice@t2 are the same person who moonlights for a competitor.",
+ "provenance": {
+  "mode": "derived",
+  "visibility": "redacted",
+  "derivation": {
+   "dependencies": [
+    {
+     "dependency_ref": "evidence:e1",
+     "dependency_type": "evidence",
+     "role": "supports",
+     "material": true
+    }
+   ],
+   "support_sets": [
+    [
+     "evidence:e1"
+    ]
+   ]
+  }
+ },
+ "lifecycle": {
+  "state": "active"
+ },
+ "created_at": "2026-10-09T00:00:00Z"
+}

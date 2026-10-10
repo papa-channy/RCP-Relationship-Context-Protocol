@@ -1,0 +1,5 @@
+
+> test
+> node crypto-profile.test.mjs
+
+RCP JOSE crypto profile: PASS

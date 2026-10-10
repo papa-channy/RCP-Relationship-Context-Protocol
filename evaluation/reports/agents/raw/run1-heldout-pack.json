@@ -1,0 +1,2581 @@
+{
+ "case_pack_version": "heldout-run1",
+ "cases": [
+  {
+   "id": "ho-01-evidence-bilateral-source-reordered",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:167-180; conformance/external/v0_2/CONTRACT.md:102-114",
+   "rationale": "source_participants가 target과 같은 집합(순서만 다름)이므로 projection_basis_ref가 필요 없다. digest의 target_participants는 사전순 정렬이므로 'u-12'가 'u-3'보다 앞에 온다(문자열 비교).",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:quote-friday",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:quote-friday",
+     "assertion_type": "commitment",
+     "epistemic_class": "extracted_fact",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:mail-881"
+     ],
+     "material_dependency_refs": [],
+     "support_sets": [],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-02-reject-legacy-top-level-confidence",
+   "determinacy": "determinate",
+   "spec_basis": "spec/schemas/v0.2-draft/context-assertion.schema.json:7; spec/wire-v0.2-draft.md:98-108; docs/standards-reconciliation-v0.2.md:126,160-174",
+   "rationale": "M4.5에서 최상위 confidence가 제거되었고, 스키마 최상위가 additionalProperties:false이므로 confidence 필드가 있으면 구조 검증에서 거부된다. 확신도는 네임스페이스 확장으로만 표현해야 한다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:quote-conf",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "confidence": 0.82
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-03-reject-epistemic-value-as-assertion-type",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:76-83; spec/schemas/v0.2-draft/context-assertion.schema.json:83-99; docs/standards-reconciliation-v0.2.md:176-185",
+   "rationale": "'inference'는 epistemic_class 축에만 속한다. 기본 assertion_type 열거값도 아니고 네임스페이스 확장 형식도 아니므로 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:relocation-guess",
+    "assertion_type": "inference",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_inference",
+    "statement": "u-12 is likely to relocate to Busan next spring.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-04-reject-removed-derivation-transformation",
+   "determinacy": "determinate",
+   "spec_basis": "spec/schemas/v0.2-draft/context-assertion.schema.json:196-219; spec/wire-v0.2-draft.md:265; spec/core-v0.2-draft.md:185",
+   "rationale": "transformation 필드는 기본 구조에서 제거되었고 Derivation이 additionalProperties:false이므로 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:followup-k",
+    "assertion_type": "open_loop",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "u-3 still owes u-12 an answer about the pilot scope.",
+    "provenance": {
+     "mode": "derived",
+     "visibility": "redacted",
+     "derivation": {
+      "dependencies": [
+       {
+        "dependency_ref": "ev:mail-881",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       }
+      ],
+      "support_sets": [
+       [
+        "ev:mail-881"
+       ]
+      ],
+      "transformation": "summarization"
+     }
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-05-namespaced-evidence-type-and-actor-type",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:156-165; spec/schemas/v0.2-draft/context-assertion.schema.json:79-82,100-127; docs/standards-reconciliation-v0.2.md:120,132",
+   "rationale": "스펙은 채널 어휘를 네임스페이스 evidence_type으로 표현하라고 명시하며, actor_type도 네임스페이스 외부 타입을 허용한다. source 집합이 target과 같아 basis가 필요 없고, required_extensions가 비어 있어 미지원 확장 문제도 없다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:vendor-pref",
+    "assertion_type": "preference",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "org-9",
+       "scope": "tenant:hanbit",
+       "actor_type": "x-crm:account_contact"
+      },
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "source_statement",
+    "statement": "org-9's contact said they prefer invoices in KRW.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "type_only",
+     "evidence": [
+      {
+       "evidence_ref": "ev:thread-5521",
+       "evidence_type": "x-mailco:thread",
+       "provider_ref": "provider:mailco",
+       "representation": "type_only",
+       "source_participants": [
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "org-9",
+         "scope": "tenant:hanbit",
+         "actor_type": "x-crm:account_contact"
+        }
+       ]
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:vendor-pref",
+     "assertion_type": "preference",
+     "epistemic_class": "source_statement",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "org-9",
+       "x-crm:account_contact"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:thread-5521"
+     ],
+     "material_dependency_refs": [],
+     "support_sets": [],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-06-reject-bilateral-with-three-participants",
+   "determinacy": "determinate",
+   "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:47; docs/standards-reconciliation-v0.2.md:121; spec/wire-v0.2-draft.md:146",
+   "rationale": "scope_type은 관계 단언의 cardinality를 결정하며, 구현 가이드가 bilateral/group cardinality 검사를 요구한다. bilateral은 정의상 참여자가 정확히 두 명이므로 3명이면 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:tri-commit",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-40",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:meet-30",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-40",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ]
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-07-group-scope-with-two-participants",
+   "determinacy": "indeterminate",
+   "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:47 (group의 정확한 최소 인원은 명시되지 않음); spec/schemas/v0.2-draft/context-assertion.schema.json:141-146",
+   "rationale": "스펙은 group cardinality 검사를 요구하지만 수치는 정의하지 않는다. 스키마가 이미 최소 2명을 강제하므로, group에 별도 cardinality 규칙이 있다는 것은 3명 이상을 뜻한다고 읽는 것이 가장 자연스럽다(2명이면 bilateral과 구별되지 않음). 따라서 거부를 예상한다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:group-of-two",
+    "assertion_type": "shared_topic",
+    "relationship_scope": {
+     "scope_type": "group",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "u-3 and u-12 keep discussing the Q4 hiring plan.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-08-group-narrowing-with-explicit-basis",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:167-182; docs/standards-reconciliation-v0.2.md:204-210; spec/core-v0.2-draft.md:93-97",
+   "rationale": "source {u-3,u-12,u-40,u-55}가 target {u-3,u-12,u-40}로 좁혀지지만, 명시적 projection_basis_ref가 있으므로 허용된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:offsite-topic",
+    "assertion_type": "shared_topic",
+    "relationship_scope": {
+     "scope_type": "group",
+     "participants": [
+      {
+       "actor_id": "u-40",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit",
+     "relationship_ref": "rel:hanbit:offsite-crew"
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "u-3, u-12 and u-40 are jointly planning the November offsite.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:chan-offsite-11",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-40",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-55",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "projection_basis_ref": "basis:u55-declined-offsite-planning"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:offsite-topic",
+     "assertion_type": "shared_topic",
+     "epistemic_class": "system_interpretation",
+     "scope_type": "group",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-40",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:chan-offsite-11"
+     ],
+     "material_dependency_refs": [],
+     "support_sets": [],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-09-reject-unknown-scope-type-fail-closed",
+   "determinacy": "determinate",
+   "spec_basis": "spec/core-v0.2-draft.md:295-297; docs/IMPLEMENTER_GUIDE_V0_2.md:48",
+   "rationale": "unknown relationship scope를 더 허용적인 알려진 값으로 해석하면 안 되고 fail closed해야 한다. 따라서 스키마가 'unknown'을 허용하더라도 의미 검증에서 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:unknown-scope",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "unknown",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-10-unsupported-namespaced-scope-type",
+   "determinacy": "indeterminate",
+   "spec_basis": "spec/core-v0.2-draft.md:295-297; spec/schemas/v0.2-draft/context-assertion.schema.json:135-139 (네임스페이스 scope_type이 required_extensions에 없을 때의 처리는 명시되지 않음)",
+   "rationale": "스키마는 네임스페이스 scope_type을 허용한다. 하지만 평가기가 이해하지 못하는(supported_extensions에 없는) scope는 의미를 알 수 없는 material relationship scope이므로 fail closed가 가장 타당한 해석이다. required_extensions에 없다는 이유로 수용하는 구현도 가능하므로 미확정으로 둔다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:deal-room",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "x-crm:deal_room",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-11-reject-silent-participant-collapse",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:167-180; spec/core-v0.2-draft.md:93-97,259-261; docs/semantic-scenarios-v0.2.md:9-34",
+   "rationale": "source {u-3,u-12,u-40}가 target {u-3,u-12}로 축소되었는데 projection_basis_ref가 없다. silent participant collapse이므로 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:salary-remark",
+    "assertion_type": "relationship_state",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "source_statement",
+    "statement": "u-40 mentioned u-12 is unhappy with compensation.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:lunch-call-3",
+       "evidence_type": "interaction",
+       "representation": "source_statement",
+       "source_participants": [
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-40",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ]
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-12-user-note-widening-with-basis",
+   "determinacy": "indeterminate",
+   "spec_basis": "spec/wire-v0.2-draft.md:176-180; docs/standards-reconciliation-v0.2.md:136,208 vs docs/semantic-scenarios-v0.2.md:34",
+   "rationale": "source {u-3}와 target {u-3,u-12}가 달라 basis가 필요한데, basis가 있다. 조정 문서는 basis가 '축소 또는 그 밖의 참여자 범위 변경'을 정당화한다고 하므로 수용이 가장 타당한 해석이다. 다만 시나리오 A의 'source ⊇ target은 필요조건'을 일반 규칙으로 읽으면 거부될 수도 있어 미확정이다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:note-async",
+    "assertion_type": "preference",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "user_observation",
+    "statement": "u-12 seems to prefer async status updates.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "full",
+     "evidence": [
+      {
+       "evidence_ref": "ev:note-204",
+       "evidence_type": "user_note",
+       "representation": "source_statement",
+       "source_participants": [
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "projection_basis_ref": "basis:author-note-about-counterparty"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:note-async",
+     "assertion_type": "preference",
+     "epistemic_class": "user_observation",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:note-204"
+     ],
+     "material_dependency_refs": [],
+     "support_sets": [],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-13-reject-namespaced-evidence-without-basis",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:176; docs/standards-reconciliation-v0.2.md:204-210; docs/standards-boundary.md:278-282",
+   "rationale": "참여자 투영 규칙은 evidence_type과 무관하다. 두 번째 증거(네임스페이스 transcript)의 source 집합이 target과 다른데 basis가 없으므로, 첫 번째 증거가 정상이어도 단언 전체가 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:launch-date",
+    "assertion_type": "event",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "u-3 and u-12 fixed the launch review for Nov 18.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-902",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ]
+      },
+      {
+       "evidence_ref": "ev:transcript-77",
+       "evidence_type": "x-meetco:transcript",
+       "representation": "provider_projection",
+       "source_participants": [
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-55",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ]
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-14-reject-verified-fact-without-basis",
+   "determinacy": "determinate",
+   "spec_basis": "spec/schemas/v0.2-draft/context-assertion.schema.json:69-77; spec/wire-v0.2-draft.md:96; spec/core-v0.2-draft.md:156-160",
+   "rationale": "verified_fact는 verification_basis_refs가 반드시 있어야 한다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:contract-signed",
+    "assertion_type": "event",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "verified_fact",
+    "statement": "u-12 signed the master service agreement on Oct 2.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-15-reject-verified-fact-basis-not-in-lineage",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:96; spec/core-v0.2-draft.md:160,263-265",
+   "rationale": "verification_basis_refs는 있지만 'verif:esign-audit-41'이 선언된 evidence_ref나 dependency_ref 어디에도 없다. lineage로 해소되지 않으므로 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:contract-signed-2",
+    "assertion_type": "event",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "verified_fact",
+    "statement": "u-12 signed the master service agreement on Oct 2.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "verification_basis_refs": [
+     "verif:esign-audit-41"
+    ]
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-16-verified-fact-basis-resolves-to-evidence",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:96; spec/core-v0.2-draft.md:148,160; spec/schemas/v0.2-draft/context-assertion.schema.json:69-77",
+   "rationale": "검증 근거 참조가 선언된 evidence_ref와 일치해 lineage로 해소되므로 verified_fact가 허용된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:contract-signed-3",
+    "assertion_type": "event",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "verified_fact",
+    "statement": "u-12 signed the master service agreement on Oct 2.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:esign-audit-41",
+       "evidence_type": "x-esign:audit_record",
+       "provider_ref": "provider:esignco",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-02T03:11:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "verification_basis_refs": [
+     "ev:esign-audit-41"
+    ]
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:contract-signed-3",
+     "assertion_type": "event",
+     "epistemic_class": "verified_fact",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:esign-audit-41"
+     ],
+     "material_dependency_refs": [],
+     "support_sets": [],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-17-reject-support-set-dangling-reference",
+   "determinacy": "determinate",
+   "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:52-53; spec/wire-v0.2-draft.md:221-255; spec/core-v0.2-draft.md:187-197",
+   "rationale": "support_sets는 선언된 dependency 가운데 독립적으로 충분한 조합을 나타낸다. 'ev:chat-1003'은 dependencies에 없으므로 파생 참조 무결성 위반으로 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:revisit-pricing",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "u-3 will revisit pricing with u-12 after the pilot.",
+    "provenance": {
+     "mode": "derived",
+     "visibility": "opaque",
+     "derivation": {
+      "dependencies": [
+       {
+        "dependency_ref": "ev:mail-1001",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       },
+       {
+        "dependency_ref": "ev:call-1002",
+        "dependency_type": "evidence",
+        "role": "corroborates",
+        "material": true
+       }
+      ],
+      "support_sets": [
+       [
+        "ev:mail-1001"
+       ],
+       [
+        "ev:chat-1003"
+       ]
+      ]
+     }
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-18-independent-support-sets-with-nonmaterial-dependency",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:229-255; conformance/external/v0_2/CONTRACT.md:116-135",
+   "rationale": "독립 support set 두 개는 OR 의미로 유효하다. material=false 의존성은 material_dependency_refs에서 빠지고, support_sets의 외부 리스트는 사전순으로 정렬된다. provenance.evidence가 없으므로 evidence_refs는 빈 배열이다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:revisit-pricing-2",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "u-3 will revisit pricing with u-12 after the pilot.",
+    "provenance": {
+     "mode": "derived",
+     "visibility": "redacted",
+     "derivation": {
+      "dependencies": [
+       {
+        "dependency_ref": "ev:sms-b20",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       },
+       {
+        "dependency_ref": "ev:mail-a10",
+        "dependency_type": "evidence",
+        "role": "corroborates",
+        "material": true
+       },
+       {
+        "dependency_ref": "ev:crm-c30",
+        "dependency_type": "evidence",
+        "role": "refines",
+        "material": false
+       }
+      ],
+      "support_sets": [
+       [
+        "ev:sms-b20"
+       ],
+       [
+        "ev:mail-a10"
+       ]
+      ]
+     }
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:revisit-pricing-2",
+     "assertion_type": "commitment",
+     "epistemic_class": "system_interpretation",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [],
+     "material_dependency_refs": [
+      "ev:mail-a10",
+      "ev:sms-b20"
+     ],
+     "support_sets": [
+      [
+       "ev:mail-a10"
+      ],
+      [
+       "ev:sms-b20"
+      ]
+     ],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-19-joint-support-set-inner-sorted",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:257-263; spec/core-v0.2-draft.md:199-203; conformance/external/v0_2/CONTRACT.md:120-125",
+   "rationale": "한 support set에 참조 두 개가 함께 있으면 AND(둘 다 필요) 의미이다. digest에서는 내부 참조만 정렬되어 [['ev:c-mail-2','ev:z-call-7']]이 되며, 독립 집합 [[a],[b]]과 구별되어야 한다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:joint-commit",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_inference",
+    "statement": "u-12 will likely co-sign the renewal once legal approves.",
+    "provenance": {
+     "mode": "derived",
+     "visibility": "type_only",
+     "derivation": {
+      "dependencies": [
+       {
+        "dependency_ref": "ev:z-call-7",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       },
+       {
+        "dependency_ref": "ev:c-mail-2",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       }
+      ],
+      "support_sets": [
+       [
+        "ev:z-call-7",
+        "ev:c-mail-2"
+       ]
+      ]
+     }
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:joint-commit",
+     "assertion_type": "commitment",
+     "epistemic_class": "system_inference",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [],
+     "material_dependency_refs": [
+      "ev:c-mail-2",
+      "ev:z-call-7"
+     ],
+     "support_sets": [
+      [
+       "ev:c-mail-2",
+       "ev:z-call-7"
+      ]
+     ],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-20-support-set-outer-order-prefix",
+   "determinacy": "indeterminate",
+   "spec_basis": "conformance/external/v0_2/CONTRACT.md:120-125 ('JSON-array value' 기준 정렬이 원소별 비교인지 직렬화 문자열 비교인지 불명확)",
+   "rationale": "수용 자체는 확정적이다. 다만 한 집합이 다른 집합의 접두사일 때 외부 정렬 결과가 비교 방식에 따라 갈린다. 원소별(list) 비교면 [['ev:a-ticket-5'],['ev:a-ticket-5','ev:a-ticket-5b']]이고, 직렬화한 JSON 문자열로 비교하면 ','(0x2C)<']'(0x5D) 때문에 순서가 뒤집힌다. 원소별 사전순 비교가 가장 타당한 해석이다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:prefix-order",
+    "assertion_type": "open_loop",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "u-12 is waiting on u-3's security questionnaire.",
+    "provenance": {
+     "mode": "derived",
+     "visibility": "redacted",
+     "derivation": {
+      "dependencies": [
+       {
+        "dependency_ref": "ev:a-ticket-5",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       },
+       {
+        "dependency_ref": "ev:a-ticket-5b",
+        "dependency_type": "evidence",
+        "role": "corroborates",
+        "material": true
+       }
+      ],
+      "support_sets": [
+       [
+        "ev:a-ticket-5b",
+        "ev:a-ticket-5"
+       ],
+       [
+        "ev:a-ticket-5"
+       ]
+      ]
+     }
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:prefix-order",
+     "assertion_type": "open_loop",
+     "epistemic_class": "system_interpretation",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [],
+     "material_dependency_refs": [
+      "ev:a-ticket-5",
+      "ev:a-ticket-5b"
+     ],
+     "support_sets": [
+      [
+       "ev:a-ticket-5"
+      ],
+      [
+       "ev:a-ticket-5",
+       "ev:a-ticket-5b"
+      ]
+     ],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-21-reject-material-policy-dependency-erased",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:279-283; spec/core-v0.2-draft.md:275-281; docs/standards-boundary.md:180-184",
+   "rationale": "material policy 의존성 'pol:hr-confidential'이 최상위 policy_refs에 남아 있지 않다. 파생 단언은 material policy 의존성을 계속 지니고 있어야 하므로 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:hr-note",
+    "assertion_type": "constraint",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "Do not discuss u-12's leave schedule outside the HR channel.",
+    "provenance": {
+     "mode": "derived",
+     "visibility": "hidden",
+     "derivation": {
+      "dependencies": [
+       {
+        "dependency_ref": "ev:hr-ticket-61",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       },
+       {
+        "dependency_ref": "pol:hr-confidential",
+        "dependency_type": "policy",
+        "role": "derived_from",
+        "material": true
+       }
+      ],
+      "support_sets": [
+       [
+        "ev:hr-ticket-61"
+       ]
+      ]
+     }
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "policy_refs": []
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-22-policy-restrictions-carried-and-sorted",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:271-283; docs/standards-reconciliation-v0.2.md:138,286; conformance/external/v0_2/CONTRACT.md:116-129",
+   "rationale": "증거의 제한('pol:no-external-llm')과 material policy 의존성('pol:eu-residency')이 모두 최상위 policy_refs에 보존되어 있으므로 수용된다. material_dependency_refs에는 policy 타입 의존성도 들어가며, policy_refs는 정렬된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:eu-pilot",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "u-3 committed to share the EU pilot results with u-12.",
+    "provenance": {
+     "mode": "derived",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:slack-4",
+       "evidence_type": "x-slack:dm",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "policy_refs": [
+        "pol:no-external-llm"
+       ]
+      }
+     ],
+     "derivation": {
+      "dependencies": [
+       {
+        "dependency_ref": "ev:slack-4",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       },
+       {
+        "dependency_ref": "pol:eu-residency",
+        "dependency_type": "policy",
+        "role": "derived_from",
+        "material": true
+       }
+      ],
+      "support_sets": [
+       [
+        "ev:slack-4"
+       ]
+      ]
+     }
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "policy_refs": [
+     "pol:no-external-llm",
+     "pol:eu-residency"
+    ]
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:eu-pilot",
+     "assertion_type": "commitment",
+     "epistemic_class": "system_interpretation",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:slack-4"
+     ],
+     "material_dependency_refs": [
+      "ev:slack-4",
+      "pol:eu-residency"
+     ],
+     "support_sets": [
+      [
+       "ev:slack-4"
+      ]
+     ],
+     "policy_refs": [
+      "pol:eu-residency",
+      "pol:no-external-llm"
+     ],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-23-reject-evidence-restriction-dropped",
+   "determinacy": "determinate",
+   "spec_basis": "docs/semantic-scenarios-v0.2.md:117-144; spec/wire-v0.2-draft.md:281; spec/core-v0.2-draft.md:275-281; docs/standards-reconciliation-v0.2.md:138",
+   "rationale": "원천 증거에 붙어 있던 'pol:no-external-processing' 제한이 단언의 최상위 policy_refs에서 사라졌다. 충실도가 낮은 투영이라도 제한을 조용히 지울 수 없으므로 거부된다. 다른 제한 하나만 남긴 이번 경우도 마찬가지다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:board-remark",
+    "assertion_type": "relationship_state",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "source_statement",
+    "statement": "u-12 told u-3 the board is reconsidering the vendor.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:call-551",
+       "evidence_type": "interaction",
+       "representation": "source_statement",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "policy_refs": [
+        "pol:no-external-processing",
+        "pol:retention-90d"
+       ]
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "policy_refs": [
+     "pol:retention-90d"
+    ]
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-24-identity-binding-not-in-scope",
+   "determinacy": "indeterminate",
+   "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:54; spec/core-v0.2-draft.md:85-89,267-269; spec/wire-v0.2-draft.md:143-150 (보존의 구체적 형태는 명시되지 않음)",
+   "rationale": "material identity_binding 의존성이 derivation에만 있고 relationship_scope.identity_dependency_refs에는 없다. 스코프가 '스코프된 신원 해석에 대한 의존'을 담는 자리이고 identity 의존성 보존이 요구되므로 거부가 가장 타당한 해석이다. 다만 derivation에 남아 있는 것만으로 보존이 충족된다고 볼 수도 있어 미확정이다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:identity-dropped",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "u-3 promised u-12 a follow-up demo.",
+    "provenance": {
+     "mode": "derived",
+     "visibility": "redacted",
+     "derivation": {
+      "dependencies": [
+       {
+        "dependency_ref": "ev:crm-881",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       },
+       {
+        "dependency_ref": "idb:p-123->u-12",
+        "dependency_type": "identity_binding",
+        "role": "derived_from",
+        "material": true
+       }
+      ],
+      "support_sets": [
+       [
+        "ev:crm-881"
+       ]
+      ]
+     }
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-25-identity-dependency-preserved",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:143-150; spec/core-v0.2-draft.md:85-89,267-269; conformance/external/v0_2/CONTRACT.md:116-118",
+   "rationale": "identity binding이 스코프의 identity_dependency_refs와 material identity_binding 의존성 양쪽에 일관되게 선언되어 있으므로 수용된다. material_dependency_refs는 타입과 관계없이 정렬된다('ev:crm-881' < 'idb:...').",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:identity-kept",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit",
+     "identity_dependency_refs": [
+      "idb:p-123->u-12"
+     ]
+    },
+    "epistemic_class": "system_interpretation",
+    "statement": "u-3 promised u-12 a follow-up demo.",
+    "provenance": {
+     "mode": "derived",
+     "visibility": "redacted",
+     "derivation": {
+      "dependencies": [
+       {
+        "dependency_ref": "idb:p-123->u-12",
+        "dependency_type": "identity_binding",
+        "role": "derived_from",
+        "material": true
+       },
+       {
+        "dependency_ref": "ev:crm-881",
+        "dependency_type": "evidence",
+        "role": "supports",
+        "material": true
+       }
+      ],
+      "support_sets": [
+       [
+        "ev:crm-881"
+       ]
+      ]
+     }
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:identity-kept",
+     "assertion_type": "commitment",
+     "epistemic_class": "system_interpretation",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [],
+     "material_dependency_refs": [
+      "ev:crm-881",
+      "idb:p-123->u-12"
+     ],
+     "support_sets": [
+      [
+       "ev:crm-881"
+      ]
+     ],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-26-reject-self-relation",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:297; docs/IMPLEMENTER_GUIDE_V0_2.md:56",
+   "rationale": "단언은 자기 자신에 대해 refines 같은 관계를 선언할 수 없으므로 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:self-ref",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "assertion_relations": [
+     {
+      "relation": "refines",
+      "assertion_ref": "assertion:hanbit:self-ref"
+     }
+    ]
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-27-conflicts-with-other-assertion-disputed",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:285-311; docs/semantic-scenarios-v0.2.md:38-76",
+   "rationale": "다른 단언을 향한 명시적 conflicts_with와 disputed 상태는 정상이다. assertion_relations는 digest에 포함되지 않으며 lifecycle_state는 'disputed'이다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:provb:review-nov15",
+    "assertion_type": "event",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "source_statement",
+    "statement": "u-12 said the Project Hana review moved to Nov 15.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "disputed",
+     "reason_refs": [
+      "reason:provider-conflict-88"
+     ]
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "assertion_relations": [
+     {
+      "relation": "conflicts_with",
+      "assertion_ref": "assertion:prova:review-nov12"
+     }
+    ]
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:provb:review-nov15",
+     "assertion_type": "event",
+     "epistemic_class": "source_statement",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:mail-881"
+     ],
+     "material_dependency_refs": [],
+     "support_sets": [],
+     "policy_refs": [],
+     "lifecycle_state": "disputed",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-28-reject-processing-operation-as-lifecycle-state",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:301-313; spec/core-v0.2-draft.md:233; spec/schemas/v0.2-draft/context-assertion.schema.json:262-265",
+   "rationale": "recompute는 처리 연산이지 공개 lifecycle 상태가 아니므로 거부된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:recompute-state",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "recompute"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-29-reject-unsupported-required-extension",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:319-331; spec/core-v0.2-draft.md:295-297",
+   "rationale": "required_extensions의 'x-hanbit:confidence-model'을 평가기가 지원하지 않는다(supported_extensions에는 다른 확장만 있다). fail closed이므로 거부된다.",
+   "supported_extensions": [
+    "x-hanbit:consent-tier"
+   ],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:conf-ext",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_inference",
+    "statement": "u-12 will probably accept the revised quote.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "required_extensions": [
+     "x-hanbit:confidence-model"
+    ],
+    "extensions": {
+     "x-hanbit:confidence-model": {
+      "score": 0.64,
+      "model_version": "3",
+      "semantics": "isotonic-calibrated probability"
+     }
+    }
+   },
+   "expected": {
+    "accepted": false,
+    "semantic_digest": null
+   }
+  },
+  {
+   "id": "ho-30-supported-required-extensions-historical",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:110-123,301-331; conformance/external/v0_2/CONTRACT.md:131-133",
+   "rationale": "필수 확장 두 개가 모두 supported_extensions에 있으므로 수용된다. digest의 required_extensions는 사전순으로 정렬되고, lifecycle_state는 'historical'이며, 시간 필드는 digest에 포함되지 않는다.",
+   "supported_extensions": [
+    "x-hanbit:confidence-model",
+    "x-hanbit:consent-tier",
+    "x-other:unused"
+   ],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:conf-ext-ok",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "system_inference",
+    "statement": "u-12 will probably accept the revised quote.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "historical",
+     "valid_from": "2026-09-01T00:00:00Z",
+     "valid_until": "2026-10-01T00:00:00Z",
+     "reason_refs": [
+      "reason:quote-cycle-closed"
+     ]
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "required_extensions": [
+     "x-hanbit:consent-tier",
+     "x-hanbit:confidence-model"
+    ],
+    "extensions": {
+     "x-hanbit:confidence-model": {
+      "score": 0.64,
+      "model_version": "3"
+     },
+     "x-hanbit:consent-tier": {
+      "tier": "internal-only"
+     }
+    }
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:conf-ext-ok",
+     "assertion_type": "commitment",
+     "epistemic_class": "system_inference",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:mail-881"
+     ],
+     "material_dependency_refs": [],
+     "support_sets": [],
+     "policy_refs": [],
+     "lifecycle_state": "historical",
+     "required_extensions": [
+      "x-hanbit:confidence-model",
+      "x-hanbit:consent-tier"
+     ]
+    }
+   }
+  },
+  {
+   "id": "ho-31-optional-extension-ignorable",
+   "determinacy": "determinate",
+   "spec_basis": "spec/wire-v0.2-draft.md:327-331; spec/schemas/v0.2-draft/context-assertion.schema.json:62-66",
+   "rationale": "required_extensions에 없는 선택적 확장 데이터는 Core 의미를 바꾸지 않는 한 무시할 수 있다. 따라서 평가기가 지원하지 않아도 수용된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:hanbit:optional-ext",
+    "assertion_type": "commitment",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-3",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-12",
+       "scope": "tenant:hanbit",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "tenant:hanbit"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "u-3 agreed to send u-12 the revised quote by Friday.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:mail-881",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-12",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-3",
+         "scope": "tenant:hanbit",
+         "actor_type": "person"
+        }
+       ],
+       "occurred_at": "2026-10-06T14:02:00Z"
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z",
+    "extensions": {
+     "x-hanbit:ui-hint": {
+      "badge": "follow-up",
+      "color": "amber"
+     }
+    }
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:hanbit:optional-ext",
+     "assertion_type": "commitment",
+     "epistemic_class": "extracted_fact",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:hanbit",
+       "u-12",
+       "person"
+      ],
+      [
+       "tenant:hanbit",
+       "u-3",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:mail-881"
+     ],
+     "material_dependency_refs": [],
+     "support_sets": [],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  },
+  {
+   "id": "ho-32-same-actor-id-in-different-scopes-is-two-actors",
+   "determinacy": "indeterminate",
+   "spec_basis": "spec/core-v0.2-draft.md:71-72; spec/wire-v0.2-draft.md:131-141; docs/standards-reconciliation-v0.2.md:122 (actor scope와 trust_domain의 관계는 명시되지 않음)",
+   "rationale": "actor_id 문자열이 같아도 scope가 다르면 서로 다른 actor이므로, bilateral 2인 스코프로 유효하고 중복 참여자도 아니다(이 부분은 확정적이다). source 집합도 target과 같다. 다만 actor scope(tenant:alpha/beta)가 trust_domain(federation:alpha-beta)과 다를 때의 규칙은 스펙에 없어 미확정으로 둔다. 가장 타당한 해석은 수용이며, digest는 scope 순으로 먼저 정렬된다.",
+   "supported_extensions": [],
+   "assertion": {
+    "type": "rcp.context_assertion",
+    "rcp_version": "0.2-draft",
+    "assertion_id": "assertion:federation:intro-call",
+    "assertion_type": "event",
+    "relationship_scope": {
+     "scope_type": "bilateral",
+     "participants": [
+      {
+       "actor_id": "u-7",
+       "scope": "tenant:beta",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "u-7",
+       "scope": "tenant:alpha",
+       "actor_type": "person"
+      }
+     ],
+     "trust_domain": "federation:alpha-beta"
+    },
+    "epistemic_class": "extracted_fact",
+    "statement": "The two u-7 accounts held an intro call on Oct 3.",
+    "provenance": {
+     "mode": "evidence",
+     "visibility": "redacted",
+     "evidence": [
+      {
+       "evidence_ref": "ev:cal-3301",
+       "evidence_type": "interaction",
+       "representation": "metadata",
+       "source_participants": [
+        {
+         "actor_id": "u-7",
+         "scope": "tenant:alpha",
+         "actor_type": "person"
+        },
+        {
+         "actor_id": "u-7",
+         "scope": "tenant:beta",
+         "actor_type": "person"
+        }
+       ]
+      }
+     ]
+    },
+    "lifecycle": {
+     "state": "active"
+    },
+    "created_at": "2026-10-08T09:30:00Z"
+   },
+   "expected": {
+    "accepted": true,
+    "semantic_digest": {
+     "assertion_id": "assertion:federation:intro-call",
+     "assertion_type": "event",
+     "epistemic_class": "extracted_fact",
+     "scope_type": "bilateral",
+     "target_participants": [
+      [
+       "tenant:alpha",
+       "u-7",
+       "person"
+      ],
+      [
+       "tenant:beta",
+       "u-7",
+       "person"
+      ]
+     ],
+     "evidence_refs": [
+      "ev:cal-3301"
+     ],
+     "material_dependency_refs": [],
+     "support_sets": [],
+     "policy_refs": [],
+     "lifecycle_state": "active",
+     "required_extensions": []
+    }
+   }
+  }
+ ]
+}

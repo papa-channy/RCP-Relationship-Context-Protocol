@@ -1,0 +1,19 @@
+Collecting jwcrypto==1.6.1 (from -r implementations/python-probe/requirements.txt (line 1))
+  Using cached jwcrypto-1.6.1-py3-none-any.whl.metadata (3.4 kB)
+Collecting rfc8785==0.1.4 (from -r implementations/python-probe/requirements.txt (line 2))
+  Using cached rfc8785-0.1.4-py3-none-any.whl.metadata (3.4 kB)
+Collecting cryptography>=49.0.0 (from jwcrypto==1.6.1->-r implementations/python-probe/requirements.txt (line 1))
+  Using cached cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl.metadata (4.4 kB)
+Requirement already satisfied: typing_extensions>=4.5.0 in /private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/eval/repro-auditor/venv/lib/python3.12/site-packages (from jwcrypto==1.6.1->-r implementations/python-probe/requirements.txt (line 1)) (4.16.0)
+Collecting cffi>=2.0.0 (from cryptography>=49.0.0->jwcrypto==1.6.1->-r implementations/python-probe/requirements.txt (line 1))
+  Using cached cffi-2.1.1-cp312-cp312-macosx_11_0_arm64.whl.metadata (2.5 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography>=49.0.0->jwcrypto==1.6.1->-r implementations/python-probe/requirements.txt (line 1))
+  Using cached pycparser-3.11-py3-none-any.whl.metadata (8.2 kB)
+Using cached jwcrypto-1.6.1-py3-none-any.whl (121 kB)
+Using cached rfc8785-0.1.4-py3-none-any.whl (9.2 kB)
+Using cached cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl (3.9 MB)
+Using cached cffi-2.1.1-cp312-cp312-macosx_11_0_arm64.whl (184 kB)
+Using cached pycparser-3.11-py3-none-any.whl (51 kB)
+Installing collected packages: rfc8785, pycparser, cffi, cryptography, jwcrypto
+
+Successfully installed cffi-2.1.1 cryptography-50.0.2 jwcrypto-1.6.1 pycparser-3.11 rfc8785-0.1.4

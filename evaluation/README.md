@@ -20,6 +20,7 @@ evaluation/
 ├── reports/
 │   ├── self/            # 자체 평가 (프로젝트 작성자 관점)
 │   └── agents/          # 에이전트별 독립 평가
+│       └── raw/         # 워크플로 원본 출력, 보류 케이스 팩, 클린룸 구현, 에이전트 탐침 스크립트
 ├── synthesis/           # 평가 간 비교, 합의/불일치, 최종 상태 보고서
 └── templates/
     └── REPORT_TEMPLATE.md

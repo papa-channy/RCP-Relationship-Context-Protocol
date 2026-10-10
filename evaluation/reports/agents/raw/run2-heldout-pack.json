@@ -1,0 +1,2578 @@
+[
+  {
+    "id": "accept-namespaced-evidence-and-actor-type-order-insensitive",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:165 (채널 어휘는 네임스페이스 확장), spec/schemas/v0.2-draft/context-assertion.schema.json:100-127 (EvidenceType/actor_type의 ExtensionName 허용), spec/wire-v0.2-draft.md:176 (집합이 다를 때만 basis 필요)",
+    "rationale": "네임스페이스 evidence_type(x-mailco:thread)과 actor_type(x-crm:account)은 스키마상 허용되며, source_participants는 대상 참여자와 순서만 다르고 집합은 동일하므로 projection_basis_ref가 필요 없다. 다이제스트의 target_participants는 [scope, actor_id, actor_type] 사전순 정렬.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:quote-commit-01",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "org-harbor",
+            "scope": "tenant:nw-17",
+            "actor_type": "x-crm:account"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "Mira committed to send Harbor the signed renewal quote.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "full",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:thread-88",
+            "evidence_type": "x-mailco:thread",
+            "representation": "opaque_ref",
+            "source_participants": [
+              {
+                "actor_id": "org-harbor",
+                "scope": "tenant:nw-17",
+                "actor_type": "x-crm:account"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "provider_ref": "provider:mailco"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:quote-commit-01",
+        "assertion_type": "commitment",
+        "epistemic_class": "extracted_fact",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "org-harbor",
+            "x-crm:account"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:thread-88"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-group-projection-with-explicit-basis",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:167-182, spec/core-v0.2-draft.md:93-97, docs/standards-boundary.md:280",
+    "rationale": "증거 참여자 {jin,mira,oskar,lena}에서 대상 그룹 {jin,mira,oskar}로 좁히는 투영이지만 명시적 projection_basis_ref가 있고, 소스 집합이 대상 집합의 상위집합이므로 허용된다. group은 3명이므로 카디널리티도 문제없다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:steering-group-02",
+      "assertion_type": "shared_topic",
+      "relationship_scope": {
+        "scope_type": "group",
+        "participants": [
+          {
+            "actor_id": "u-oskar",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17",
+        "relationship_ref": "rel:steering"
+      },
+      "epistemic_class": "system_interpretation",
+      "statement": "The steering group keeps returning to the Q1 data-residency question.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "type_only",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mtg-301",
+            "evidence_type": "interaction",
+            "representation": "type_only",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-oskar",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-lena",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "projection_basis_ref": "basis:lena-left-before-topic"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:steering-group-02",
+        "assertion_type": "shared_topic",
+        "epistemic_class": "system_interpretation",
+        "scope_type": "group",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-oskar",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:mtg-301"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-derived-independent-support-sets-sorted",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:228-255, conformance/external/v0_2/CONTRACT.md:116-126, conformance/external/v0_2/CONTRACT.md:135",
+    "rationale": "두 증거가 각각 독립적으로 충분한 support set([A] OR [B])이다. 다이제스트는 support_sets 외부 리스트를 정렬하고, material=false인 assertion 의존성은 material_dependency_refs에서 제외한다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:pilot-revisit-03",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "system_interpretation",
+      "statement": "Jin and Mira will revisit pilot pricing in November.",
+      "provenance": {
+        "mode": "derived",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:call-77",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ]
+          },
+          {
+            "evidence_ref": "evidence:note-12",
+            "evidence_type": "user_note",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ]
+          }
+        ],
+        "derivation": {
+          "dependencies": [
+            {
+              "dependency_ref": "evidence:note-12",
+              "dependency_type": "evidence",
+              "role": "supports",
+              "material": true
+            },
+            {
+              "dependency_ref": "evidence:call-77",
+              "dependency_type": "evidence",
+              "role": "corroborates",
+              "material": true
+            },
+            {
+              "dependency_ref": "assertion:pilot-kickoff-00",
+              "dependency_type": "assertion",
+              "role": "refines",
+              "material": false
+            }
+          ],
+          "support_sets": [
+            [
+              "evidence:note-12"
+            ],
+            [
+              "evidence:call-77"
+            ]
+          ]
+        }
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:pilot-revisit-03",
+        "assertion_type": "commitment",
+        "epistemic_class": "system_interpretation",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:call-77",
+          "evidence:note-12"
+        ],
+        "material_dependency_refs": [
+          "evidence:call-77",
+          "evidence:note-12"
+        ],
+        "support_sets": [
+          [
+            "evidence:call-77"
+          ],
+          [
+            "evidence:note-12"
+          ]
+        ],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-derived-joint-support-set-inner-sorted",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:257-263, spec/core-v0.2-draft.md:199-203, conformance/external/v0_2/CONTRACT.md:122-125",
+    "rationale": "단일 support set 안의 두 증거는 공동으로 필요하다(A AND B). derived 모드는 evidence 배열이 없어도 스키마상 유효하며, 다이제스트에서는 내부 ref를 사전순 정렬하고 evidence_refs는 빈 배열이다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:budget-joint-04",
+      "assertion_type": "constraint",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "system_inference",
+      "statement": "Mira's team cannot commit budget before the board review.",
+      "provenance": {
+        "mode": "derived",
+        "visibility": "opaque",
+        "derivation": {
+          "dependencies": [
+            {
+              "dependency_ref": "evidence:sheet-9",
+              "dependency_type": "evidence",
+              "role": "supports",
+              "material": true
+            },
+            {
+              "dependency_ref": "evidence:mail-2210",
+              "dependency_type": "evidence",
+              "role": "derived_from",
+              "material": true
+            }
+          ],
+          "support_sets": [
+            [
+              "evidence:sheet-9",
+              "evidence:mail-2210"
+            ]
+          ]
+        }
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:budget-joint-04",
+        "assertion_type": "constraint",
+        "epistemic_class": "system_inference",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [],
+        "material_dependency_refs": [
+          "evidence:mail-2210",
+          "evidence:sheet-9"
+        ],
+        "support_sets": [
+          [
+            "evidence:mail-2210",
+            "evidence:sheet-9"
+          ]
+        ],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-verified-fact-basis-resolves-to-evidence",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:96, spec/core-v0.2-draft.md:160, spec/schemas/v0.2-draft/context-assertion.schema.json:69-77",
+    "rationale": "verified_fact는 verification_basis_refs를 요구하며 그 참조가 선언된 계보(evidence_ref)로 해석되어야 한다. 여기서는 evidence:esign-5501이 provenance.evidence에 존재하므로 수용된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:contract-signed-05",
+      "assertion_type": "event",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "verified_fact",
+      "statement": "Harbor signed the 2027 renewal on 2026-09-28.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "full",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:esign-5501",
+            "evidence_type": "provider_projection",
+            "representation": "provider_projection",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "verification_basis_refs": [
+        "evidence:esign-5501"
+      ]
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:contract-signed-05",
+        "assertion_type": "event",
+        "epistemic_class": "verified_fact",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:esign-5501"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-required-extension-supported",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:110-122, spec/wire-v0.2-draft.md:327-329, conformance/external/v0_2/CONTRACT.md:36, conformance/external/v0_2/CONTRACT.md:131-133",
+    "rationale": "필수 확장 x-acme:confidence-model이 supported_extensions에 포함되어 있으므로 fail-closed 대상이 아니다. confidence는 네임스페이스 확장으로만 표현된다. 다이제스트의 required_extensions에 그대로 반영된다.",
+    "supported_extensions": [
+      "x-acme:confidence-model"
+    ],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:weekly-sync-06",
+      "assertion_type": "preference",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "user_observation",
+      "statement": "Mira prefers a written agenda before the weekly sync.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "required_extensions": [
+        "x-acme:confidence-model"
+      ],
+      "extensions": {
+        "x-acme:confidence-model": {
+          "score": 0.64,
+          "model_version": "3",
+          "semantics": "provider-calibrated probability"
+        }
+      }
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:weekly-sync-06",
+        "assertion_type": "preference",
+        "epistemic_class": "user_observation",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:mail-4411"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": [
+          "x-acme:confidence-model"
+        ]
+      }
+    }
+  },
+  {
+    "id": "accept-optional-unsupported-extension-ignored",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:331, spec/schemas/v0.2-draft/context-assertion.schema.json:62-66",
+    "rationale": "extensions에만 존재하고 required_extensions에 없는 확장 데이터는 Core 의미를 바꾸지 않는 선택적 데이터로 무시 가능하다. supported_extensions가 비어 있어도 수용되고 required_extensions 다이제스트는 빈 배열이다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:intro-call-07",
+      "assertion_type": "event",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "Jin and Mira had an intro call about the logistics pilot.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "extensions": {
+        "x-ui:display-hint": {
+          "pin": true,
+          "color": "teal"
+        }
+      }
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:intro-call-07",
+        "assertion_type": "event",
+        "epistemic_class": "extracted_fact",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:mail-4411"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-opaque-provenance-without-evidence",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:219, spec/core-v0.2-draft.md:269, docs/semantic-scenarios-v0.2.md:213-216",
+    "rationale": "opaque 모드는 evidence나 derivation을 요구하지 않으며, 출처를 노출하지 않는 것만으로 assertion이 무효가 되지 않는다. 다이제스트의 evidence/material/support_sets는 모두 빈 배열이다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:churn-risk-08",
+      "assertion_type": "relationship_state",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "system_inference",
+      "statement": "The Jin-Mira account relationship shows elevated churn risk.",
+      "provenance": {
+        "mode": "opaque",
+        "visibility": "opaque",
+        "note": "Provider withholds lineage under tenant policy."
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "policy_refs": [
+        "policy:tenant-internal-only"
+      ]
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:churn-risk-08",
+        "assertion_type": "relationship_state",
+        "epistemic_class": "system_inference",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [
+          "policy:tenant-internal-only"
+        ],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-evidence-policy-carried-to-assertion",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:279-283, spec/core-v0.2-draft.md:277-281, docs/semantic-scenarios-v0.2.md:135-144",
+    "rationale": "증거에 붙은 제한 policy:no-external-processing이 assertion의 policy_refs에 그대로 유지되어 있고, 추가 정책은 더 보수적일 뿐이다. 다이제스트의 policy_refs는 사전순 정렬된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:no-forward-09",
+      "assertion_type": "constraint",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "Mira asked that the pricing sheet not be forwarded outside the deal team.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:dm-6020",
+            "evidence_type": "interaction",
+            "representation": "source_statement",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "policy_refs": [
+              "policy:no-external-processing"
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "policy_refs": [
+        "policy:retention-90d",
+        "policy:no-external-processing"
+      ]
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:no-forward-09",
+        "assertion_type": "constraint",
+        "epistemic_class": "extracted_fact",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:dm-6020"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [
+          "policy:no-external-processing",
+          "policy:retention-90d"
+        ],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-identity-and-policy-dependencies-preserved",
+    "determinacy": "determinate",
+    "spec_basis": "spec/core-v0.2-draft.md:89, spec/core-v0.2-draft.md:267-269, spec/wire-v0.2-draft.md:283, docs/IMPLEMENTER_GUIDE_V0_2.md:51-55",
+    "rationale": "scope의 identity_dependency_refs가 material identity_binding 의존성으로, material policy 의존성이 top-level policy_refs로 모두 보존되어 있다. verified_fact의 basis도 선언된 evidence/의존성으로 해석된다. material_dependency_refs에는 evidence·identity·policy 세 참조가 모두 포함된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:handoff-10",
+      "assertion_type": "open_loop",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17",
+        "identity_dependency_refs": [
+          "identity:p123-is-mira"
+        ]
+      },
+      "epistemic_class": "verified_fact",
+      "statement": "Jin still owes Mira the security questionnaire.",
+      "provenance": {
+        "mode": "derived",
+        "visibility": "full",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:ticket-31",
+            "evidence_type": "provider_projection",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "policy_refs": [
+              "policy:security-review-restricted"
+            ]
+          }
+        ],
+        "derivation": {
+          "dependencies": [
+            {
+              "dependency_ref": "evidence:ticket-31",
+              "dependency_type": "evidence",
+              "role": "supports",
+              "material": true
+            },
+            {
+              "dependency_ref": "identity:p123-is-mira",
+              "dependency_type": "identity_binding",
+              "role": "supports",
+              "material": true
+            },
+            {
+              "dependency_ref": "policy:security-review-restricted",
+              "dependency_type": "policy",
+              "role": "supports",
+              "material": true
+            }
+          ],
+          "support_sets": [
+            [
+              "evidence:ticket-31"
+            ]
+          ]
+        }
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "verification_basis_refs": [
+        "evidence:ticket-31"
+      ],
+      "policy_refs": [
+        "policy:security-review-restricted"
+      ]
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:handoff-10",
+        "assertion_type": "open_loop",
+        "epistemic_class": "verified_fact",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:ticket-31"
+        ],
+        "material_dependency_refs": [
+          "evidence:ticket-31",
+          "identity:p123-is-mira",
+          "policy:security-review-restricted"
+        ],
+        "support_sets": [
+          [
+            "evidence:ticket-31"
+          ]
+        ],
+        "policy_refs": [
+          "policy:security-review-restricted"
+        ],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-relations-to-other-assertions",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:287-299, spec/core-v0.2-draft.md:207-219, docs/semantic-scenarios-v0.2.md:64-76",
+    "rationale": "다른 assertion을 가리키는 conflicts_with/refines 관계는 유효하다. 관계는 다이제스트에 포함되지 않으며, 늦게 도착했다는 이유로 supersedes가 되지 않으므로 lifecycle은 active 그대로다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:review-date-11",
+      "assertion_type": "event",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "source_statement",
+      "statement": "Mira said the Project X review moved to Nov 15.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "assertion_relations": [
+        {
+          "relation": "conflicts_with",
+          "assertion_ref": "assertion:review-date-providerA"
+        },
+        {
+          "relation": "refines",
+          "assertion_ref": "assertion:project-x-timeline"
+        }
+      ]
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:review-date-11",
+        "assertion_type": "event",
+        "epistemic_class": "source_statement",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:mail-4411"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-lifecycle-superseded-with-validity-window",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:301-317, spec/schemas/v0.2-draft/context-assertion.schema.json:258-273",
+    "rationale": "superseded는 정의된 lifecycle 상태이고 valid_from/valid_until/reason_refs는 스키마상 선택 필드다. 다이제스트의 lifecycle_state는 superseded가 된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:old-owner-12",
+      "assertion_type": "relationship_state",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-oskar",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "Oskar was Mira's primary contact at Harbor.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "full",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:crm-evt-90",
+            "evidence_type": "x-crm:owner-change",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-oskar",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "superseded",
+        "valid_from": "2025-03-01T00:00:00Z",
+        "valid_until": "2026-08-31T23:59:59Z",
+        "reason_refs": [
+          "assertion:new-owner-13"
+        ]
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:old-owner-12",
+        "assertion_type": "relationship_state",
+        "epistemic_class": "extracted_fact",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-oskar",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:crm-evt-90"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [],
+        "lifecycle_state": "superseded",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-namespaced-assertion-type-not-required",
+    "determinacy": "indeterminate",
+    "spec_basis": "spec/schemas/v0.2-draft/context-assertion.schema.json:83-99 (AssertionType에 ExtensionName 허용); spec/core-v0.2-draft.md:297 및 spec/wire-v0.2-draft.md:327-331은 required_extensions/scope에 대해서만 fail-closed를 명시하고 네임스페이스 assertion_type 자체에 대해서는 침묵",
+    "rationale": "스키마는 네임스페이스 assertion_type을 허용하고, required_extensions에 선언되지 않았으므로 해석 필수 확장으로 볼 근거가 없다. 다만 '기타 material semantics'의 fail-closed(core 5.11)를 넓게 읽으면 거부될 여지가 있어 미결정으로 표시한다. 최선의 해석은 수용.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:renewal-window-13",
+      "assertion_type": "x-acme:renewal-window",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "system_interpretation",
+      "statement": "Harbor's renewal window opens in mid-January.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:renewal-window-13",
+        "assertion_type": "x-acme:renewal-window",
+        "epistemic_class": "system_interpretation",
+        "scope_type": "bilateral",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-jin",
+            "person"
+          ],
+          [
+            "tenant:nw-17",
+            "u-mira",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:mail-4411"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "accept-same-actor-id-different-scopes-are-distinct",
+    "determinacy": "determinate",
+    "spec_basis": "spec/core-v0.2-draft.md:71-73, spec/wire-v0.2-draft.md:141, spec/schemas/v0.2-draft/context-assertion.schema.json:141-146",
+    "rationale": "actor_id가 같아도 scope가 다르면 다른 actor이므로 participants의 uniqueItems와 최소 2명 조건을 만족한다. source_participants가 대상과 동일 집합이므로 basis 불필요. 다이제스트는 scope 우선으로 정렬된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:cross-tenant-14",
+      "assertion_type": "shared_topic",
+      "relationship_scope": {
+        "scope_type": "organization_mediated",
+        "participants": [
+          {
+            "actor_id": "u-ana",
+            "scope": "tenant:nw-42",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-ana",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "federation:nw-alliance"
+      },
+      "epistemic_class": "user_observation",
+      "statement": "Both Ana accounts discuss the joint venture onboarding.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "type_only",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:jv-board-3",
+            "evidence_type": "interaction",
+            "representation": "type_only",
+            "source_participants": [
+              {
+                "actor_id": "u-ana",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-ana",
+                "scope": "tenant:nw-42",
+                "actor_type": "person"
+              }
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": true,
+      "semantic_digest": {
+        "assertion_id": "assertion:cross-tenant-14",
+        "assertion_type": "shared_topic",
+        "epistemic_class": "user_observation",
+        "scope_type": "organization_mediated",
+        "target_participants": [
+          [
+            "tenant:nw-17",
+            "u-ana",
+            "person"
+          ],
+          [
+            "tenant:nw-42",
+            "u-ana",
+            "person"
+          ]
+        ],
+        "evidence_refs": [
+          "evidence:jv-board-3"
+        ],
+        "material_dependency_refs": [],
+        "support_sets": [],
+        "policy_refs": [],
+        "lifecycle_state": "active",
+        "required_extensions": []
+      }
+    }
+  },
+  {
+    "id": "reject-legacy-top-level-confidence",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:98-100, spec/schemas/v0.2-draft/context-assertion.schema.json:7, docs/standards-reconciliation-v0.2.md:126",
+    "rationale": "top-level confidence는 M4.5에서 제거되었고 스키마의 additionalProperties:false로 인해 구조 검증에 실패한다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:legacy-conf-15",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "confidence": 0.82
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-legacy-epistemic-assertion-type",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:76-83, docs/standards-reconciliation-v0.2.md:176-185, spec/schemas/v0.2-draft/context-assertion.schema.json:83-99",
+    "rationale": "inference는 base assertion_type이 아니며(epistemic_class에만 속함) 네임스페이스 형식도 아니므로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:legacy-type-16",
+      "assertion_type": "inference",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "system_inference",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-legacy-derivation-transformation-field",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:265, spec/core-v0.2-draft.md:185, spec/schemas/v0.2-draft/context-assertion.schema.json:196-199",
+    "rationale": "derivation.transformation 필드는 base 구조에서 제거되었고 Derivation 객체는 additionalProperties:false이므로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:legacy-transform-17",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "system_interpretation",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "derived",
+        "visibility": "redacted",
+        "derivation": {
+          "dependencies": [
+            {
+              "dependency_ref": "evidence:mail-4411",
+              "dependency_type": "evidence",
+              "role": "supports",
+              "material": true
+            }
+          ],
+          "support_sets": [
+            [
+              "evidence:mail-4411"
+            ]
+          ],
+          "transformation": "summarization"
+        }
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-non-namespaced-channel-evidence-type",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:156-165, docs/standards-reconciliation-v0.2.md:189-202, spec/schemas/v0.2-draft/context-assertion.schema.json:100-113",
+    "rationale": "slack_dm 같은 채널 어휘는 Core evidence_type이 아니며 x-<ns>:<name> 형식이 아니므로 스키마 검증에 실패한다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:legacy-channel-18",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "full",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:slack-77",
+            "evidence_type": "slack_dm",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-bilateral-with-three-participants",
+    "determinacy": "determinate",
+    "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:47, docs/standards-reconciliation-v0.2.md:121, spec/wire-v0.2-draft.md:146",
+    "rationale": "scope_type은 assertion의 카디널리티를 결정하며 bilateral은 정확히 두 참여자를 의미한다. 세 참여자를 bilateral로 선언하면 범위 의미가 모순되므로 거부된다(증거 참여자와 대상 집합은 동일하여 투영 문제는 없음).",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:bilateral-three-19",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-oskar",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "full",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mtg-88",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-oskar",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-unknown-scope-type-fail-closed",
+    "determinacy": "determinate",
+    "spec_basis": "spec/core-v0.2-draft.md:295-297, docs/IMPLEMENTER_GUIDE_V0_2.md:48",
+    "rationale": "scope_type=unknown은 스키마상 허용되지만 Core 5.11에 따라 알 수 없는 relationship scope는 더 허용적인 값으로 해석되지 않고 fail-closed로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:unknown-scope-20",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "unknown",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-participant-collapse-without-basis",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:167-179, spec/core-v0.2-draft.md:93-97, docs/semantic-scenarios-v0.2.md:9-34, docs/standards-boundary.md:280",
+    "rationale": "증거 참여자 {jin,mira,oskar}가 대상 {jin,mira}와 다른데 projection_basis_ref가 없다. 다자간 증거의 무언(無言) 붕괴 금지 규칙에 따라 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:silent-collapse-21",
+      "assertion_type": "preference",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "source_statement",
+      "statement": "Oskar said he dislikes Monday calls.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mtg-301",
+            "evidence_type": "interaction",
+            "representation": "source_statement",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-oskar",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-same-ids-different-scope-without-basis",
+    "determinacy": "determinate",
+    "spec_basis": "spec/core-v0.2-draft.md:71-73, spec/wire-v0.2-draft.md:141, spec/wire-v0.2-draft.md:176",
+    "rationale": "증거의 source_participants는 actor_id 문자열은 같지만 scope(provider:legacy-crm)가 대상(tenant:nw-17)과 다르다. 스코프가 다른 문자열 동일성은 같은 actor를 의미하지 않으므로 집합이 다르고, projection_basis_ref가 없어 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:scope-mismatch-22",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "full",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:import-5",
+            "evidence_type": "provider_projection",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "provider:legacy-crm",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "provider:legacy-crm",
+                "actor_type": "person"
+              }
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-verified-fact-basis-not-in-lineage",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:96, spec/core-v0.2-draft.md:156-160, docs/standards-reconciliation-v0.2.md:127",
+    "rationale": "verification_basis_refs가 존재하지만 verification:manual-check-7은 provenance의 어떤 evidence_ref나 의존성에도 선언되지 않았다. 선언된 계보로 해석되지 않는 basis는 verified_fact를 정당화하지 못한다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:unverified-23",
+      "assertion_type": "event",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "verified_fact",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "verification_basis_refs": [
+        "verification:manual-check-7"
+      ]
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-support-set-references-undeclared-dependency",
+    "determinacy": "determinate",
+    "spec_basis": "docs/IMPLEMENTER_GUIDE_V0_2.md:52-53, spec/wire-v0.2-draft.md:225-228, spec/wire-v0.2-draft.md:405-409",
+    "rationale": "support set의 evidence:call-99는 derivation.dependencies에 선언되지 않은 참조다. derived 의존성/참조 무결성 위반으로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:dangling-support-24",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "system_interpretation",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "derived",
+        "visibility": "redacted",
+        "derivation": {
+          "dependencies": [
+            {
+              "dependency_ref": "evidence:mail-4411",
+              "dependency_type": "evidence",
+              "role": "supports",
+              "material": true
+            },
+            {
+              "dependency_ref": "evidence:call-12",
+              "dependency_type": "evidence",
+              "role": "corroborates",
+              "material": true
+            }
+          ],
+          "support_sets": [
+            [
+              "evidence:mail-4411"
+            ],
+            [
+              "evidence:call-99"
+            ]
+          ]
+        }
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-required-extension-unsupported",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:327-329, spec/core-v0.2-draft.md:297, docs/IMPLEMENTER_GUIDE_V0_2.md:57",
+    "rationale": "required_extensions에 선언된 x-acme:confidence-model을 평가기가 지원하지 않으므로(supported_extensions에 없음) 무시하지 않고 fail-closed로 거부한다. 앞의 수용 케이스와 동일 확장이지만 supported_extensions만 다르다.",
+    "supported_extensions": [
+      "x-acme:other-extension"
+    ],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:needs-ext-25",
+      "assertion_type": "preference",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "system_inference",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "required_extensions": [
+        "x-acme:confidence-model"
+      ],
+      "extensions": {
+        "x-acme:confidence-model": {
+          "score": 0.91
+        }
+      }
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-self-relation",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:297, docs/IMPLEMENTER_GUIDE_V0_2.md:56",
+    "rationale": "assertion이 자기 자신에게 supersedes 관계를 선언할 수 없다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:self-ref-26",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "assertion_relations": [
+        {
+          "relation": "supersedes",
+          "assertion_ref": "assertion:self-ref-26"
+        }
+      ]
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-processing-operation-as-lifecycle-state",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:313, spec/core-v0.2-draft.md:233, spec/schemas/v0.2-draft/context-assertion.schema.json:262-265",
+    "rationale": "recompute는 처리 연산이지 공개 lifecycle 상태가 아니며 스키마 enum에도 없다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:recompute-27",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:mail-4411",
+            "evidence_type": "interaction",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "occurred_at": "2026-09-30T08:15:00Z"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "recompute"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-evidence-restriction-silently-dropped",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:279-283, spec/core-v0.2-draft.md:275-281, docs/standards-boundary.md:182, docs/semantic-scenarios-v0.2.md:135-144",
+    "rationale": "증거에 붙은 policy:no-external-processing 제한이 assertion의 policy_refs에서 사라졌다. 투영/요약은 제한을 조용히 지우지 못하므로(명시적 declassification 프로필 없음) 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:policy-dropped-28",
+      "assertion_type": "constraint",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "Mira's team cannot share roadmap details externally.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "redacted",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:dm-6021",
+            "evidence_type": "interaction",
+            "representation": "source_statement",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "policy_refs": [
+              "policy:no-external-processing"
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "policy_refs": [
+        "policy:retention-90d"
+      ]
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-material-policy-dependency-not-carried",
+    "determinacy": "determinate",
+    "spec_basis": "spec/wire-v0.2-draft.md:283, docs/IMPLEMENTER_GUIDE_V0_2.md:55, spec/core-v0.2-draft.md:267-269",
+    "rationale": "derivation에 material policy 의존성 policy:eu-only-processing이 있지만 derived assertion의 top-level policy_refs에 유지되지 않았다. 적합성은 material policy 의존성이 derived assertion에 계속 실려 있을 것을 요구한다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:policy-dep-29",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "system_interpretation",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "derived",
+        "visibility": "redacted",
+        "derivation": {
+          "dependencies": [
+            {
+              "dependency_ref": "evidence:mail-4411",
+              "dependency_type": "evidence",
+              "role": "supports",
+              "material": true
+            },
+            {
+              "dependency_ref": "policy:eu-only-processing",
+              "dependency_type": "policy",
+              "role": "supports",
+              "material": true
+            }
+          ],
+          "support_sets": [
+            [
+              "evidence:mail-4411"
+            ]
+          ]
+        }
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z",
+      "policy_refs": [
+        "policy:retention-90d"
+      ]
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-identity-dependency-demoted-to-non-material",
+    "determinacy": "indeterminate",
+    "spec_basis": "spec/core-v0.2-draft.md:89 ('material identity_dependency_refs'), spec/wire-v0.2-draft.md:148, docs/IMPLEMENTER_GUIDE_V0_2.md:54, spec/core-v0.2-draft.md:267-269; scope 측 선언과 derivation 측 material 플래그의 정합 규칙은 명시적 문장으로 정의되지 않음",
+    "rationale": "relationship_scope는 identity:p123-is-mira를 material identity 의존성으로 선언하지만 derivation은 같은 참조를 material=false로 표시해 lineage에서 materiality를 지운다. '물질적 identity 의존성 보존'을 최선으로 해석하면 거부. 다만 두 필드의 교차 검증 규칙이 문장으로 명시되지는 않아 미결정.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:identity-dropped-30",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17",
+        "identity_dependency_refs": [
+          "identity:p123-is-mira"
+        ]
+      },
+      "epistemic_class": "system_interpretation",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "derived",
+        "visibility": "redacted",
+        "derivation": {
+          "dependencies": [
+            {
+              "dependency_ref": "evidence:mail-4411",
+              "dependency_type": "evidence",
+              "role": "supports",
+              "material": true
+            },
+            {
+              "dependency_ref": "identity:p123-is-mira",
+              "dependency_type": "identity_binding",
+              "role": "supports",
+              "material": false
+            }
+          ],
+          "support_sets": [
+            [
+              "evidence:mail-4411"
+            ]
+          ]
+        }
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-unsupported-namespaced-scope-type",
+    "determinacy": "determinate",
+    "spec_basis": "spec/core-v0.2-draft.md:295-297, spec/wire-v0.2-draft.md:327-329, conformance/external/v0_2/CONTRACT.md:36",
+    "rationale": "x-famapp:household scope_type은 이 케이스의 supported_extensions에 없어 평가기에 알 수 없는 relationship scope다. 알 수 없는 scope는 허용적으로 해석되지 않고 fail-closed로 거부된다.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:x-scope-31",
+      "assertion_type": "commitment",
+      "relationship_scope": {
+        "scope_type": "x-famapp:household",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-lena",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "extracted_fact",
+      "statement": "u-jin agreed to send u-mira the revised quote by Friday.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "full",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:note-5",
+            "evidence_type": "user_note",
+            "representation": "metadata",
+            "source_participants": [
+              {
+                "actor_id": "u-lena",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              },
+              {
+                "actor_id": "u-mira",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ]
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  },
+  {
+    "id": "reject-source-subset-of-target-even-with-basis",
+    "determinacy": "indeterminate",
+    "spec_basis": "docs/semantic-scenarios-v0.2.md:34 ('source_participants ⊇ target_participants is necessary but not sufficient'); spec/wire-v0.2-draft.md:176-182는 집합이 다를 때 basis만 요구하며 상위집합 조건은 언급하지 않음",
+    "rationale": "증거 참여자 {jin}이 대상 {jin,mira}의 상위집합이 아니다. 시나리오 A의 불변식은 상위집합을 필요조건으로 명시하므로 basis가 있어도 거부가 최선의 해석이다. 그러나 wire 문서는 basis 존재만 요구하므로 두 문서 간 긴장이 있어 미결정.",
+    "supported_extensions": [],
+    "assertion": {
+      "type": "rcp.context_assertion",
+      "rcp_version": "0.2-draft",
+      "assertion_id": "assertion:note-widen-32",
+      "assertion_type": "preference",
+      "relationship_scope": {
+        "scope_type": "bilateral",
+        "participants": [
+          {
+            "actor_id": "u-jin",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          },
+          {
+            "actor_id": "u-mira",
+            "scope": "tenant:nw-17",
+            "actor_type": "person"
+          }
+        ],
+        "trust_domain": "tenant:nw-17"
+      },
+      "epistemic_class": "user_observation",
+      "statement": "Mira likes to get the agenda a day early.",
+      "provenance": {
+        "mode": "evidence",
+        "visibility": "full",
+        "evidence": [
+          {
+            "evidence_ref": "evidence:jin-note-40",
+            "evidence_type": "user_note",
+            "representation": "source_statement",
+            "source_participants": [
+              {
+                "actor_id": "u-jin",
+                "scope": "tenant:nw-17",
+                "actor_type": "person"
+              }
+            ],
+            "projection_basis_ref": "basis:author-note-about-counterpart"
+          }
+        ]
+      },
+      "lifecycle": {
+        "state": "active"
+      },
+      "created_at": "2026-10-01T09:00:00Z"
+    },
+    "expected": {
+      "accepted": false,
+      "semantic_digest": null
+    }
+  }
+]

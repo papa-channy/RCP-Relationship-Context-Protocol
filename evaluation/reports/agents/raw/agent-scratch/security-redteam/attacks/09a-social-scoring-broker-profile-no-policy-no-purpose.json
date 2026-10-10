@@ -1,0 +1,42 @@
+{
+ "type": "rcp.context_assertion",
+ "rcp_version": "0.2-draft",
+ "assertion_id": "assertion:score",
+ "assertion_type": "x-broker:social-score",
+ "relationship_scope": {
+  "scope_type": "bilateral",
+  "participants": [
+   {
+    "actor_id": "B",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   },
+   {
+    "actor_id": "scorer",
+    "scope": "tenant:t9",
+    "actor_type": "service"
+   }
+  ],
+  "trust_domain": "tenant:t9"
+ },
+ "epistemic_class": "system_inference",
+ "statement": "B is a high churn risk, depressed, financially stressed; trust score 0.12.",
+ "provenance": {
+  "mode": "opaque",
+  "visibility": "hidden"
+ },
+ "lifecycle": {
+  "state": "active"
+ },
+ "created_at": "2026-10-09T00:00:00Z",
+ "extensions": {
+  "x-broker:profile": {
+   "score": 0.12,
+   "segments": [
+    "financially_stressed",
+    "health_concern"
+   ],
+   "resale": true
+  }
+ }
+}

@@ -1,0 +1,5 @@
+
+> rcp-reference-ecosystem@0.0.1 test:identity
+> node tests/identity-resolution.mjs
+
+RCP tenant-scoped identity resolution: PASS

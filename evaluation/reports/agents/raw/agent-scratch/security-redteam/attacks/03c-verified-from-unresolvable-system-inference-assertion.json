@@ -1,0 +1,50 @@
+{
+ "type": "rcp.context_assertion",
+ "rcp_version": "0.2-draft",
+ "assertion_id": "assertion:launder3",
+ "assertion_type": "relationship_state",
+ "relationship_scope": {
+  "scope_type": "bilateral",
+  "participants": [
+   {
+    "actor_id": "A",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   },
+   {
+    "actor_id": "B",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   }
+  ],
+  "trust_domain": "tenant:t1"
+ },
+ "epistemic_class": "verified_fact",
+ "statement": "B is hostile to A.",
+ "provenance": {
+  "mode": "derived",
+  "visibility": "redacted",
+  "derivation": {
+   "dependencies": [
+    {
+     "dependency_ref": "assertion:weak-inference-7",
+     "dependency_type": "assertion",
+     "role": "derived_from",
+     "material": true
+    }
+   ],
+   "support_sets": [
+    [
+     "assertion:weak-inference-7"
+    ]
+   ]
+  }
+ },
+ "lifecycle": {
+  "state": "active"
+ },
+ "created_at": "2026-10-09T00:00:00Z",
+ "verification_basis_refs": [
+  "assertion:weak-inference-7"
+ ]
+}

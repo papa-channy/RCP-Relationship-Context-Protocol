@@ -1,0 +1,302 @@
+{
+  "harness_contract_version": "rcp-v0.2-cleanroom-1",
+  "case_pack_version": "rcp-v0.2-cleanroom-cases-1",
+  "case_pack_path": "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/eval/collision/heldout-run.json",
+  "case_pack_declared_revision": "68026af",
+  "rcp_revision": "68026af",
+  "implementation": {
+    "name": "cleanroom-ts",
+    "version": "unknown",
+    "language": "typescript",
+    "command": "/private/tmp/claude-501/-Users-chan-Developer-service-RCP-Relationship-Context-Protocol/4e25fc89-d154-4bd1-9a0a-2f1818f6059b/scratchpad/cleanroom/impl/adapter.sh"
+  },
+  "run_at": "2026-10-10T08:05:30.861553+00:00",
+  "summary": {
+    "total": 32,
+    "passed": 31,
+    "failed": 1
+  },
+  "results": [
+    {
+      "id": "accept-namespaced-evidence-and-actor-type-order-insensitive",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-group-projection-with-explicit-basis",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-derived-independent-support-sets-sorted",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-derived-joint-support-set-inner-sorted",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-verified-fact-basis-resolves-to-evidence",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-required-extension-supported",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-optional-unsupported-extension-ignored",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-opaque-provenance-without-evidence",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-evidence-policy-carried-to-assertion",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-identity-and-policy-dependencies-preserved",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-relations-to-other-assertions",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-lifecycle-superseded-with-validity-window",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-namespaced-assertion-type-not-required",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "accept-same-actor-id-different-scopes-are-distinct",
+      "passed": true,
+      "expected_accepted": true,
+      "actual_accepted": true,
+      "failures": []
+    },
+    {
+      "id": "reject-legacy-top-level-confidence",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "schema: / must NOT have additional properties"
+      ]
+    },
+    {
+      "id": "reject-legacy-epistemic-assertion-type",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "schema: /assertion_type must be equal to one of the allowed values",
+        "schema: /assertion_type must match pattern \"^x-[A-Za-z0-9.-]+:[A-Za-z0-9_.-]+$\"",
+        "schema: /assertion_type must match a schema in anyOf"
+      ]
+    },
+    {
+      "id": "reject-legacy-derivation-transformation-field",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "schema: /provenance/derivation must NOT have additional properties"
+      ]
+    },
+    {
+      "id": "reject-non-namespaced-channel-evidence-type",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "schema: /provenance/evidence/0/evidence_type must be equal to one of the allowed values",
+        "schema: /provenance/evidence/0/evidence_type must match pattern \"^x-[A-Za-z0-9.-]+:[A-Za-z0-9_.-]+$\"",
+        "schema: /provenance/evidence/0/evidence_type must match a schema in anyOf"
+      ]
+    },
+    {
+      "id": "reject-bilateral-with-three-participants",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "bilateral scope requires exactly 2 participants"
+      ]
+    },
+    {
+      "id": "reject-unknown-scope-type-fail-closed",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "relationship scope_type 'unknown' fails closed"
+      ]
+    },
+    {
+      "id": "reject-participant-collapse-without-basis",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "evidence evidence:mtg-301: source participants differ from target scope without projection_basis_ref"
+      ]
+    },
+    {
+      "id": "reject-same-ids-different-scope-without-basis",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "evidence evidence:import-5: source participants differ from target scope without projection_basis_ref"
+      ]
+    },
+    {
+      "id": "reject-verified-fact-basis-not-in-lineage",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "verification_basis_ref verification:manual-check-7 does not resolve into declared lineage"
+      ]
+    },
+    {
+      "id": "reject-support-set-references-undeclared-dependency",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "support_sets references undeclared dependency evidence:call-99"
+      ]
+    },
+    {
+      "id": "reject-required-extension-unsupported",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "required extension x-acme:confidence-model is not supported (fail closed)"
+      ]
+    },
+    {
+      "id": "reject-self-relation",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "assertion declares supersedes relation to itself"
+      ]
+    },
+    {
+      "id": "reject-processing-operation-as-lifecycle-state",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "schema: /lifecycle/state must be equal to one of the allowed values"
+      ]
+    },
+    {
+      "id": "reject-evidence-restriction-silently-dropped",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "evidence evidence:dm-6021 policy policy:no-external-processing not carried by assertion policy_refs"
+      ]
+    },
+    {
+      "id": "reject-material-policy-dependency-not-carried",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "material policy dependency policy:eu-only-processing not carried in policy_refs"
+      ]
+    },
+    {
+      "id": "reject-identity-dependency-demoted-to-non-material",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "identity dependency identity:p123-is-mira not preserved as material identity_binding dependency"
+      ]
+    },
+    {
+      "id": "reject-unsupported-namespaced-scope-type",
+      "passed": true,
+      "expected_accepted": false,
+      "actual_accepted": false,
+      "failures": [],
+      "adapter_errors": [
+        "relationship scope_type extension x-famapp:household is not supported (fail closed)"
+      ]
+    },
+    {
+      "id": "reject-source-subset-of-target-even-with-basis",
+      "passed": false,
+      "expected_accepted": false,
+      "actual_accepted": true,
+      "failures": [
+        "acceptance mismatch: expected False, got True"
+      ]
+    }
+  ]
+}

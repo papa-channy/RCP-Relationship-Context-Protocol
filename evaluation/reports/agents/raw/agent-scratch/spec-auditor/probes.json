@@ -1,0 +1,1582 @@
+{
+ "P0-base": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P1-bilateral-same-actor-two-types": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "agent"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P1b-participants-outside-trust_domain": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t9",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t8",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P2-target-not-subset-of-source-with-basis": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "evidence",
+   "visibility": "full",
+   "evidence": [
+    {
+     "evidence_ref": "evidence:E",
+     "evidence_type": "interaction",
+     "representation": "opaque_ref",
+     "source_participants": [
+      {
+       "actor_id": "A",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "C",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      }
+     ],
+     "projection_basis_ref": "basis:x"
+    }
+   ]
+  },
+  "policy_refs": [],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P3-duplicate-support-set-reordered": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A",
+      "evidence:B"
+     ],
+     [
+      "evidence:B",
+      "evidence:A"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P3b-non-minimal-superset-support-set": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:A",
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P4-material-support-dep-in-no-support-set": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P7-opaque-mode-carrying-derivation-drops-policy": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "opaque",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:UNKNOWN"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P7b-unavailable-mode-carrying-derivation-drops-policy": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "unavailable",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P7c-control-derived-drops-policy": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P8-evidence-mode-unmaterialized-identity-dep": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1",
+   "identity_dependency_refs": [
+    "identity:A-binding"
+   ]
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "evidence",
+   "visibility": "full",
+   "evidence": [
+    {
+     "evidence_ref": "evidence:E",
+     "evidence_type": "interaction",
+     "representation": "opaque_ref",
+     "source_participants": [
+      {
+       "actor_id": "A",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "B",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      }
+     ]
+    }
+   ]
+  },
+  "policy_refs": [],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P9-verified-basis-is-a-policy-ref": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "verified_fact",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z",
+  "verification_basis_refs": [
+   "policy:p1"
+  ]
+ },
+ "P9b-verified-basis-non-material-dep": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "verified_fact",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:N",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": false
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z",
+  "verification_basis_refs": [
+   "evidence:N"
+  ]
+ },
+ "P11-valid_from-after-valid_until": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active",
+   "valid_from": "2027-01-01T00:00:00Z",
+   "valid_until": "2020-01-01T00:00:00Z"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P11b-active-but-past-valid_until": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active",
+   "valid_until": "2000-01-01T00:00:00Z"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P12-supersedes-conflicts-supports-same-target": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z",
+  "assertion_relations": [
+   {
+    "relation": "supersedes",
+    "assertion_ref": "assertion:j"
+   },
+   {
+    "relation": "conflicts_with",
+    "assertion_ref": "assertion:j"
+   },
+   {
+    "relation": "supports",
+    "assertion_ref": "assertion:j"
+   }
+  ]
+ },
+ "P13-unknown-namespaced-scope_type": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "x-acme:secret-circle",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P13b-provider_defined-scope": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "provider_defined",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "C",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "D",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P21-self-supporting-assertion-cycle": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     },
+     {
+      "dependency_ref": "assertion:k",
+      "dependency_type": "assertion",
+      "role": "supports",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "assertion:k"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P20-duplicate-evidence_ref-identical": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "evidence",
+   "visibility": "full",
+   "evidence": [
+    {
+     "evidence_ref": "evidence:E",
+     "evidence_type": "interaction",
+     "representation": "opaque_ref",
+     "source_participants": [
+      {
+       "actor_id": "A",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "B",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      }
+     ]
+    },
+    {
+     "evidence_ref": "evidence:E",
+     "evidence_type": "interaction",
+     "representation": "opaque_ref",
+     "source_participants": [
+      {
+       "actor_id": "A",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "B",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      }
+     ]
+    }
+   ]
+  },
+  "policy_refs": [],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P22-evidence-mode-with-derivation": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "evidence",
+   "visibility": "hidden",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   },
+   "evidence": [
+    {
+     "evidence_ref": "evidence:E",
+     "evidence_type": "interaction",
+     "representation": "opaque_ref",
+     "source_participants": [
+      {
+       "actor_id": "A",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      },
+      {
+       "actor_id": "B",
+       "scope": "tenant:t1",
+       "actor_type": "person"
+      }
+     ]
+    }
+   ]
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P23-unrequired-extension-that-alters-meaning": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z",
+  "extensions": {
+   "x-acme:override-scope": {
+    "participants": [
+     "A",
+     "Z"
+    ]
+   }
+  }
+ },
+ "P24-derived-with-zero-material-deps": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": false
+     }
+    ]
+   }
+  },
+  "policy_refs": [],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-10-09T00:00:00Z"
+ },
+ "P25-bad-date": {
+  "type": "rcp.context_assertion",
+  "rcp_version": "0.2-draft",
+  "assertion_id": "assertion:k",
+  "assertion_type": "commitment",
+  "relationship_scope": {
+   "scope_type": "bilateral",
+   "participants": [
+    {
+     "actor_id": "A",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    },
+    {
+     "actor_id": "B",
+     "scope": "tenant:t1",
+     "actor_type": "person"
+    }
+   ],
+   "trust_domain": "tenant:t1"
+  },
+  "epistemic_class": "system_interpretation",
+  "statement": "A and B have an open commitment.",
+  "provenance": {
+   "mode": "derived",
+   "visibility": "full",
+   "derivation": {
+    "dependencies": [
+     {
+      "dependency_ref": "evidence:A",
+      "dependency_type": "evidence",
+      "role": "supports",
+      "material": true
+     },
+     {
+      "dependency_ref": "evidence:B",
+      "dependency_type": "evidence",
+      "role": "corroborates",
+      "material": true
+     },
+     {
+      "dependency_ref": "policy:p1",
+      "dependency_type": "policy",
+      "role": "derived_from",
+      "material": true
+     }
+    ],
+    "support_sets": [
+     [
+      "evidence:A"
+     ],
+     [
+      "evidence:B"
+     ]
+    ]
+   }
+  },
+  "policy_refs": [
+   "policy:p1"
+  ],
+  "lifecycle": {
+   "state": "active"
+  },
+  "created_at": "2026-13-45T99:00:00Z"
+ }
+}

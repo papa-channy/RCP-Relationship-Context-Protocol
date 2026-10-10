@@ -1,0 +1,73 @@
+{
+ "type": "rcp.context_assertion",
+ "rcp_version": "0.2-draft",
+ "assertion_id": "assertion:hidden-but-leaky",
+ "assertion_type": "commitment",
+ "relationship_scope": {
+  "scope_type": "bilateral",
+  "participants": [
+   {
+    "actor_id": "A",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   },
+   {
+    "actor_id": "B",
+    "scope": "tenant:t1",
+    "actor_type": "person"
+   }
+  ],
+  "trust_domain": "tenant:t1"
+ },
+ "epistemic_class": "system_interpretation",
+ "statement": "A and B have an open commitment.",
+ "provenance": {
+  "mode": "derived",
+  "visibility": "hidden",
+  "derivation": {
+   "dependencies": [
+    {
+     "dependency_ref": "evidence:dm-with-C-about-layoffs",
+     "dependency_type": "evidence",
+     "role": "supports",
+     "material": true
+    }
+   ],
+   "support_sets": [
+    [
+     "evidence:dm-with-C-about-layoffs"
+    ]
+   ]
+  },
+  "evidence": [
+   {
+    "evidence_ref": "evidence:dm-with-C-about-layoffs",
+    "evidence_type": "interaction",
+    "representation": "source_statement",
+    "source_participants": [
+     {
+      "actor_id": "A",
+      "scope": "tenant:t1",
+      "actor_type": "person"
+     },
+     {
+      "actor_id": "B",
+      "scope": "tenant:t1",
+      "actor_type": "person"
+     },
+     {
+      "actor_id": "C",
+      "scope": "tenant:t1",
+      "actor_type": "person"
+     }
+    ],
+    "projection_basis_ref": "basis:x",
+    "occurred_at": "2026-10-08T23:41:00Z"
+   }
+  ]
+ },
+ "lifecycle": {
+  "state": "active"
+ },
+ "created_at": "2026-10-09T00:00:00Z"
+}
